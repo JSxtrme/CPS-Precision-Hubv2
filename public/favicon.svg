@@ -1,0 +1,50 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer Ring -->
+  <circle
+    cx="64"
+    cy="64"
+    r="52"
+    fill="none"
+    stroke="url(#accent)"
+    stroke-width="6"/>
+
+  <!-- Inner Ring -->
+  <circle
+    cx="64"
+    cy="64"
+    r="26"
+    fill="none"
+    stroke="url(#accent)"
+    stroke-width="4"
+    opacity="0.55"/>
+
+  <!-- Center Dot -->
+  <circle
+    cx="64"
+    cy="64"
+    r="6"
+    fill="url(#accent)"/>
+
+  <!-- CPS Pulse -->
+  <path
+    d="M22 64
+       L38 64
+       L49 48
+       L60 78
+       L71 42
+       L82 64
+       L96 64
+       L106 56"
+    fill="none"
+    stroke="url(#accent)"
+    stroke-width="4"
+    stroke-linecap="round"
+    stroke-linejoin="round"/>
+</svg>
