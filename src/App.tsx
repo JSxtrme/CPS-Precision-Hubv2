@@ -592,7 +592,7 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
           onContextMenu={(e) => e.preventDefault()}
           onClick={handlePadClick}
           onMouseDown={handleMouseDown}
-          className={`relative flex min-h-[20rem] sm:h-80 h-auto py-6 sm:py-0 w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 text-center transition-all duration-150 active:scale-[0.98] ${
+          className={`relative flex min-h-[20rem] h-auto py-8 sm:py-10 w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 text-center transition-all duration-150 active:scale-[0.98] ${
             status === "running"
               ? "border-fuchsia-500/60 bg-gradient-to-br from-fuchsia-600/20 to-indigo-600/20 shadow-[0_0_60px_-15px_rgba(217,70,239,0.5)] cursor-pointer"
               : status === "finished"
