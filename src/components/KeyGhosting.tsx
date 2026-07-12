@@ -193,10 +193,6 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
   const clearMax = () => {
     setMaxSimultaneous(0);
     setPressedKeys(new Set());
-    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
-    if (isTouch) {
-      setTouchWarning(KEY_GHOSTING_TOUCH_WARNINGS[Math.floor(Math.random() * KEY_GHOSTING_TOUCH_WARNINGS.length)]);
-    }
   };
 
   return (

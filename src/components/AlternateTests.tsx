@@ -1116,10 +1116,7 @@ export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: 
     setTimeLeft(duration === -1 ? 0 : duration);
     setStatus("idle");
     setHumorousMessage("");
-    if (isTouchDevice) {
-      setTouchWarning(getRandomSpacebarWarning());
-    }
-  }, [duration, isTouchDevice]);
+  }, [duration]);
 
   const triggerTap = useCallback(() => {
     if (status === "finished") return;
@@ -1425,9 +1422,6 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
     setHumorousMessage("");
     setRipples([]);
     lastFinishedClickRef.current = 0;
-    if (isTouchDevice) {
-      setTouchWarning(getRandomRightClickWarning());
-    }
   };
 
   const handleStopManual = () => {
@@ -1597,9 +1591,14 @@ export function PollingRateTest({ addHistory, isDarkMode }: { addHistory: (testT
     return ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
   };
 
-  const handleStart = () => {
+  useEffect(() => {
     if (isTouchDevice()) {
       setTouchWarning(getRandomPollingWarning());
+    }
+  }, []);
+
+  const handleStart = () => {
+    if (isTouchDevice()) {
       setShowTouchWarning(true);
       return;
     }
@@ -2708,6 +2707,7 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
 
   const handleZoneClick = (e: React.MouseEvent) => {
     e.preventDefault();
+    if (isTouchDevice) return;
     const now = performance.now();
     const nextTotal = totalClicks + 1;
     setTotalClicks(nextTotal);
@@ -2742,9 +2742,6 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
     setDoubleClicksCount(0);
     lastClickTimeRef.current = null;
     setHumorousMessage("");
-    if (isTouchDevice) {
-      setTouchWarning(getRandomDoubleClickWarning());
-    }
   };
 
   let statusColor = "text-emerald-500 dark:text-emerald-400";
@@ -3140,9 +3137,6 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
     peakSpeedRef.current = 0;
     recentStepsRef.current = [];
     setHumorousMessage("");
-    if (isTouchDevice) {
-      setTouchWarning(getRandomScrollWarning());
-    }
   };
 
   useEffect(() => {
@@ -3176,6 +3170,7 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
   }, [status]);
 
   const handleStart = () => {
+    if (isTouchDevice) return;
     handleReset();
     setStatus("running");
     startTimeRef.current = performance.now();
