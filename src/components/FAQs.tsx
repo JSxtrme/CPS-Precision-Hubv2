@@ -89,7 +89,7 @@ export default function FAQs({ isOpen, onClose, onOpen, isDarkMode, activeView }
     <>
       <button
         onClick={handleOpen}
-        className={`${activeView === "menu" ? "hidden sm:flex" : "flex"} items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors ${
+        className={`${activeView !== "cps" ? "hidden sm:flex" : "flex"} items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors ${
           isDarkMode
             ? "bg-white/5 hover:bg-white/10 text-slate-300"
             : "bg-slate-100 hover:bg-slate-200 text-slate-700"
