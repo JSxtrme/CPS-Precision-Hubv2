@@ -31,6 +31,14 @@ export default function HistoryList({ history, onClear, isDarkMode, activeView }
           return item.testType === "Reaction Time Test";
         case "kohi":
           return item.testType === "Kohi Retro Test";
+        case "dragclick":
+          return item.testType === "Drag Click Test";
+        case "doubleclick":
+          return item.testType === "Double Click Test";
+        case "aim":
+          return item.testType === "Aim Trainer";
+        case "scroll":
+          return item.testType === "Scroll Speed Test";
         default:
           return false;
       }
@@ -60,8 +68,14 @@ export default function HistoryList({ history, onClear, isDarkMode, activeView }
     if (item.testType === "Key Rollover" || item.testType === "Key Ghosting") {
       return `${item.score.toFixed(0)} Keys`;
     }
-    if (item.testType === "Reaction Time Test") {
-      return `${item.score.toFixed(0)} ms`;
+    if (item.testType === "Reaction Time Test" || item.testType === "Double Click Test") {
+      return `${item.score.toFixed(1)} ms`;
+    }
+    if (item.testType === "Aim Trainer") {
+      return `${item.score.toFixed(0)} Hits`;
+    }
+    if (item.testType === "Scroll Speed Test") {
+      return `${item.score.toFixed(0)} Steps`;
     }
     return item.score.toFixed(2);
   };

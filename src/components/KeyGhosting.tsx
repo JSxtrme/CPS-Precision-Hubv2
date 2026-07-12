@@ -97,10 +97,34 @@ const KEY_ROWS = [
   ]
 ];
 
+const KEY_GHOSTING_TOUCH_WARNINGS = [
+  "Bro thinks he has a keyboard",
+  "No keys, no ghosting, no problem for you",
+  "Your screen ain't got NKRO, bro",
+  "Bro pulled up keyboardless again",
+  "Ghosting requires keys, not taps",
+  "This test needs actual switches, chief",
+  "Bro's rollover limit is zero",
+  "No keyboard, no rollover, no rizz",
+  "Touchscreens don't ghost, they just don't work",
+  "Bro forgot the keyboard again, shocking",
+  "Key detection: none. Confidence: max",
+  "This ain't a virtual keyboard test, bro",
+  "Real keys only, no glass allowed",
+  "Bro's WASD is just his thumb sliding around",
+  "Ghosting.exe not found, keyboard also not found",
+  "0 keys pressed, 0 keyboards owned",
+  "Get a keyboard before you get roasted more",
+  "Bro's rollover is just his phone rolling off the couch",
+  "This test needs clacky boys, not touchscreens",
+  "Bro thinks tapping counts as key presses"
+];
+
 export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingProps) {
   const [pressedKeys, setPressedKeys] = useState<Set<string>>(new Set());
   const [maxSimultaneous, setMaxSimultaneous] = useState(0);
   const [showTouchWarning, setShowTouchWarning] = useState(false);
+  const [touchWarning, setTouchWarning] = useState("");
   const lastActiveKeysCount = useRef(0);
 
   useEffect(() => {
@@ -109,6 +133,7 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
     };
     if (isTouchDevice()) {
       setShowTouchWarning(true);
+      setTouchWarning(KEY_GHOSTING_TOUCH_WARNINGS[Math.floor(Math.random() * KEY_GHOSTING_TOUCH_WARNINGS.length)]);
     }
   }, []);
 
@@ -168,6 +193,10 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
   const clearMax = () => {
     setMaxSimultaneous(0);
     setPressedKeys(new Set());
+    const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+    if (isTouch) {
+      setTouchWarning(KEY_GHOSTING_TOUCH_WARNINGS[Math.floor(Math.random() * KEY_GHOSTING_TOUCH_WARNINGS.length)]);
+    }
   };
 
   return (
@@ -175,7 +204,7 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
       {showTouchWarning && (
         <div className="w-full flex items-center gap-3 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-4 rounded-2xl text-sm font-semibold justify-center">
           <AlertCircle className="h-5 w-5 animate-bounce shrink-0" />
-          <span>⚠️ Bro thinks he has a keyboard</span>
+          <span>⚠️ {touchWarning || "Bro thinks he has a keyboard"}</span>
         </div>
       )}
 

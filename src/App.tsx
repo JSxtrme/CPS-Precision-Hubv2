@@ -7,9 +7,10 @@ import {
   Trophy,
   Smartphone,
   Laptop,
-  RotateCcw
+  RotateCcw,
+  HelpCircle
 } from 'lucide-react';
-import { ViewType, HistoryItem, RatingTier, Ripple } from './types';
+import { ViewType, HistoryItem, RatingTier, Ripple, RATING_TIERS, getRating } from './types';
 import FAQs from './components/FAQs';
 import HistoryList from './components/HistoryList';
 import KeyGhostingTest from './components/KeyGhosting';
@@ -21,31 +22,16 @@ import {
   JitterTest,
   ButterflyTest, 
   KohiTest,
-  useDisableScrollZoomOnTouch
+  useDisableScrollZoomOnTouch,
+  DragClickTest,
+  DoubleClickTest,
+  AimTrainer,
+  ScrollTest
 } from './components/AlternateTests';
 import { ReactionTimeTest } from './components/ReactionTime';
 
 // Time durations in seconds
 const DURATIONS = [1, 2, 3, 5, 10, 15, 30, 60, -1];
-
-const RATING_TIERS: RatingTier[] = [
-  { label: "Beginner", min: 0, color: "text-slate-400" },
-  { label: "Average", min: 3, color: "text-sky-400" },
-  { label: "Good", min: 5, color: "text-emerald-400" },
-  { label: "Great", min: 7, color: "text-amber-400" },
-  { label: "Pro", min: 9, color: "text-orange-400" },
-  { label: "Legendary", min: 12, color: "text-fuchsia-400" }
-];
-
-function getRating(cps: number): RatingTier {
-  let matched = RATING_TIERS[0];
-  for (const tier of RATING_TIERS) {
-    if (cps >= tier.min) {
-      matched = tier;
-    }
-  }
-  return matched;
-}
 
 function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boolean = false): string {
   const choices: string[] = [];
@@ -62,7 +48,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Congratulations on preserving the lifespan of your screen. Perfect 0!",
         "Is this a speed test or a staring contest? Because you're winning the staring contest.",
         "Your taps are so non-existent, the screen is checking its own touch sensors.",
-        "If doing absolutely nothing was an Olympic sport, you'd be a gold medalist."
+        "If doing absolutely nothing was an Olympic sport, you'd be a gold medalist.",
+        "Are your fingers social distancing from the capacitive display?",
+        "The screen's digitizer is wondering if it's dead or just lonely.",
+        "We sent search parties for your index finger, but they came back empty-handed.",
+        "Are you attempting a 0-click speedrun? Spoiler: You nailed it.",
+        "The glass is so untouched, it's starting to collect virtual dust."
       );
     } else if (cps > 0 && cps < 1.5) {
       choices.push(
@@ -73,22 +64,32 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "This isn't a museum exhibit. You are allowed to tap more than once!",
         "Is your screen covered in wet cement? Or is your hand stuck in molasses?",
         "You're tapping so slow, the Web server is about to time out out of sheer boredom.",
-        "1 tap per second. At this rate, the sun will explode before you finish a level.",
+        `${Math.round(cps)} tap${Math.round(cps) === 1 ? "" : "s"} per second. At this rate, the sun will explode before you finish a level.`,
         "Are you carefully examining the glass texture before every tap?",
-        "That was so slow, a desktop shortcut asked if you wanted to delete it out of pity."
+        "That was so slow, a desktop shortcut asked if you wanted to delete it out of pity.",
+        "Are you using your thumb, your toe, or perhaps a warm piece of potato?",
+        "Your hand has the reactivity of a dial-up modem on a rainy Tuesday.",
+        "You tap like you're trying to not wake up a sleeping cat on your lap.",
+        "This is a speed test, not a tactile inspection of mobile glass durability.",
+        "Your tap interval is long enough to brew a cup of chamomile tea."
       );
     } else if (cps >= 1.5 && cps < 3) {
       choices.push(
-        "2 CPS? A snail is literally drafting in your slipstream right now. Tap faster!",
-        "2 CPS? You tap like you're signing a peace treaty. Be aggressive!",
+        `${Math.round(cps)} CPS? A snail is literally drafting in your slipstream right now. Tap faster!`,
+        `${Math.round(cps)} CPS? You tap like you're signing a peace treaty. Be aggressive!`,
         "Your tapping speed matches the speed of continental drift. Fascinating, but too slow!",
         "Did you double-tap once and call it a day? Let's go!",
         "Is your finger suffering from existential dread? Just tap it!",
-        "2 CPS. It's like you're treating the screen as a fragile 18th-century antique.",
+        `${Math.round(cps)} CPS. It's like you're treating the screen as a fragile 18th-century antique.`,
         "You're tapping at the precise tempo of a grandfather clock in an empty room.",
         "My slow-motion camera couldn't even capture how slow that was. Lift those fingers!",
         "Are you social-distancing from your own touchscreen? Get closer and tap!",
-        "You are tapping as if each tap costs you five dollars. They're free, I promise!"
+        "You are tapping as if each tap costs you five dollars. They're free, I promise!",
+        "Are you double-checking your screen's scratch-resistance with every touch?",
+        "You tap like an archaeologist handling a fossilized dragonfly wing.",
+        "At this speed, you aren't tapping, you're merely introducing your hand to the screen.",
+        "Your pace is perfect for reading a slow-scrolling manual. Speed up!",
+        "Are you trying to type in Morse code, or is this your actual maximum effort?"
       );
     } else if (cps >= 3 && cps < 5) {
       choices.push(
@@ -97,11 +98,16 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "You're tapping at the speed of a polite golf clap.",
         "You're tapping like you're waiting for water to boil. A bit more passion please!",
         "Not quite a speed demon. More like a speed bystander.",
-        "At 3 CPS, you could probably navigate a spreadsheet, but you aren't winning any click duels.",
+        `At ${Math.round(cps)} CPS, you could probably navigate a spreadsheet, but you aren't winning any click duels.`,
         "You are tapping with the rhythmic tempo of a dripping kitchen faucet.",
         "Are you tapping with your non-dominant toe? Try using your finger!",
         "A bit of speed is there, but you're still tapping like you're reading the terms of service.",
-        "This speed is perfect if you are trying to not wake up a baby in the next room."
+        "This speed is perfect if you are trying to not wake up a baby in the next room.",
+        "You're tapping like you're trying to remember if you locked the front door.",
+        "Your fingers are doing light cardio when they should be running a marathon!",
+        "Not slow enough to be lazy, not fast enough to be impressive. The sweet spot of mediocrity.",
+        "Your index finger is giving 'I had a cup of decaf' vibes.",
+        "Is that a tap, or is your screen just registering your thumb's heavy breathing?"
       );
     } else if (cps >= 5 && cps < 7) {
       choices.push(
@@ -114,7 +120,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your finger is moving, but your brain is still in first gear. Step on the gas!",
         "Not slow, not fast. You are the human equivalent of lukewarm tap water.",
         "You tap like a professional accountant typing in spreadsheets. Speed it up!",
-        "You're tapping with the speed of an average typist with one hand behind their back."
+        "You're tapping with the speed of an average typist with one hand behind their back.",
+        "The screen is feeling a bit of friction now. Time to double down!",
+        "Solid performance if you're playing a casual puzzle game. Otherwise, turn it up!",
+        "Your wrist is doing some work, but your hand looks like it's daydreaming.",
+        "You're tapping with the intensity of someone swiping through a mediocre dating app.",
+        "Average speed confirmed. Your finger has officially earned its participation trophy."
       );
     } else if (cps >= 7 && cps < 10) {
       choices.push(
@@ -127,7 +138,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "You tap faster than an auctioneer speaks! Very respectable speed.",
         "That's some high-fidelity tapping right there. You've definitely done this before.",
         "Your index finger has its own heartbeat now. You're entering the danger zone!",
-        "Excellent rate! You can easily win a standard touch battle with this."
+        "Excellent rate! You can easily win a standard touch battle with this.",
+        "Are you vibrating your hand or are you just terrified of the screen?",
+        "That index finger is vibrating like a honeybee on a sugar rush. Magnificent!",
+        "The screen's glass is getting quite warm. Watch out for spontaneous friction fire!",
+        "Your finger is flying! You're definitely skipping the tutorial in every mobile RPG.",
+        "Tapping speed is high enough to make your mobile device concerned for its hardware."
       );
     } else if (cps >= 10 && cps < 15) {
       choices.push(
@@ -137,10 +153,15 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Are you double-finger drumming, or does your hand naturally tremble like an earthquake?",
         "You're tapping faster than light travels in a dense block of glass. Incredible!",
         "This is some professional-grade hand spasms. Your screen is literally sweating.",
-        "12 CPS? You've graduated from normal tapping to becoming a biological machine.",
+        `${Math.round(cps)} CPS? You've graduated from normal tapping to becoming a biological machine.`,
         "Your finger is tapping so fast, it's starting to sound like a mini machine gun on glass.",
         "Is that a finger on the screen or a highly active massage gun? Spectacular!",
-        "You're tapping faster than a social media star typing out a response to drama."
+        "You're tapping faster than a social media star typing out a response to drama.",
+        "The capacitive sensors are crying tears of electrostatic joy.",
+        "Your hand is vibrating like an active jackhammer. Absolutely devastating touch speed.",
+        "Are you tapping with multiple thumbs or is your index finger just highly caffeinated?",
+        "That's not tapping, that's a localized seismic event on a piece of Corning Gorilla Glass.",
+        "Your fingers are drumming a rhythm that could summon rain in the Sahara."
       );
     } else if (cps >= 15 && cps < 20) {
       choices.push(
@@ -153,7 +174,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "If you tapped any faster, you'd rip a hole in the fabric of the space-time continuum.",
         "You must have a macro built into your actual biological nervous system. Insane!",
         "That is the tapping speed of a star collapsing into a black hole. Supernova!",
-        "Your hand is vibrating so fast, you might accidentally clip through solid matter."
+        "Your hand is vibrating so fast, you might accidentally clip through solid matter.",
+        "Are you a professional bongo player or did you drink twelve energy drinks before this?",
+        "Your fingers are moving so fast they are leaving visual afterimages on the display.",
+        "The digitizer is having a full-blown existential crisis trying to count your touch points.",
+        "If we attached a battery to your finger right now, we could power a small village.",
+        "You're tapping with the raw intensity of a heavy metal drummer on double bass."
       );
     } else {
       choices.push(
@@ -166,7 +192,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your index finger should be registered as a lethal weapon in thirty-four countries.",
         "Are you a cyborg sent from the future to destroy mobile hardware? Magnificent!",
         "You tapped so fast, the processor had to query a supercomputer to verify your existence.",
-        "This is the legendary multi-tap of the gods. The touch controller is weeping tears of joy."
+        "This is the legendary multi-tap of the gods. The touch controller is weeping tears of joy.",
+        "Capacitive registers have completely overflowed. You are tapping in a separate dimension.",
+        "Did you cover your screen in butter and drum with four fingers? Unbelievable speed!",
+        "There are hummingbirds watching your fingers and taking notes on high-speed frequency.",
+        "Your finger is vibrating fast enough to split atoms. Absolutely terrifying speed.",
+        "The screen has officially declared you its supreme ruler. All hail the vibrating finger!"
       );
     }
   } else {
@@ -181,7 +212,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Congratulations on preserving the lifespan of your mouse switch. Perfect 0!",
         "Is this a speed test or a staring contest? Because you're winning the staring contest.",
         "Your clicks are so non-existent, the mouse sensor is checking its own pulse.",
-        "If doing absolutely nothing was an Olympic sport, you'd be a gold medalist."
+        "If doing absolutely nothing was an Olympic sport, you'd be a gold medalist.",
+        "Is your left mouse button stuck, or did you forget to plug in the USB?",
+        "The copper leaf spring inside your mouse switch is resting peacefully.",
+        "Perfect score for a ghost. Absolutely inactive on the click front.",
+        "Did you fall asleep with your hand on the mousepad?",
+        "Your click speed is so zero, the mouse is entering deep hibernation mode."
       );
     } else if (cps > 0 && cps < 1.5) {
       choices.push(
@@ -192,22 +228,32 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "This isn't a museum exhibit. You are allowed to click more than once!",
         "Is your mouse button made of wet cement? Or is your hand stuck in molasses?",
         "You're clicking so slow, the Web server is about to time out out of sheer boredom.",
-        "1 click per second. At this rate, the sun will explode before you finish a level.",
+        `${Math.round(cps)} click${Math.round(cps) === 1 ? "" : "s"} per second. At this rate, the sun will explode before you finish a level.`,
         "Are you carefully examining the texture of your left-click button before every click?",
-        "That was so slow, a desktop shortcut asked if you wanted to delete it out of pity."
+        "That was so slow, a desktop shortcut asked if you wanted to delete it out of pity.",
+        "Are you clicking with your thumb or perhaps a heavy book?",
+        "Your mouse switch is yawning. It has never experienced such a gentle pace.",
+        "You clicked once and then went to make coffee. Let's get moving!",
+        "At this rate, you aren't clicking, you are just occasionally leaning on the mouse.",
+        "Your clicking has the rhythm of continental plate subduction. Speed up!"
       );
     } else if (cps >= 1.5 && cps < 3) {
       choices.push(
-        "2 CPS? A snail is literally drafting in your slipstream right now. Speed up!",
-        "2 CPS? You click like you're signing a peace treaty. Be aggressive!",
+        `${Math.round(cps)} CPS? A snail is literally drafting in your slipstream right now. Speed up!`,
+        `${Math.round(cps)} CPS? You click like you're signing a peace treaty. Be aggressive!`,
         "Your clicking speed matches the speed of continental drift. Fascinating, but too slow!",
         "Did you double-click once and call it a day? Let's go!",
         "Is your pointer finger suffering from existential dread? Just tap it!",
-        "2 CPS. It's like you're treating the mouse as a fragile 18th-century antique.",
+        `${Math.round(cps)} CPS. It's like you're treating the mouse as a fragile 18th-century antique.`,
         "You're clicking at the precise tempo of a grandfather clock in an empty room.",
         "My slow-motion camera couldn't even capture how slow that was. Lift those fingers!",
         "Are you social-distancing from your own mouse button? Get closer and tap!",
-        "You are clicking as if each tap costs you five dollars. They're free, I promise!"
+        "You are clicking as if each tap costs you five dollars. They're free, I promise!",
+        "Your mouse is wondering if you're trying to perform a very slow double-click.",
+        "Are you trying to not click too hard to save the mechanical switches? Mash it!",
+        "This isn't a library! You can make some clicking noise, it's allowed!",
+        "You're clicking like a turtle trying to navigate a computer terminal.",
+        "Your finger is moving at the speed of a dial-up connection in 1995."
       );
     } else if (cps >= 3 && cps < 5) {
       choices.push(
@@ -216,11 +262,16 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "You're clicking at the speed of a polite golf clap.",
         "You're clicking like you're waiting for water to boil. A bit more passion please!",
         "Not quite a speed demon. More like a speed bystander.",
-        "At 3 CPS, you could probably navigate a spreadsheet, but you aren't winning any click duels.",
+        `At ${Math.round(cps)} CPS, you could probably navigate a spreadsheet, but you aren't winning any click duels.`,
         "You are clicking with the rhythmic tempo of a dripping kitchen faucet.",
         "Are you clicking with your non-dominant toe? Try using your finger!",
         "A bit of speed is there, but you're still clicking like you're reading the terms of service.",
-        "This speed is perfect if you are trying to not wake up a baby in the next room."
+        "This speed is perfect if you are trying to not wake up a baby in the next room.",
+        "Decent speed for navigating a web page, but your gaming career is on hold.",
+        "Your mouse button is getting clicked, but it's not even sweating yet.",
+        "You click with the speed of an average bureaucrat stamping paperwork.",
+        "Are you using your pinky finger to click? Try using your index finger!",
+        "Rhythm is okay, but you're treating the left switch like a delicate flower."
       );
     } else if (cps >= 5 && cps < 7) {
       choices.push(
@@ -233,7 +284,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your finger is moving, but your brain is still in first gear. Step on the gas!",
         "Not slow, not fast. You are the human equivalent of lukewarm tap water.",
         "You click like a professional accountant typing in spreadsheets. Speed it up!",
-        "You're clicking with the speed of an average typist with one hand behind their back."
+        "You're clicking with the speed of an average typist with one hand behind their back.",
+        "Your click frequency is perfectly average. Not too slow, but your mouse is bored.",
+        "You click like you're selecting files in a folder. We need high-speed action!",
+        "Decent baseline. Now shake that hand and start vibrating!",
+        "Your finger is warm, but we need to see some real mechanical stress on those switches.",
+        "Perfect speed for clicking 'Next' on a software installer."
       );
     } else if (cps >= 7 && cps < 10) {
       choices.push(
@@ -246,7 +302,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "You click faster than an auctioneer speaks! Very respectable speed.",
         "That's some high-fidelity clicking right there. You've definitely done this before.",
         "Your index finger has its own heartbeat now. You're entering the danger zone!",
-        "Excellent rate! You can easily win a standard Minecraft bridge fight with this."
+        "Excellent rate! You can easily win a standard Minecraft bridge fight with this.",
+        "The mouse switch is singing. You're entering the speed zone!",
+        "Your forearm is starting to tense. Let the click flow through you!",
+        "Great speed! The local mouse community is highly impressed by your finger agility.",
+        "You click fast enough to trigger double-clicks on an old office mouse.",
+        "Solid performance! You are definitely ready for competitive clicking action."
       );
     } else if (cps >= 10 && cps < 15) {
       choices.push(
@@ -256,10 +317,15 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Are you butterfly clicking, or does your hand naturally tremble like an earthquake?",
         "You're clicking faster than light travels in a dense block of glass. Incredible!",
         "This is some professional-grade hand spasms. Your mouse is literally sweating.",
-        "12 CPS? You've graduated from normal clicking to becoming a biological machine.",
+        `${Math.round(cps)} CPS? You've graduated from normal clicking to becoming a biological machine.`,
         "Your finger is tapping so fast, it's starting to sound like a mini machine gun.",
         "Is that a hand on the mouse or a highly active massage gun? Spectacular!",
-        "You're clicking faster than a keyboard warrior writing a paragraph-long rage comment."
+        "You're clicking faster than a keyboard warrior writing a paragraph-long rage comment.",
+        "Those mechanical switches are operating at maximum thermal design power!",
+        "Your double-finger drumming technique is highly optimized. Insane rate!",
+        "The mouse sensor is starting to lose track of your sheer mechanical speed.",
+        "Did you replace your index finger with a high-frequency pneumatic piston?",
+        "The microswitches in your mouse are begging for a splash of liquid nitrogen."
       );
     } else if (cps >= 15 && cps < 20) {
       choices.push(
@@ -272,7 +338,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "If you clicked any faster, you'd rip a hole in the fabric of the space-time continuum.",
         "You must have a macro built into your actual biological nervous system. Insane!",
         "That is the clicking speed of a star collapsing into a black hole. Supernova!",
-        "Your hand is vibrating so fast, you might accidentally clip through solid matter."
+        "Your hand is vibrating so fast, you might accidentally clip through solid matter.",
+        "Are you using some forbidden drag-click tape or is your hand just a blur?",
+        "Omron/Kailh switches are screaming in absolute terror right now.",
+        "Your hand looks like a high-speed vibration plate. Truly magnificent click rate!",
+        "Are you a professional rhythm game player or is your hand possessed by a clicking demon?",
+        "This is speedrunner level! You could probably skip entire cutscenes with this rate."
       );
     } else {
       choices.push(
@@ -285,7 +356,12 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your index finger should be registered as a lethal weapon in thirty-four countries.",
         "Are you a cyborg sent from the future to destroy mouse hardware? Magnificent!",
         "You clicked so fast, the server had to query a supercomputer to verify your existence.",
-        "This is the legendary drag-click of the gods. The scroll wheel is weeping tears of joy."
+        "This is the legendary drag-click of the gods. The scroll wheel is weeping tears of joy.",
+        "Your mouse is about to turn into a black hole from sheer click density.",
+        "You are clicking so fast you've probably broken the sound barrier inside your mouse casing.",
+        "Did you hack the USB polling rate or is your finger vibrating at 500Hz?",
+        "The physical copper contact in the mouse is welded shut from thermal energy.",
+        "We had to upgrade our server database just to store the sheer number of clicks you made."
       );
     }
   }
@@ -831,6 +907,10 @@ export default function App() {
       case "butterfly": return <>Butterfly Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Coach</span></>;
       case "reaction": return <>Reaction Time <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
       case "kohi": return <span className="font-mono text-emerald-400">[KOHI RETRO TEST]</span>;
+      case "dragclick": return <>Drag Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
+      case "doubleclick": return <>Double Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
+      case "aim": return <>Aim <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Trainer</span></>;
+      case "scroll": return <>Scroll Speed <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
       case "menu": return <>Speed <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Trials</span></>;
       default: return <>CPS <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
     }
@@ -846,6 +926,10 @@ export default function App() {
       case "butterfly": return "Analyze timing intervals and consistency between alternate drumming index-and-middle clicks.";
       case "reaction": return "Traffic-light style neural reflex benchmark. Click the target card as soon as the light turns green!";
       case "kohi": return "Authentic pixel-art CRT terminal clickpad reminiscent of nostalgia Minecraft Badlion speed drills.";
+      case "dragclick": return "Tests your mouse's drag-click potential — measures how many clicks your specific mouse switch can generate via the drag technique.";
+      case "doubleclick": return "Checks for unwanted double-click registration — a common mechanical switch failure as mice age.";
+      case "aim": return "Click randomly-appearing targets as fast and accurately as possible. Test precision and speed.";
+      case "scroll": return "Measures scroll wheel speed and consistency. Track steps per second and scrolling feedback.";
       case "menu": return "Challenge yourself with unique custom mouse and keyboard tests designed to push mechanical thresholds and hand reflex speeds.";
       default: return "Determine clicks per second using left-click. Click once inside the target area to begin, and go as fast as you can!";
     }
@@ -972,6 +1056,10 @@ export default function App() {
                   {activeView === "butterfly" && <ButterflyTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                   {activeView === "reaction" && <ReactionTimeTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />}
                   {activeView === "kohi" && <KohiTest addHistory={handleAddHistory} isTouchDevice={isTouchDevice} />}
+                  {activeView === "dragclick" && <DragClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
+                  {activeView === "doubleclick" && <DoubleClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
+                  {activeView === "aim" && <AimTrainer addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
+                  {activeView === "scroll" && <ScrollTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                 </main>
               </div>
 
@@ -986,7 +1074,7 @@ export default function App() {
                 />
 
                 {/* Standard Rating Tiers Showcase */}
-                {activeView === "cps" && (
+                {(activeView === "cps" || activeView === "butterfly" || activeView === "jitter" || activeView === "rightclick" || activeView === "dragclick") && (
                   <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
                     <div className="flex items-center gap-1.5 mb-4">
                       <Trophy className="h-4 w-4 text-amber-500" />
@@ -1005,10 +1093,154 @@ export default function App() {
                           }`}
                         >
                           <span className={`text-xs font-bold ${tier.color}`}>{tier.label}</span>
-                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{tier.min}+ CPS</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            {tier.max !== undefined ? `${tier.min}-${tier.max}` : `${tier.min}+`} CPS
+                          </span>
                         </div>
                       ))}
                     </div>
+                  </section>
+                )}
+
+                {/* Retro Kohi Rating Tiers Showcase */}
+                {activeView === "kohi" && (
+                  <section className="w-full font-mono bg-black text-emerald-400 rounded-2xl border-2 border-emerald-500/50 p-5 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+                    <div className="flex items-center gap-2 mb-4 border-b border-emerald-500/30 pb-2">
+                      <span className="text-xs font-bold uppercase tracking-widest text-emerald-500">[RANKING_MATRIX]</span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      {RATING_TIERS.map(tier => (
+                        <div
+                          key={tier.label}
+                          className="flex flex-col items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/5 px-2 py-2.5 text-center"
+                        >
+                          <span className="font-bold text-emerald-300 uppercase">{tier.label}</span>
+                          <span className="text-[10px] text-emerald-500/70">
+                            {tier.max !== undefined ? `${tier.min}-${tier.max}` : `${tier.min}+`} CPS
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                )}
+
+                {/* Spacebar Counter Info Card */}
+                {activeView === "spacebar" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is a Spacebar Counter Test?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      A spacebar counter measures how many times you can press the spacebar within a set time period (usually 1, 5, 10, or 60 seconds). It's popular among Minecraft players for practicing bunny-hopping (auto-jumping to gain movement speed) and is also used as a general reflex and stamina test for your pressing speed.
+                    </p>
+                  </section>
+                )}
+
+                {/* Reaction Time Info Card */}
+                {activeView === "reaction" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-rose-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is a Reaction Time Test?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      A reaction time test measures how quickly you respond to a visual cue, usually a screen changing color, and click or press a key. Your result is shown in milliseconds (ms) — the average human reaction time is around 200–250ms. Gamers, especially in FPS and competitive titles, use this test to gauge and train their reflexes.
+                    </p>
+                  </section>
+                )}
+
+                {/* Key Ghosting Info Card */}
+                {activeView === "ghosting" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-teal-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is a Key Ghosting Test?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      A key ghosting test checks how many keys your keyboard can register accurately when pressed simultaneously. "Ghosting" happens when a keyboard fails to detect certain key combinations due to hardware limitations, which can be a problem in fast-paced games requiring multiple simultaneous inputs (like WASD + Shift + Space). This test helps you find out if your keyboard has full N-key rollover (NKRO) or is limited by ghosting.
+                    </p>
+                  </section>
+                )}
+
+                {/* Polling Rate Info Card */}
+                {activeView === "polling" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-purple-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is a Polling Rate Test?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      A polling rate test measures how often your mouse reports its position to your computer, measured in Hz (times per second). A higher polling rate (e.g., 1000Hz vs 125Hz) means more frequent updates and lower input lag, which can matter for competitive gaming. This test helps you verify your mouse is running at its advertised polling rate.
+                    </p>
+                  </section>
+                )}
+
+                {/* Drag Click Info Card */}
+                {activeView === "dragclick" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-emerald-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is a Drag Click Test?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      Tests your mouse's drag-click potential — measures how many clicks your specific mouse switch can generate via the drag technique. Since results depend heavily on mouse hardware (switch type matters a lot here), this doubles as a mouse-compatibility checker, which is a good SEO angle ("does my mouse support drag clicking").
+                    </p>
+                  </section>
+                )}
+
+                {/* Double Click Info Card */}
+                {activeView === "doubleclick" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-amber-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is a Double Click Test?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      Checks for unwanted double-click registration — a common mechanical switch failure as mice age. Beyond checking for accidental double-click issues, some mice with sensitive micro-switches can register a single physical press as two rapid clicks — and skilled clickers have learned to use this intentionally as a technique to push CPS scores higher than normal single-clicking allows. Useful, practical tool (not just a game stat) that pulls in a different search audience than your click-speed tests.
+                    </p>
+                  </section>
+                )}
+
+                {/* Aim Trainer Info Card */}
+                {activeView === "aim" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-rose-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is an Aim Trainer?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      Click randomly-appearing targets to test raw mechanical hand-eye reflex time and precision tracking, simulating competitive FPS target-switching routines. Tracks accuracy %, average time-to-hit, and misses.
+                    </p>
+                  </section>
+                )}
+
+                {/* Scroll Test Info Card */}
+                {activeView === "scroll" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-start gap-2.5 mb-2">
+                      <HelpCircle className="h-5 w-5 text-sky-500 shrink-0 mt-0.5" />
+                      <h2 className="text-sm font-bold text-slate-800 dark:text-slate-200 leading-snug">
+                        What is a Scroll Speed Test?
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                      Measures the speed and mechanical consistency of your mouse scroll wheel, registering total scroll steps per second. Useful for speed-scrolling setups, web page layout testing, and gamers optimizing scroll-wheel binds (like Minecraft hotbar scrolling or apex legends jump binds).
+                    </p>
                   </section>
                 )}
               </div>
