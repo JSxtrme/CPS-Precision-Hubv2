@@ -798,6 +798,7 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
 export default function App() {
   const [activeView, setActiveView] = useState<ViewType>("cps");
   const [showFaqs, setShowFaqs] = useState(false);
+  const [cameFromMenu, setCameFromMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     try {
       const stored = localStorage.getItem("cps-test-theme");
@@ -854,22 +855,31 @@ export default function App() {
       if (state) {
         if (state.view !== undefined) setActiveView(state.view);
         if (state.faqs !== undefined) setShowFaqs(state.faqs);
+        if (state.cameFromMenu !== undefined) setCameFromMenu(state.cameFromMenu);
       } else {
         setActiveView("cps");
         setShowFaqs(false);
+        setCameFromMenu(false);
       }
     };
     window.addEventListener("popstate", handlePopState);
     if (!window.history.state) {
-      window.history.replaceState({ view: "cps", faqs: false }, "");
+      window.history.replaceState({ view: "cps", faqs: false, cameFromMenu: false }, "");
     }
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
   const navigateToView = (view: ViewType) => {
+    let nextCameFromMenu = cameFromMenu;
+    if (activeView === "menu" && view !== "cps" && view !== "menu") {
+      nextCameFromMenu = true;
+    } else if (view === "cps" || view === "menu") {
+      nextCameFromMenu = false;
+    }
+    setCameFromMenu(nextCameFromMenu);
     setActiveView(view);
     const state = window.history.state || {};
-    window.history.pushState({ ...state, view }, "");
+    window.history.pushState({ ...state, view, cameFromMenu: nextCameFromMenu }, "");
   };
 
   const handleAddHistory = (testType: string, duration: number, score: number, rating: string) => {
@@ -954,7 +964,13 @@ export default function App() {
           <div className="flex items-center gap-2">
             {activeView !== "cps" && (
               <button
-                onClick={() => navigateToView("cps")}
+                onClick={() => {
+                  if (cameFromMenu && activeView !== "menu") {
+                    navigateToView("menu");
+                  } else {
+                    navigateToView("cps");
+                  }
+                }}
                 className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors ${
                   isDarkMode ? "bg-white/5 hover:bg-white/10 text-slate-300" : "bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 shadow-sm"
                 }`}
@@ -1001,6 +1017,7 @@ export default function App() {
               onOpen={() => setShowFaqs(true)}
               onClose={() => setShowFaqs(false)}
               isDarkMode={isDarkMode}
+              activeView={activeView}
             />
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
