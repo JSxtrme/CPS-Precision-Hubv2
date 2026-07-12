@@ -28,6 +28,9 @@ export const RATING_TIERS: RatingTier[] = [
 ];
 
 export function getRating(cps: number): RatingTier {
+  if (cps >= 20) {
+    return { label: "⚡ Godlike", min: 20, color: "text-amber-500 font-extrabold animate-pulse godlike-glow" };
+  }
   let matched = RATING_TIERS[0];
   for (const tier of RATING_TIERS) {
     if (cps >= tier.min) {

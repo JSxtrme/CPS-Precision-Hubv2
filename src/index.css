@@ -30,6 +30,10 @@ body {
   color: #ffffff;
 }
 
+.godlike-glow {
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6), 0 0 18px rgba(245, 158, 11, 0.2);
+}
+
 /* Custom Sleek Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 6px;
