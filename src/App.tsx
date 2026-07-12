@@ -20,7 +20,8 @@ import {
   PollingRateTest, 
   JitterTest,
   ButterflyTest, 
-  KohiTest 
+  KohiTest,
+  useDisableScrollZoomOnTouch
 } from './components/AlternateTests';
 import { ReactionTimeTest } from './components/ReactionTime';
 
@@ -402,6 +403,8 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
   const animFrameIdRef = useRef<number | null>(null);
   const rippleIdCounter = useRef(0);
   const lastRightClickRef = useRef<number>(0);
+
+  useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
 
   const cancelTimer = useCallback(() => {
     if (animFrameIdRef.current !== null) {

@@ -11,6 +11,51 @@ import {
 } from 'lucide-react';
 import { Ripple, ViewType } from '../types';
 
+// Custom hook to disable page scrolling and zooming on touch devices when a test is active
+export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean) {
+  useEffect(() => {
+    if (!isTouchDevice || !isRunning) return;
+
+    // Save previous styles
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+    const originalOverscrollBehavior = document.body.style.overscrollBehavior;
+
+    // Prevent scrolling and double-tap zoom/pinch-to-zoom
+    document.body.style.overflow = "hidden";
+    document.body.style.touchAction = "none";
+    document.body.style.overscrollBehavior = "none";
+
+    // Extra touch listener to prevent default zoom/pinch behaviors on iOS and some Android devices
+    const preventZoomAndScroll = (e: TouchEvent) => {
+      // If multi-touch (pinch) or trying to zoom, prevent default
+      if (e.touches.length > 1) {
+        e.preventDefault();
+      }
+    };
+
+    // Prevent gestures like pinch-to-zoom on iOS
+    const preventGesture = (e: Event) => {
+      e.preventDefault();
+    };
+
+    document.addEventListener("touchstart", preventZoomAndScroll, { passive: false });
+    document.addEventListener("touchmove", preventZoomAndScroll, { passive: false });
+    document.addEventListener("gesturestart", preventGesture, { passive: false });
+    document.addEventListener("gesturechange", preventGesture, { passive: false });
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+      document.body.style.overscrollBehavior = originalOverscrollBehavior;
+      document.removeEventListener("touchstart", preventZoomAndScroll);
+      document.removeEventListener("touchmove", preventZoomAndScroll);
+      document.removeEventListener("gesturestart", preventGesture);
+      document.removeEventListener("gesturechange", preventGesture);
+    };
+  }, [isRunning, isTouchDevice]);
+}
+
 // Standard 10 Humorous responses
 function getAltHumorousLine(score: number, isTouchDevice: boolean = false): string {
   const choices = isTouchDevice
@@ -315,6 +360,8 @@ export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: 
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
 
+  useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
   // Clear timer only on actual component unmount
   useEffect(() => {
     return () => {
@@ -565,6 +612,8 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
   const timerRef = useRef<number | null>(null);
   const rippleIdCounter = useRef(0);
   const lastFinishedClickRef = useRef<number>(0);
+
+  useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
 
   const handleFinished = useCallback((totalSeconds: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -939,6 +988,8 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
   const timerRef = useRef<number | null>(null);
   const lastRightClickRef = useRef<number>(0);
 
+  useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
   const handleFinished = useCallback((totalSeconds: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
     setStatus("finished");
@@ -1197,6 +1248,8 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
   const rippleIdCounter = useRef(0);
   const timerRef = useRef<number | null>(null);
   const lastRightClickRef = useRef<number>(0);
+
+  useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
 
   const handleFinished = useCallback((totalSeconds: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -1489,6 +1542,8 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
   const lastRightClickRef = useRef<number>(0);
+
+  useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
 
   const handleFinished = useCallback((totalSeconds: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
