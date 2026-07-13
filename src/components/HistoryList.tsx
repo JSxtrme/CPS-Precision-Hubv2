@@ -90,7 +90,7 @@ export default function HistoryList({ history, onClear, isDarkMode, activeView }
     <section className="w-full animate-fade-in">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <History className="h-4 w-4 text-fuchsia-400" />
+          <History className="h-4 w-4 theme-text-from" />
           <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500 dark:text-slate-400">
             Recent Activity
           </h2>
@@ -162,7 +162,7 @@ export default function HistoryList({ history, onClear, isDarkMode, activeView }
                         )}
                       </td>
                       <td className="px-4 py-3 font-semibold">
-                        <span className="text-fuchsia-500">{formatScore(item)}</span>
+                        <span className="theme-text-from-dynamic">{formatScore(item)}</span>
                         <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal ml-1">
                           ({item.rating})
                         </span>

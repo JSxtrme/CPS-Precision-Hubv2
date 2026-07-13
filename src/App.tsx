@@ -8,7 +8,8 @@ import {
   Smartphone,
   Laptop,
   RotateCcw,
-  HelpCircle
+  HelpCircle,
+  Paintbrush
 } from 'lucide-react';
 import { ViewType, HistoryItem, RatingTier, Ripple, RATING_TIERS, getRating } from './types';
 import FAQs from './components/FAQs';
@@ -32,6 +33,412 @@ import { ReactionTimeTest } from './components/ReactionTime';
 
 // Time durations in seconds
 const DURATIONS = [1, 2, 3, 5, 10, 15, 30, 60, -1];
+
+interface ThemeColorSet {
+  from: string;
+  to: string;
+  from300: string;
+  to400: string;
+  from500: string;
+  to500: string;
+  to600: string;
+  from600: string;
+  from500_60: string;
+  from600_20: string;
+  to600_20: string;
+  center_10: string;
+  shadow_pad: string;
+  shadow_btn: string;
+  from400_50: string;
+  to500_20: string;
+  to500_5: string;
+  to500_35: string;
+}
+
+interface ThemePreset {
+  id: string;
+  name: string;
+  colors: ThemeColorSet;
+  previewBg: string;
+}
+
+const THEMES: ThemePreset[] = [
+  {
+    id: "cosmic",
+    name: "Cosmic Purple",
+    colors: {
+      from: "#e879f9",
+      to: "#818cf8",
+      from300: "#f472b6",
+      to400: "#818cf8",
+      from500: "#d946ef",
+      to500: "#6366f1",
+      to600: "#4f46e5",
+      from600: "#c026d3",
+      from500_60: "rgba(217, 70, 239, 0.6)",
+      from600_20: "rgba(192, 38, 211, 0.2)",
+      to600_20: "rgba(79, 70, 229, 0.2)",
+      center_10: "rgba(147, 51, 234, 0.1)",
+      shadow_pad: "rgba(217, 70, 239, 0.5)",
+      shadow_btn: "rgba(217, 70, 239, 0.5)",
+      from400_50: "rgba(232, 121, 249, 0.5)",
+      to500_20: "rgba(99, 102, 241, 0.2)",
+      to500_5: "rgba(99, 102, 241, 0.05)",
+      to500_35: "rgba(99, 102, 241, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #d946ef 0%, #6366f1 100%)",
+  },
+  {
+    id: "sunset",
+    name: "Sunset Glow",
+    colors: {
+      from: "#f472b6",
+      to: "#fb923c",
+      from300: "#fbcfe8",
+      to400: "#fed7aa",
+      from500: "#ec4899",
+      to500: "#f97316",
+      to600: "#ea580c",
+      from600: "#db2777",
+      from500_60: "rgba(236, 72, 153, 0.6)",
+      from600_20: "rgba(219, 39, 119, 0.2)",
+      to600_20: "rgba(234, 88, 12, 0.2)",
+      center_10: "rgba(236, 72, 153, 0.1)",
+      shadow_pad: "rgba(236, 72, 153, 0.5)",
+      shadow_btn: "rgba(236, 72, 153, 0.5)",
+      from400_50: "rgba(244, 114, 182, 0.5)",
+      to500_20: "rgba(249, 115, 22, 0.2)",
+      to500_5: "rgba(249, 115, 22, 0.05)",
+      to500_35: "rgba(249, 115, 22, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #ec4899 0%, #f97316 100%)",
+  },
+  {
+    id: "emerald",
+    name: "Emerald Mint",
+    colors: {
+      from: "#34d399",
+      to: "#2dd4bf",
+      from300: "#6ee7b7",
+      to400: "#2dd4bf",
+      from500: "#10b981",
+      to500: "#14b8a6",
+      to600: "#0d9488",
+      from600: "#059669",
+      from500_60: "rgba(16, 185, 129, 0.6)",
+      from600_20: "rgba(5, 150, 105, 0.2)",
+      to600_20: "rgba(13, 148, 136, 0.2)",
+      center_10: "rgba(16, 185, 129, 0.1)",
+      shadow_pad: "rgba(16, 185, 129, 0.5)",
+      shadow_btn: "rgba(16, 185, 129, 0.5)",
+      from400_50: "rgba(52, 211, 153, 0.5)",
+      to500_20: "rgba(20, 184, 166, 0.2)",
+      to500_5: "rgba(20, 184, 166, 0.05)",
+      to500_35: "rgba(20, 184, 166, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #10b981 0%, #14b8a6 100%)",
+  },
+  {
+    id: "ocean",
+    name: "Ocean Breeze",
+    colors: {
+      from: "#22d3ee",
+      to: "#60a5fa",
+      from300: "#67e8f9",
+      to400: "#60a5fa",
+      from500: "#06b6d4",
+      to500: "#3b82f6",
+      to600: "#2563eb",
+      from600: "#0891b2",
+      from500_60: "rgba(6, 182, 212, 0.6)",
+      from600_20: "rgba(8, 145, 178, 0.2)",
+      to600_20: "rgba(37, 99, 235, 0.2)",
+      center_10: "rgba(59, 130, 246, 0.1)",
+      shadow_pad: "rgba(6, 182, 212, 0.5)",
+      shadow_btn: "rgba(6, 182, 212, 0.5)",
+      from400_50: "rgba(34, 211, 238, 0.5)",
+      to500_20: "rgba(59, 130, 246, 0.2)",
+      to500_5: "rgba(59, 130, 246, 0.05)",
+      to500_35: "rgba(59, 130, 246, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%)",
+  },
+  {
+    id: "ash_grey",
+    name: "Dark Charcoal",
+    colors: {
+      from: "#94a3b8",
+      to: "#475569",
+      from300: "#cbd5e1",
+      to400: "#94a3b8",
+      from500: "#64748b",
+      to500: "#334155",
+      to600: "#1e293b",
+      from600: "#475569",
+      from500_60: "rgba(100, 116, 139, 0.6)",
+      from600_20: "rgba(71, 85, 105, 0.2)",
+      to600_20: "rgba(30, 41, 59, 0.2)",
+      center_10: "rgba(100, 116, 139, 0.1)",
+      shadow_pad: "rgba(100, 116, 139, 0.4)",
+      shadow_btn: "rgba(100, 116, 139, 0.4)",
+      from400_50: "rgba(148, 163, 184, 0.5)",
+      to500_20: "rgba(51, 65, 85, 0.2)",
+      to500_5: "rgba(51, 65, 85, 0.05)",
+      to500_35: "rgba(51, 65, 85, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #64748b 0%, #1e293b 100%)",
+  },
+  {
+    id: "charcoal",
+    name: "Ash Gray",
+    colors: {
+      from: "#e4e4e7",
+      to: "#71717a",
+      from300: "#d4d4d8",
+      to400: "#a1a1aa",
+      from500: "#52525b",
+      to500: "#27272a",
+      to600: "#18181b",
+      from600: "#3f3f46",
+      from500_60: "rgba(82, 82, 91, 0.6)",
+      from600_20: "rgba(63, 63, 70, 0.2)",
+      to600_20: "rgba(24, 24, 27, 0.2)",
+      center_10: "rgba(161, 161, 170, 0.1)",
+      shadow_pad: "rgba(161, 161, 170, 0.4)",
+      shadow_btn: "rgba(161, 161, 170, 0.4)",
+      from400_50: "rgba(161, 161, 170, 0.5)",
+      to500_20: "rgba(39, 39, 42, 0.2)",
+      to500_5: "rgba(39, 39, 42, 0.05)",
+      to500_35: "rgba(39, 39, 42, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #71717a 0%, #18181b 100%)",
+  },
+  {
+    id: "crimson",
+    name: "Crimson Gold",
+    colors: {
+      from: "#f87171",
+      to: "#fbbf24",
+      from300: "#fca5a5",
+      to400: "#fde047",
+      from500: "#dc2626",
+      to500: "#d97706",
+      to600: "#b91c1c",
+      from600: "#991b1b",
+      from500_60: "rgba(220, 38, 38, 0.6)",
+      from600_20: "rgba(153, 27, 27, 0.2)",
+      to600_20: "rgba(185, 28, 28, 0.2)",
+      center_10: "rgba(220, 38, 38, 0.1)",
+      shadow_pad: "rgba(220, 38, 38, 0.5)",
+      shadow_btn: "rgba(220, 38, 38, 0.5)",
+      from400_50: "rgba(248, 113, 113, 0.5)",
+      to500_20: "rgba(217, 119, 6, 0.2)",
+      to500_5: "rgba(217, 119, 6, 0.05)",
+      to500_35: "rgba(217, 119, 6, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #dc2626 0%, #f59e0b 100%)",
+  },
+  {
+    id: "amethyst",
+    name: "Royal Amethyst",
+    colors: {
+      from: "#c084fc",
+      to: "#818cf8",
+      from300: "#d8b4fe",
+      to400: "#a5b4fc",
+      from500: "#7c3aed",
+      to500: "#4f46e5",
+      to600: "#3730a3",
+      from600: "#6d28d9",
+      from500_60: "rgba(124, 58, 237, 0.6)",
+      from600_20: "rgba(109, 40, 217, 0.2)",
+      to600_20: "rgba(55, 48, 163, 0.2)",
+      center_10: "rgba(124, 58, 237, 0.1)",
+      shadow_pad: "rgba(124, 58, 237, 0.5)",
+      shadow_btn: "rgba(124, 58, 237, 0.5)",
+      from400_50: "rgba(192, 132, 252, 0.5)",
+      to500_20: "rgba(79, 70, 229, 0.2)",
+      to500_5: "rgba(79, 70, 229, 0.05)",
+      to500_35: "rgba(79, 70, 229, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%)",
+  },
+  {
+    id: "cyberpunk",
+    name: "Cyber Punk",
+    colors: {
+      from: "#ff007f",
+      to: "#00ffff",
+      from300: "#ff7ebb",
+      to400: "#70ffff",
+      from500: "#e0006c",
+      to500: "#00cbd6",
+      to600: "#009099",
+      from600: "#a80052",
+      from500_60: "rgba(224, 0, 108, 0.6)",
+      from600_20: "rgba(168, 0, 82, 0.2)",
+      to600_20: "rgba(0, 144, 153, 0.2)",
+      center_10: "rgba(224, 0, 108, 0.1)",
+      shadow_pad: "rgba(224, 0, 108, 0.5)",
+      shadow_btn: "rgba(224, 0, 108, 0.5)",
+      from400_50: "rgba(255, 0, 127, 0.5)",
+      to500_20: "rgba(0, 203, 214, 0.2)",
+      to500_5: "rgba(0, 203, 214, 0.05)",
+      to500_35: "rgba(0, 203, 214, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #ff007f 0%, #00cbd6 100%)",
+  },
+  {
+    id: "rose_gold",
+    name: "Rose Gold",
+    colors: {
+      from: "#f43f5e",
+      to: "#fda4af",
+      from300: "#fecdd3",
+      to400: "#ffe4e6",
+      from500: "#e11d48",
+      to500: "#fb7185",
+      to600: "#f43f5e",
+      from600: "#be123c",
+      from500_60: "rgba(225, 29, 72, 0.6)",
+      from600_20: "rgba(190, 18, 60, 0.2)",
+      to600_20: "rgba(244, 63, 94, 0.2)",
+      center_10: "rgba(225, 29, 72, 0.1)",
+      shadow_pad: "rgba(225, 29, 72, 0.4)",
+      shadow_btn: "rgba(225, 29, 72, 0.4)",
+      from400_50: "rgba(251, 113, 133, 0.5)",
+      to500_20: "rgba(251, 113, 133, 0.2)",
+      to500_5: "rgba(251, 113, 133, 0.05)",
+      to500_35: "rgba(251, 113, 133, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #e11d48 0%, #fb7185 100%)",
+  },
+  {
+    id: "golden_hour",
+    name: "Golden Hour",
+    colors: {
+      from: "#f59e0b",
+      to: "#ea580c",
+      from300: "#fcd34d",
+      to400: "#fdba74",
+      from500: "#d97706",
+      to500: "#c2410c",
+      to600: "#9a3412",
+      from600: "#b45309",
+      from500_60: "rgba(217, 119, 6, 0.6)",
+      from600_20: "rgba(180, 83, 9, 0.2)",
+      to600_20: "rgba(154, 52, 18, 0.2)",
+      center_10: "rgba(217, 119, 6, 0.1)",
+      shadow_pad: "rgba(217, 119, 6, 0.5)",
+      shadow_btn: "rgba(217, 119, 6, 0.5)",
+      from400_50: "rgba(245, 158, 11, 0.5)",
+      to500_20: "rgba(194, 65, 12, 0.2)",
+      to500_5: "rgba(194, 65, 12, 0.05)",
+      to500_35: "rgba(194, 65, 12, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #f59e0b 0%, #ea580c 100%)",
+  },
+  {
+    id: "forest",
+    name: "Forest Shadow",
+    colors: {
+      from: "#34d399",
+      to: "#059669",
+      from300: "#a7f3d0",
+      to400: "#34d399",
+      from500: "#10b981",
+      to500: "#064e3b",
+      to600: "#022c22",
+      from600: "#047857",
+      from500_60: "rgba(16, 185, 129, 0.6)",
+      from600_20: "rgba(4, 120, 87, 0.2)",
+      to600_20: "rgba(6, 78, 59, 0.2)",
+      center_10: "rgba(16, 185, 129, 0.1)",
+      shadow_pad: "rgba(16, 185, 129, 0.5)",
+      shadow_btn: "rgba(16, 185, 129, 0.5)",
+      from400_50: "rgba(52, 211, 153, 0.5)",
+      to500_20: "rgba(6, 78, 59, 0.2)",
+      to500_5: "rgba(6, 78, 59, 0.05)",
+      to500_35: "rgba(6, 78, 59, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #059669 0%, #064e3b 100%)",
+  },
+  {
+    id: "blush",
+    name: "Blush Pink",
+    colors: {
+      from: "#f472b6",
+      to: "#fda4af",
+      from300: "#fbcfe8",
+      to400: "#fecdd3",
+      from500: "#ec4899",
+      to500: "#f43f5e",
+      to600: "#be123c",
+      from600: "#db2777",
+      from500_60: "rgba(236, 72, 153, 0.6)",
+      from600_20: "rgba(219, 39, 119, 0.2)",
+      to600_20: "rgba(190, 18, 60, 0.2)",
+      center_10: "rgba(236, 72, 153, 0.1)",
+      shadow_pad: "rgba(236, 72, 153, 0.5)",
+      shadow_btn: "rgba(236, 72, 153, 0.5)",
+      from400_50: "rgba(244, 114, 182, 0.5)",
+      to500_20: "rgba(244, 63, 94, 0.2)",
+      to500_5: "rgba(244, 63, 94, 0.05)",
+      to500_35: "rgba(244, 63, 94, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)",
+  },
+  {
+    id: "aurora",
+    name: "Northern Lights",
+    colors: {
+      from: "#2dd4bf",
+      to: "#a855f7",
+      from300: "#99f6e4",
+      to400: "#c084fc",
+      from500: "#0d9488",
+      to500: "#8b5cf6",
+      to600: "#6d28d9",
+      from600: "#0f766e",
+      from500_60: "rgba(13, 148, 136, 0.6)",
+      from600_20: "rgba(15, 118, 110, 0.2)",
+      to600_20: "rgba(109, 40, 217, 0.2)",
+      center_10: "rgba(13, 148, 136, 0.1)",
+      shadow_pad: "rgba(13, 148, 136, 0.5)",
+      shadow_btn: "rgba(13, 148, 136, 0.5)",
+      from400_50: "rgba(45, 212, 191, 0.5)",
+      to500_20: "rgba(139, 92, 246, 0.2)",
+      to500_5: "rgba(139, 92, 246, 0.05)",
+      to500_35: "rgba(139, 92, 246, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #2dd4bf 0%, #8b5cf6 100%)",
+  },
+  {
+    id: "midnight_neon",
+    name: "Midnight Neon",
+    colors: {
+      from: "#3b82f6",
+      to: "#d946ef",
+      from300: "#93c5fd",
+      to400: "#f0abfc",
+      from500: "#2563eb",
+      to500: "#c026d3",
+      to600: "#86198f",
+      from600: "#1d4ed8",
+      from500_60: "rgba(37, 99, 233, 0.6)",
+      from600_20: "rgba(29, 78, 216, 0.2)",
+      to600_20: "rgba(134, 25, 143, 0.2)",
+      center_10: "rgba(37, 99, 233, 0.1)",
+      shadow_pad: "rgba(37, 99, 233, 0.5)",
+      shadow_btn: "rgba(37, 99, 233, 0.5)",
+      from400_50: "rgba(59, 130, 246, 0.5)",
+      to500_20: "rgba(192, 38, 211, 0.2)",
+      to500_5: "rgba(192, 38, 211, 0.05)",
+      to500_35: "rgba(192, 38, 211, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #3b82f6 0%, #c026d3 100%)",
+  }
+];
 
 function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boolean = false): string {
   const choices: string[] = [];
@@ -659,7 +1066,7 @@ function DurationSelector({ selected, disabled, onSelect, isDarkMode }: Duration
             onClick={() => onSelect(duration)}
             className={`relative rounded-xl px-4 py-2 text-sm font-semibold transition-all duration-200 sm:px-5 sm:py-2.5 sm:text-base ${
               isSelected
-                ? "scale-105 bg-gradient-to-br from-fuchsia-500 to-indigo-600 text-white shadow-lg shadow-fuchsia-500/20"
+                ? "scale-105 theme-active-key text-white shadow-lg"
                 : isDarkMode
                   ? "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/5"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-950 border border-slate-200/60"
@@ -882,7 +1289,7 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
         {/* Progress bar */}
         <div className="mb-2 h-1.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-white/10">
           <div
-            className="h-full rounded-full bg-gradient-to-r from-fuchsia-500 to-indigo-500 transition-[width] duration-100 ease-linear"
+            className="h-full rounded-full theme-bg-gradient transition-[width] duration-100 ease-linear"
             style={{ width: `${progressRatio * 100}%` }}
           />
         </div>
@@ -895,10 +1302,10 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
           onMouseDown={handleMouseDown}
           className={`relative flex min-h-[20rem] h-auto py-8 sm:py-10 w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 text-center transition-all duration-150 active:scale-[0.98] ${
             status === "running"
-              ? "border-fuchsia-500/60 bg-gradient-to-br from-fuchsia-600/20 to-indigo-600/20 shadow-[0_0_60px_-15px_rgba(217,70,239,0.5)] cursor-pointer"
+              ? "theme-running-pad cursor-pointer"
               : status === "finished"
                 ? "border-emerald-500/40 bg-gradient-to-br from-emerald-600/10 to-teal-600/10 cursor-pointer"
-                : "border-slate-200 dark:border-white/15 bg-white dark:bg-white/5 hover:border-fuchsia-400/50 hover:bg-slate-50 dark:hover:bg-white/[0.07] shadow-sm cursor-pointer"
+                : "border-slate-200 dark:border-white/15 bg-white dark:bg-white/5 theme-hover-pad hover:bg-slate-50 dark:hover:bg-white/[0.07] shadow-sm cursor-pointer"
           }`}
         >
           {ripples.map(ripple => (
@@ -943,7 +1350,7 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
               <p className="text-6xl font-black tracking-tight text-slate-800 dark:text-white sm:text-7xl">
                 {clickCount}
               </p>
-              <p className="text-sm font-medium uppercase tracking-widest text-fuchsia-500 dark:text-fuchsia-300">
+              <p className="text-sm font-medium uppercase tracking-widest theme-text-from-dynamic">
                 clicks
               </p>
             </div>
@@ -963,7 +1370,7 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
                 "{humorousMessage}"
               </p>
               <div className="pt-2">
-                <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 px-3 py-1.5 rounded-full inline-block animate-pulse">
+                <span className="text-xs font-bold theme-pulse-badge px-3 py-1.5 rounded-full inline-block animate-pulse">
                   {isTouchDevice ? "Tap the Reset button to try again!" : "Double tap Right-Click to reset"}
                 </span>
               </div>
@@ -1039,6 +1446,34 @@ export default function App() {
   });
 
   const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  const [activeTheme, setActiveTheme] = useState<string>(() => {
+    try {
+      const stored = localStorage.getItem("cps-test-colorscheme");
+      return stored && THEMES.some(t => t.id === stored) ? stored : "cosmic";
+    } catch {
+      return "cosmic";
+    }
+  });
+
+  const [selectedThemeId, setSelectedThemeId] = useState(activeTheme);
+  const [isThemeDropdownOpen, setIsThemeDropdownOpen] = useState(false);
+  const themeDropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (themeDropdownRef.current && !themeDropdownRef.current.contains(event.target as Node)) {
+        setIsThemeDropdownOpen(false);
+        setSelectedThemeId(activeTheme);
+      }
+    }
+    if (isThemeDropdownOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isThemeDropdownOpen, activeTheme]);
 
   useEffect(() => {
     const checkTouch = () => {
@@ -1151,20 +1586,20 @@ export default function App() {
 
   const getActiveTitle = () => {
     switch (activeView) {
-      case "spacebar": return <>Spacebar <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Counter</span></>;
-      case "rightclick": return <>Right Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
-      case "polling": return <>Mouse Polling <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Rate</span></>;
-      case "ghosting": return <>Key Ghosting <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
-      case "jitter": return <>Jitter Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Coach</span></>;
-      case "butterfly": return <>Butterfly Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Coach</span></>;
-      case "reaction": return <>Reaction Time <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
+      case "spacebar": return <>Spacebar <span className="theme-text-gradient">Counter</span></>;
+      case "rightclick": return <>Right Click <span className="theme-text-gradient">Test</span></>;
+      case "polling": return <>Mouse Polling <span className="theme-text-gradient">Rate</span></>;
+      case "ghosting": return <>Key Ghosting <span className="theme-text-gradient">Test</span></>;
+      case "jitter": return <>Jitter Click <span className="theme-text-gradient">Coach</span></>;
+      case "butterfly": return <>Butterfly Click <span className="theme-text-gradient">Coach</span></>;
+      case "reaction": return <>Reaction Time <span className="theme-text-gradient">Test</span></>;
       case "kohi": return <span className={`font-mono ${isDarkMode ? "text-emerald-400" : "text-emerald-700 font-bold"}`}>[KOHI RETRO TEST]</span>;
-      case "dragclick": return <>Drag Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
-      case "doubleclick": return <>Double Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
-      case "aim": return <>Aim <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Trainer</span></>;
-      case "scroll": return <>Scroll Speed <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
-      case "menu": return <>Speed <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Trials</span></>;
-      default: return <>CPS <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
+      case "dragclick": return <>Drag Click <span className="theme-text-gradient">Test</span></>;
+      case "doubleclick": return <>Double Click <span className="theme-text-gradient">Test</span></>;
+      case "aim": return <>Aim <span className="theme-text-gradient">Trainer</span></>;
+      case "scroll": return <>Scroll Speed <span className="theme-text-gradient">Test</span></>;
+      case "menu": return <>Speed <span className="theme-text-gradient">Trials</span></>;
+      default: return <>CPS <span className="theme-text-gradient">Test</span></>;
     }
   };
 
@@ -1187,15 +1622,41 @@ export default function App() {
     }
   };
 
+  const currentTheme = THEMES.find(t => t.id === selectedThemeId) || THEMES[0];
+
+  const themeStyles = {
+    '--theme-from': currentTheme.colors.from,
+    '--theme-to': currentTheme.colors.to,
+    '--theme-from-300': currentTheme.colors.from300,
+    '--theme-to-400': currentTheme.colors.to400,
+    '--theme-from-500': currentTheme.colors.from500,
+    '--theme-to-500': currentTheme.colors.to500,
+    '--theme-to-600': currentTheme.colors.to600,
+    '--theme-from-600': currentTheme.colors.from600,
+    '--theme-from-500-60': currentTheme.colors.from500_60,
+    '--theme-from-600-20': currentTheme.colors.from600_20,
+    '--theme-to-600-20': currentTheme.colors.to600_20,
+    '--theme-center-10': currentTheme.colors.center_10,
+    '--theme-shadow-pad': currentTheme.colors.shadow_pad,
+    '--theme-shadow-btn': currentTheme.colors.shadow_btn,
+    '--theme-from-400-50': currentTheme.colors.from400_50,
+    '--theme-to-500-20': currentTheme.colors.to500_20,
+    '--theme-to-500-5': currentTheme.colors.to500_5,
+    '--theme-to-500-35': currentTheme.colors.to500_35,
+  } as React.CSSProperties;
+
   return (
-    <div className={`relative min-h-screen overflow-hidden ${activeView === "kohi" && isDarkMode ? "bg-black" : isDarkMode ? "bg-[#0b0b16] text-white" : "bg-slate-50 text-slate-900"}`}>
+    <div 
+      style={themeStyles}
+      className={`relative min-h-screen overflow-hidden ${activeView === "kohi" && isDarkMode ? "bg-black" : isDarkMode ? "bg-[#0b0b16] text-white" : "bg-slate-50 text-slate-900"}`}
+    >
       
       {/* Decorative ambient blurred layout */}
       {!(activeView === "kohi" && isDarkMode) && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-40 -top-40 h-96 w-96 rounded-full bg-fuchsia-600/20 blur-3xl" />
-          <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" />
-          <div className="absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full bg-purple-600/10 blur-3xl" />
+          <div className="absolute -left-40 -top-40 h-96 w-96 rounded-full theme-ambient-left blur-3xl" />
+          <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full theme-ambient-right blur-3xl" />
+          <div className="absolute left-1/2 top-1/3 h-72 w-72 -translate-x-1/2 rounded-full theme-ambient-center blur-3xl" />
         </div>
       )}
 
@@ -1217,20 +1678,20 @@ export default function App() {
                   isDarkMode ? "bg-white/5 hover:bg-white/10 text-slate-300" : "bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 shadow-sm"
                 }`}
               >
-                <ArrowLeft className="h-3.5 w-3.5 text-fuchsia-400" /> Back
+                <ArrowLeft className="h-3.5 w-3.5 theme-text-from" /> Back
               </button>
             )}
             <button
               onClick={() => navigateToView(activeView === "menu" ? "cps" : "menu")}
               className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors ${
                 activeView === "menu"
-                  ? "bg-fuchsia-500 text-white shadow-md shadow-fuchsia-500/20"
+                  ? "theme-bg-gradient text-white shadow-md"
                   : isDarkMode 
                     ? "bg-white/5 hover:bg-white/10 text-slate-300" 
                     : "bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 shadow-sm"
               }`}
             >
-              <Grid className="h-3.5 w-3.5 text-indigo-400" /> More Tests
+              <Grid className="h-3.5 w-3.5 theme-text-to" /> More Tests
             </button>
           </div>
 
@@ -1243,14 +1704,112 @@ export default function App() {
             }`} title={isTouchDevice ? "Touchscreen input detected" : "Mouse/keyboard input detected"}>
               {isTouchDevice ? (
                 <>
-                  <Smartphone className="h-3.5 w-3.5 text-fuchsia-400" />
+                  <Smartphone className="h-3.5 w-3.5 theme-text-from" />
                   <span>Touch</span>
                 </>
               ) : (
                 <>
-                  <Laptop className="h-3.5 w-3.5 text-indigo-400" />
+                  <Laptop className="h-3.5 w-3.5 theme-text-to" />
                   <span>PC</span>
                 </>
+              )}
+            </div>
+
+            {/* Theme / Color Scheme Brush Dropdown */}
+            <div className="relative" ref={themeDropdownRef}>
+              <button
+                onClick={() => {
+                  if (isThemeDropdownOpen) {
+                    setSelectedThemeId(activeTheme); // revert preview on toggle close
+                  }
+                  setIsThemeDropdownOpen(!isThemeDropdownOpen);
+                }}
+                className="rounded-lg p-1.5 transition-all duration-200 cursor-pointer border flex items-center justify-center shadow-sm"
+                style={{
+                  color: isDarkMode ? 'var(--theme-from-300)' : 'var(--theme-from-500)',
+                  borderColor: isDarkMode ? 'var(--theme-from-600-20)' : 'var(--theme-from-500-60)',
+                  backgroundColor: isThemeDropdownOpen || selectedThemeId !== activeTheme
+                    ? 'var(--theme-center-10)'
+                    : isDarkMode 
+                      ? 'rgba(255, 255, 255, 0.05)' 
+                      : 'rgba(255, 255, 255, 1)',
+                  boxShadow: isThemeDropdownOpen || selectedThemeId !== activeTheme
+                    ? '0 0 10px var(--theme-to-500-20)'
+                    : undefined
+                }}
+                title="Change Color Scheme"
+              >
+                <Paintbrush className="h-4 w-4" />
+              </button>
+
+              {isThemeDropdownOpen && (
+                <div className={`absolute right-0 mt-2 w-56 rounded-xl border p-3.5 shadow-xl z-50 animate-fade-in ${
+                  isDarkMode 
+                    ? "bg-slate-900/95 border-white/10 text-white backdrop-blur-md" 
+                    : "bg-white border-slate-200 text-slate-800 shadow-slate-200/50"
+                }`}>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2.5">
+                    Color Schemes
+                  </h4>
+                  {!isDarkMode && (
+                    <div className="text-[10px] font-bold text-amber-600 bg-amber-50 border border-amber-200 rounded-lg px-2.5 py-1.5 mb-2.5 leading-tight text-center animate-pulse">
+                      - switch to dark mode for best experience
+                    </div>
+                  )}
+                  <div className="theme-list-scroll space-y-1.5 max-h-[148px] overflow-y-auto mb-3 pr-1.5 scroll-smooth">
+                    {THEMES.map((theme) => {
+                      const isSelected = selectedThemeId === theme.id;
+                      return (
+                        <button
+                          key={theme.id}
+                          onClick={() => setSelectedThemeId(theme.id)}
+                          className={`w-full flex items-center justify-between rounded-lg px-2.5 py-1.5 text-xs font-semibold cursor-pointer transition-all ${
+                            isSelected
+                              ? isDarkMode
+                                ? "bg-white/10 text-white font-bold"
+                                : "bg-slate-100 text-slate-950 font-bold"
+                              : isDarkMode
+                                ? "text-slate-300 hover:bg-white/5"
+                                : "text-slate-600 hover:bg-slate-50"
+                          }`}
+                        >
+                          <div className="flex items-center gap-2">
+                            {/* Color Preview Circle */}
+                            <span 
+                              className="h-3 w-3 rounded-full border border-white/10" 
+                              style={{ background: theme.previewBg }}
+                            />
+                            <span>{theme.name}</span>
+                          </div>
+                          {isSelected && (
+                            <span className="text-[10px] uppercase px-1 rounded bg-amber-500/10 text-amber-500 font-bold border border-amber-500/20">
+                              Selected
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Save Changes Button */}
+                  <button
+                    onClick={() => {
+                      setActiveTheme(selectedThemeId);
+                      try {
+                        localStorage.setItem("cps-test-colorscheme", selectedThemeId);
+                      } catch {}
+                      setIsThemeDropdownOpen(false);
+                    }}
+                    disabled={selectedThemeId === activeTheme}
+                    className={`w-full py-2 rounded-lg text-xs font-bold tracking-wide uppercase transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                      selectedThemeId === activeTheme
+                        ? "bg-slate-200 dark:bg-white/5 text-slate-400 dark:text-slate-600 cursor-not-allowed border border-transparent"
+                        : "theme-bg-gradient hover:opacity-90 active:scale-[0.98] text-white shadow-md border border-transparent"
+                    }`}
+                  >
+                    Save Changes
+                  </button>
+                </div>
               )}
             </div>
 
@@ -1263,19 +1822,28 @@ export default function App() {
               }`}
               title={isDarkMode ? "Light Mode" : "Dark Mode"}
             >
-              {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 text-indigo-600" />}
+              {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 theme-text-to-dynamic" />}
             </button>
           </div>
         </div>
 
         {/* Content Header */}
         <header className="mb-8 flex flex-col items-center gap-2.5 text-center sm:mb-10 max-w-2xl">
-          <div className={`inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-widest ${
-            isDarkMode 
-              ? "border-white/10 bg-white/5 text-fuchsia-300" 
-              : "border-slate-200 bg-slate-100 text-fuchsia-600 shadow-2xs"
-          }`}>
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-fuchsia-400" />
+          <div 
+            className={`inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-widest transition-all duration-200 ${
+              isDarkMode 
+                ? "bg-white/5" 
+                : "bg-slate-100 shadow-2xs"
+            }`}
+            style={{
+              borderColor: isDarkMode ? 'var(--theme-from-600-20)' : 'var(--theme-from-500-60)',
+              color: isDarkMode ? 'var(--theme-from-300)' : 'var(--theme-from-500)',
+            }}
+          >
+            <span 
+              className="h-1.5 w-1.5 animate-pulse rounded-full" 
+              style={{ backgroundColor: isDarkMode ? 'var(--theme-from)' : 'var(--theme-from-500)' }}
+            />
             CPS Precision Hub
           </div>
           <h1 className="text-3xl font-black tracking-tight sm:text-4xl text-slate-800 dark:text-white">
@@ -1540,31 +2108,31 @@ export default function App() {
                 
                 <ul className="space-y-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full theme-bg-badge-dot" />
                     <span>
                       <strong className="text-slate-700 dark:text-slate-300 font-semibold">Smart device detection</strong> — the site automatically detects whether you're on PC or a touch device and adapts the entire testing experience accordingly, rather than showing everyone the same broken layout.
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full theme-bg-to-dot" />
                     <span>
                       <strong className="text-slate-700 dark:text-slate-300 font-semibold">A built-in humour engine</strong> — after every test, you get sharp, personalized one-liners reacting to your results. Try to run a PC-only test (like Right Click or Polling Rate) on your phone, and the site will call you out for it instead of pretending it works.
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full theme-bg-badge-dot" />
                     <span>
                       <strong className="text-slate-700 dark:text-slate-300 font-semibold">Context-aware humour</strong> — jokes aren't generic. PC users get peripheral-based roasts (mouse, keyboard, switches), while touch users get finger and thumb specific jokes, since a phone doesn't have a "right-click" to laugh about the same way a mouse does.
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full theme-bg-to-dot" />
                     <span>
                       <strong className="text-slate-700 dark:text-slate-300 font-semibold">Scroll lock during testing</strong> — on touch devices, the page automatically becomes non-scrollable while a test is running, since rapid tapping on a scrollable page causes accidental scrolls and ruins your score. It's a small detail most competitor sites completely ignore.
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
-                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full theme-bg-badge-dot" />
                     <span>
                       <strong className="text-slate-700 dark:text-slate-300 font-semibold">Adaptive reset controls</strong> — resetting a test isn't one size fits all either. PC users can double click to reset instantly, while touch users get a dedicated on screen reset button, since double clicking or tapping on mobile is unreliable and inconsistent.
                     </span>

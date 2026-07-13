@@ -209,7 +209,7 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
         <div className={`flex flex-col items-center justify-center rounded-2xl border p-4 ${
           isDarkMode ? "border-white/10 bg-white/5" : "border-slate-200 bg-white shadow-sm"
         }`}>
-          <span className="text-4xl font-black text-fuchsia-400">
+          <span className="text-4xl font-black theme-text-from">
             {pressedKeys.size}
           </span>
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -219,7 +219,7 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
         <div className={`relative flex flex-col items-center justify-center rounded-2xl border p-4 ${
           isDarkMode ? "border-white/10 bg-white/5" : "border-slate-200 bg-white shadow-sm"
         }`}>
-          <span className="text-4xl font-black text-indigo-400">
+          <span className="text-4xl font-black theme-text-to">
             {maxSimultaneous}
           </span>
           <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -249,7 +249,7 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
                     key={key.code}
                     className={`h-9 sm:h-11 ${key.width} flex items-center justify-center rounded text-[10px] sm:text-xs font-bold uppercase transition-all duration-75 select-none ${
                       isActive
-                        ? "bg-gradient-to-br from-fuchsia-500 to-indigo-600 text-white scale-[0.94] shadow-[0_0_12px_rgba(217,70,239,0.5)] border-transparent"
+                        ? "theme-active-key text-white scale-[0.94] border-transparent"
                         : isDarkMode
                           ? "bg-white/5 text-slate-300 border border-white/10 hover:bg-white/10"
                           : "bg-slate-100 text-slate-600 border border-slate-200 hover:bg-slate-200"

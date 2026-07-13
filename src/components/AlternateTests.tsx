@@ -1343,7 +1343,7 @@ function AltDurationSelector({
             onClick={() => onSelect(d)}
             className={`relative rounded-xl px-3 py-2 text-xs font-semibold transition-all duration-200 ${
               isSelected
-                ? "scale-105 bg-gradient-to-br from-indigo-500 to-fuchsia-600 text-white shadow-md shadow-indigo-500/15"
+                ? "scale-105 theme-active-key text-white shadow-md"
                 : isDarkMode
                   ? "bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white border border-white/5"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-950 border border-slate-200/60"
@@ -1691,17 +1691,17 @@ export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: 
             <p className="text-6xl font-black">{count}</p>
             {/* Visual Spacebar Key */}
             <div className={`mx-auto h-8 w-48 rounded-md border-b-4 transition-all ${
-              isSpacePressed ? "bg-fuchsia-600 border-fuchsia-800 translate-y-0.5 border-b" : "bg-slate-200 dark:bg-white/10 border-slate-300 dark:border-white/20"
+              isSpacePressed ? "theme-bg-from-600 theme-border-from-800 translate-y-0.5 border-b" : "bg-slate-200 dark:bg-white/10 border-slate-300 dark:border-white/20"
             }`} />
           </div>
         )}
         {status === "finished" && (
           <div className="space-y-3">
-            <p className="text-xs text-fuchsia-500 dark:text-fuchsia-400 uppercase font-bold tracking-widest">Completed!</p>
+            <p className="text-xs theme-text-from-dynamic uppercase font-bold tracking-widest">Completed!</p>
             <p className="text-5xl font-black">{calculatedHps.toFixed(2)} HPS</p>
             <p className="text-xs italic py-1.5 px-3 rounded-xl max-w-sm mx-auto text-amber-800 dark:text-amber-200 bg-amber-500/5 dark:bg-amber-400/10 border border-amber-500/15 dark:border-amber-400/20 font-medium leading-relaxed">"{humorousMessage}"</p>
             <div className="pt-2">
-              <span className="text-xs font-bold text-fuchsia-500 dark:text-fuchsia-400 border border-fuchsia-500/20 bg-fuchsia-500/5 px-3 py-1.5 rounded-full inline-block animate-pulse">
+              <span className="text-xs font-bold theme-text-from-pulse-badge px-3 py-1.5 rounded-full inline-block animate-pulse">
                 {isTouchDevice ? "Tap the Reset button to try again!" : "Click anywhere here to reset"}
               </span>
             </div>
@@ -1899,13 +1899,13 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
         onContextMenu={(e) => e.preventDefault()}
         onMouseDown={handleMouseDown}
         className={`relative flex min-h-64 h-auto py-6 px-6 w-full overflow-hidden select-none flex-col items-center justify-center rounded-3xl border-2 text-center cursor-pointer transition-all ${
-          status === "running" ? "border-indigo-500 shadow-md" : isDarkMode ? "border-white/15" : "border-slate-200"
+          status === "running" ? "theme-border-to shadow-md" : isDarkMode ? "border-white/15" : "border-slate-200"
         } ${isDarkMode ? "bg-[#0b0b1a]" : "bg-white shadow-sm text-slate-800"}`}
       >
         {ripples.map(r => (
           <span
             key={r.id}
-            className="pointer-events-none absolute h-4 w-4 animate-[ripple_0.6s_ease-out_forwards] rounded-full bg-indigo-500/35"
+            className="pointer-events-none absolute h-4 w-4 animate-[ripple_0.6s_ease-out_forwards] rounded-full theme-bg-to-ripple"
             style={{ left: r.x, top: r.y }}
           />
         ))}
@@ -1932,14 +1932,14 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
 
         {status === "idle" && (
           <div className="space-y-1">
-            <p className="text-2xl font-bold text-[#a684ff]">RIGHT CLICK HERE</p>
+            <p className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">RIGHT CLICK HERE</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Regular click won't work! Disable context menu active.</p>
           </div>
         )}
         {status === "running" && (
           <div className="space-y-1">
             <p className="text-6xl font-black">{count}</p>
-            <p className="text-xs text-indigo-500 dark:text-indigo-400 uppercase tracking-wider font-bold">Right Clicks Registered</p>
+            <p className="text-xs theme-text-to-dynamic uppercase tracking-wider font-bold">Right Clicks Registered</p>
           </div>
         )}
         {status === "finished" && (
@@ -1949,7 +1949,7 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
             <p className={`text-lg font-bold ${getRating(calculatedCps).color}`}>{getRating(calculatedCps).label}</p>
             <p className="text-xs italic py-1.5 px-3 rounded-xl max-w-sm mx-auto text-amber-800 dark:text-amber-200 bg-amber-500/5 dark:bg-amber-400/10 border border-amber-500/15 dark:border-amber-400/20 font-medium leading-relaxed">"{humorousMessage}"</p>
             <div className="pt-2">
-              <span className="text-xs font-bold text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 px-3 py-1.5 rounded-full inline-block animate-pulse">
+              <span className="text-xs font-bold theme-pulse-badge px-3 py-1.5 rounded-full inline-block animate-pulse">
                 {isTouchDevice ? "Tap the Reset button to try again!" : "Double tap Left-Click to reset"}
               </span>
             </div>
@@ -2373,7 +2373,7 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
               </p>
             )}
             <div className="pt-2">
-              <span className="text-xs font-bold text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 px-3 py-1.5 rounded-full inline-block animate-pulse">
+              <span className="text-xs font-bold theme-pulse-badge px-3 py-1.5 rounded-full inline-block animate-pulse">
                 {isTouchDevice ? "Tap the Reset button to try again!" : "Double tap Right-Click to reset"}
               </span>
             </div>
@@ -2644,7 +2644,7 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
               </p>
             )}
             <div className="pt-2">
-              <span className="text-xs font-bold text-indigo-500 dark:text-indigo-400 border border-indigo-500/20 bg-indigo-500/5 px-3 py-1.5 rounded-full inline-block animate-pulse">
+              <span className="text-xs font-bold theme-pulse-badge px-3 py-1.5 rounded-full inline-block animate-pulse">
                 {isTouchDevice ? "Tap the Reset button to try again!" : "Double tap Right-Click to reset"}
               </span>
             </div>
@@ -2714,12 +2714,10 @@ function KohiDurationSelector({
             onClick={() => onSelect(d)}
             className={`px-2 py-1 border transition-colors ${
               isSelected
-                ? isDarkMode
-                  ? "bg-emerald-500 text-black border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
-                  : "bg-emerald-600 text-white border-emerald-500 shadow-xs"
+                ? "theme-active-key text-white border-transparent"
                 : isDarkMode
-                  ? "bg-black text-emerald-500 border-emerald-500/30 hover:border-emerald-500"
-                  : "bg-white text-emerald-800 border-emerald-500/50 hover:border-emerald-600 hover:bg-emerald-50/50"
+                  ? "bg-black text-slate-400 border-white/10 hover:border-white/30 hover:text-white"
+                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-900"
             } ${disabled && !isSelected ? "opacity-35 cursor-not-allowed" : ""} ${
               disabled && isSelected ? "cursor-not-allowed" : "cursor-pointer"
             }`}
@@ -3082,7 +3080,7 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
               }}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
                 duration === d
-                  ? "bg-emerald-500/10 text-emerald-500 border-emerald-500/30"
+                  ? "theme-active-key text-white border-transparent"
                   : "bg-transparent text-slate-500 border-slate-200 dark:border-white/10 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
               }`}
             >
@@ -3199,7 +3197,7 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
     }
     lastClickTimeRef.current = now;
 
-    const ratio = nextDoubles / Math.max(1, nextTotal);
+    const ratio = Math.min(1.0, (nextDoubles * 2) / Math.max(1, nextTotal));
     setHumorousMessage(getDoubleClickHumorousLine(ratio, isTouchDevice, nextDoubles));
   };
 
@@ -3216,9 +3214,9 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
   let statusDesc = "Consistently registering single clicks. Perfect for general accuracy, desktop navigation, and precision tasks.";
 
   if (doubleClicksCount > 0) {
-    const ratio = doubleClicksCount / Math.max(1, totalClicks);
+    const ratio = Math.min(1.0, (doubleClicksCount * 2) / Math.max(1, totalClicks));
     if (ratio > 0.15) {
-      statusColor = "text-indigo-500 dark:text-indigo-400";
+      statusColor = "text-rose-500 dark:text-rose-400";
       statusText = "High CPS Potential / Active Chatter";
       statusDesc = "Highly responsive double-clicking active! Outstanding potential for pushing ultra-high CPS limits in competitive clicking or games like Minecraft.";
     } else {
@@ -3269,12 +3267,12 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
         </div>
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-3 text-center">
           <p className="text-[10px] uppercase font-bold text-slate-400">Double Clicks</p>
-          <p className="text-2xl font-black text-indigo-500">{doubleClicksCount}</p>
+          <p className="text-2xl font-black text-rose-500 dark:text-rose-400">{doubleClicksCount}</p>
         </div>
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-3 text-center">
           <p className="text-[10px] uppercase font-bold text-slate-400">Double-Click Rate</p>
           <p className="text-2xl font-black text-amber-500">
-            {totalClicks > 0 ? `${((doubleClicksCount / totalClicks) * 100).toFixed(1)}%` : "0%"}
+            {totalClicks > 0 ? `${Math.min(100, ((doubleClicksCount * 2) / totalClicks) * 100).toFixed(1)}%` : "0%"}
           </p>
         </div>
       </div>
@@ -3293,7 +3291,7 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
           <p className={`text-lg font-black ${statusColor}`}>{statusText}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed mt-2">{statusDesc}</p>
           {humorousMessage && (
-            <p className="text-[11px] text-indigo-500 dark:text-indigo-400 italic mt-3 border-t border-slate-100 dark:border-white/5 pt-2">
+            <p className={`text-[11px] italic mt-3 border-t border-slate-100 dark:border-white/5 pt-2 ${statusColor}`}>
               "{humorousMessage}"
             </p>
           )}
@@ -3308,7 +3306,7 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
               clickLogs.map(log => (
                 <div key={log.id} className="flex justify-between items-center border-b border-slate-100 dark:border-white/5 pb-1">
                   <span className="text-slate-400">Interval:</span>
-                  <span className={log.isDouble ? "text-indigo-500 font-bold" : "text-emerald-500 font-medium"}>
+                  <span className={log.isDouble ? "text-rose-500 dark:text-rose-400 font-bold" : "text-emerald-500 font-medium"}>
                     {log.interval.toFixed(1)} ms {log.isDouble ? "⚡ [DOUBLE]" : "✓"}
                   </span>
                 </div>
@@ -3464,7 +3462,7 @@ export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false }: Al
         </div>
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-2 flex flex-col justify-center">
           <p className="text-[9px] uppercase font-bold text-slate-400">Accuracy</p>
-          <p className="text-lg font-black text-indigo-500">{accuracy.toFixed(0)}%</p>
+          <p className="text-lg font-black theme-text-to-dynamic">{accuracy.toFixed(0)}%</p>
         </div>
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-2 flex flex-col justify-center">
           <p className="text-[9px] uppercase font-bold text-slate-400">Avg Time</p>
@@ -3524,7 +3522,7 @@ export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false }: Al
             <p className="text-xs text-rose-500 font-bold uppercase tracking-widest">Training Ended</p>
             <p className="text-5xl font-black text-white">{hits} Hits</p>
             <div className="flex gap-4 text-xs font-mono text-slate-400">
-              <span>ACCURACY: <b className="text-indigo-400">{accuracy.toFixed(1)}%</b></span>
+              <span>ACCURACY: <b className="theme-text-to">{accuracy.toFixed(1)}%</b></span>
               <span>•</span>
               <span>REACTION: <b className="text-amber-400">{avgReaction.toFixed(0)}ms</b></span>
               <span>•</span>
@@ -3683,7 +3681,7 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
         </div>
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-2 flex flex-col justify-center">
           <p className="text-[9px] uppercase font-bold text-slate-400">Steps/Sec</p>
-          <p className="text-lg font-black text-indigo-500">{stepsSec.toFixed(1)}</p>
+          <p className="text-lg font-black theme-text-to-dynamic">{stepsSec.toFixed(1)}</p>
         </div>
         <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-2 flex flex-col justify-center">
           <p className="text-[9px] uppercase font-bold text-slate-400">Peak Velocity</p>
@@ -3727,7 +3725,7 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
           <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center space-y-2 bg-white dark:bg-[#09090b] z-10">
             <p className="text-xs text-sky-500 font-bold uppercase tracking-wider">Test Completed</p>
             <p className="text-4xl font-black">{scrollSteps} Total Steps</p>
-            <p className="text-sm font-bold text-indigo-500">{(scrollSteps / duration).toFixed(1)} Steps per Second</p>
+            <p className="text-sm font-bold theme-text-to-dynamic">{(scrollSteps / duration).toFixed(1)} Steps per Second</p>
             <p className="text-[11px] max-w-sm text-slate-500 dark:text-slate-400 italic font-medium leading-relaxed bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 p-2 rounded-xl">
               "{humorousMessage}"
             </p>
