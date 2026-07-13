@@ -1429,6 +1429,7 @@ const PATH_TO_VIEW: Record<string, ViewType> = {
   "/cps": "cps",
   "/more-tests": "menu",
   "/more-tests/drag-test": "dragclick",
+  "/more-tests/drag-click": "dragclick",
   "/more-tests/reaction-test": "reaction",
   "/more-tests/spacebar-test": "spacebar",
   "/more-tests/rightclick-test": "rightclick",
