@@ -1674,16 +1674,16 @@ export default function App() {
                     navigateToView("cps");
                   }
                 }}
-                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors ${
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors sm:px-4.5 sm:py-2.5 sm:text-sm ${
                   isDarkMode ? "bg-white/5 hover:bg-white/10 text-slate-300" : "bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 shadow-sm"
                 }`}
               >
-                <ArrowLeft className="h-3.5 w-3.5 theme-text-from" /> Back
+                <ArrowLeft className="h-3.5 w-3.5 sm:h-5 sm:w-5 theme-text-from" /> Back
               </button>
             )}
             <button
               onClick={() => navigateToView(activeView === "menu" ? "cps" : "menu")}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors ${
+              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold cursor-pointer transition-colors sm:px-4.5 sm:py-2.5 sm:text-sm ${
                 activeView === "menu"
                   ? "theme-bg-gradient text-white shadow-md"
                   : isDarkMode 
@@ -1691,25 +1691,25 @@ export default function App() {
                     : "bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 shadow-sm"
               }`}
             >
-              <Grid className="h-3.5 w-3.5 theme-text-to" /> More Tests
+              <Grid className="h-3.5 w-3.5 sm:h-5 sm:w-5 theme-text-to" /> More Tests
             </button>
           </div>
 
           <div className="flex items-center gap-2">
             {/* Device Detection Badge */}
-            <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider border ${
+            <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider border sm:px-4 sm:py-2.5 sm:text-xs ${
               isDarkMode 
                 ? "bg-white/5 border-white/5 text-slate-300" 
                 : "bg-white border-slate-200 text-slate-600 shadow-sm"
             }`} title={isTouchDevice ? "Touchscreen input detected" : "Mouse/keyboard input detected"}>
               {isTouchDevice ? (
                 <>
-                  <Smartphone className="h-3.5 w-3.5 theme-text-from" />
+                  <Smartphone className="h-3.5 w-3.5 sm:h-5 sm:w-5 theme-text-from" />
                   <span>Touch</span>
                 </>
               ) : (
                 <>
-                  <Laptop className="h-3.5 w-3.5 theme-text-to" />
+                  <Laptop className="h-3.5 w-3.5 sm:h-5 sm:w-5 theme-text-to" />
                   <span>PC</span>
                 </>
               )}
@@ -1724,7 +1724,7 @@ export default function App() {
                   }
                   setIsThemeDropdownOpen(!isThemeDropdownOpen);
                 }}
-                className="rounded-lg p-1.5 transition-all duration-200 cursor-pointer border flex items-center justify-center shadow-sm"
+                className="rounded-lg p-1.5 sm:p-2.5 transition-all duration-200 cursor-pointer border flex items-center justify-center shadow-sm"
                 style={{
                   color: isDarkMode ? 'var(--theme-from-300)' : 'var(--theme-from-500)',
                   borderColor: isDarkMode ? 'var(--theme-from-600-20)' : 'var(--theme-from-500-60)',
@@ -1739,7 +1739,7 @@ export default function App() {
                 }}
                 title="Change Color Scheme"
               >
-                <Paintbrush className="h-4 w-4" />
+                <Paintbrush className="h-4 w-4 sm:h-5 sm:w-5" />
               </button>
 
               {isThemeDropdownOpen && (
@@ -1815,14 +1815,14 @@ export default function App() {
 
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
-              className={`rounded-lg p-1.5 transition-colors cursor-pointer border ${
+              className={`rounded-lg p-1.5 sm:p-2.5 transition-colors cursor-pointer border ${
                 isDarkMode 
                   ? "bg-white/5 hover:bg-white/10 text-slate-300 border-white/5" 
                   : "bg-white border-slate-200 hover:bg-slate-100 text-slate-700 shadow-sm"
               }`}
               title={isDarkMode ? "Light Mode" : "Dark Mode"}
             >
-              {isDarkMode ? <Sun className="h-4 w-4 text-amber-400" /> : <Moon className="h-4 w-4 theme-text-to-dynamic" />}
+              {isDarkMode ? <Sun className="h-4 w-4 sm:h-5 sm:w-5 text-amber-400" /> : <Moon className="h-4 w-4 sm:h-5 sm:w-5 theme-text-to-dynamic" />}
             </button>
           </div>
         </div>

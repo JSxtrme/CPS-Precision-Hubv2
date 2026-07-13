@@ -3278,69 +3278,72 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
 
   const elapsedSecs = status === "running" && startTimeRef.current ? (Date.now() - startTimeRef.current) / 1000 : duration;
   const currentCps = status === "finished" ? finalCps : (status === "running" && elapsedSecs > 0 ? clicksRef.current / elapsedSecs : 0);
+  const isTesting = status !== "idle";
 
   return (
-    <div className="w-full max-w-xl flex flex-col items-center gap-6 animate-fade-in">
-      <div className="text-center space-y-2">
-        <h3 className="text-2xl font-black tracking-tight">Drag Click Test</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-          Drag-clicking relies on friction between your skin and the mouse shell to generate super-fast clicks. Perfect for testing switch compatibility and debounce thresholds!
-        </p>
-      </div>
-
-      {status === "idle" && (
-        <div className="flex flex-col sm:flex-row items-center gap-4">
-          {/* Left / Right Selector */}
-          <div className="flex gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200/50 dark:border-white/5">
-            <button
-              disabled={isTouchDevice}
-              onClick={() => setDragType("left")}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                isTouchDevice
-                  ? "opacity-40 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                  : dragType === "left"
-                    ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-xs border border-slate-200/50 dark:border-white/10 cursor-pointer"
-                    : "text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
-              }`}
-            >
-              Left Click Drag
-            </button>
-            <button
-              disabled={isTouchDevice}
-              onClick={() => setDragType("right")}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                isTouchDevice
-                  ? "opacity-40 text-slate-400 dark:text-slate-500 cursor-not-allowed"
-                  : dragType === "right"
-                    ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-xs border border-slate-200/50 dark:border-white/10 cursor-pointer"
-                    : "text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
-              }`}
-            >
-              Right Click Drag
-            </button>
+        <div className="w-full max-w-xl flex flex-col items-center gap-6 animate-fade-in">
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl font-black tracking-tight">Drag Click Test</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
+              Drag-clicking relies on friction between your skin and the mouse shell to generate super-fast clicks. Perfect for testing switch compatibility and debounce thresholds!
+            </p>
           </div>
 
-          {/* Durations */}
-          <div className="flex flex-wrap gap-2 justify-center">
-            {[1, 2, 3, 5, 10, -1].map(d => (
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            {/* Left / Right Selector */}
+            <div className="flex gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200/50 dark:border-white/5">
               <button
-                key={d}
-                onClick={() => {
-                  setDuration(d);
-                  setTimeLeft(d === -1 ? 0 : d);
-                }}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
-                  duration === d
-                    ? "theme-active-key text-white border-transparent"
-                    : "bg-transparent text-slate-500 border-slate-200 dark:border-white/10 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
+                disabled={isTouchDevice || isTesting}
+                onClick={() => setDragType("left")}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  isTouchDevice
+                    ? "opacity-40 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                    : dragType === "left"
+                      ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-xs border border-slate-200/50 dark:border-white/10 " + (isTesting ? "opacity-70 cursor-not-allowed" : "cursor-pointer")
+                      : "text-slate-500 " + (isTesting ? "opacity-30 cursor-not-allowed" : "hover:text-slate-900 dark:hover:text-white cursor-pointer")
                 }`}
               >
-                {d === -1 ? "Manual" : `${d}s`}
+                Left Click Drag
               </button>
-            ))}
+              <button
+                disabled={isTouchDevice || isTesting}
+                onClick={() => setDragType("right")}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                  isTouchDevice
+                    ? "opacity-40 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                    : dragType === "right"
+                      ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-xs border border-slate-200/50 dark:border-white/10 " + (isTesting ? "opacity-70 cursor-not-allowed" : "cursor-pointer")
+                      : "text-slate-500 " + (isTesting ? "opacity-30 cursor-not-allowed" : "hover:text-slate-900 dark:hover:text-white cursor-pointer")
+                }`}
+              >
+                Right Click Drag
+              </button>
+            </div>
+
+            {/* Durations */}
+            <div className="flex flex-wrap gap-2 justify-center">
+              {[1, 2, 3, 5, 10, -1].map(d => {
+                const isSelected = duration === d;
+                return (
+                  <button
+                    key={d}
+                    disabled={isTesting}
+                    onClick={() => {
+                      setDuration(d);
+                      setTimeLeft(d === -1 ? 0 : d);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors ${
+                      isSelected
+                        ? "theme-active-key text-white border-transparent " + (isTesting ? "opacity-70 cursor-not-allowed" : "cursor-pointer")
+                        : "bg-transparent text-slate-500 border-slate-200 dark:border-white/10 dark:text-slate-400 " + (isTesting ? "opacity-30 cursor-not-allowed" : "hover:bg-slate-50 dark:hover:bg-white/5 cursor-pointer")
+                    }`}
+                  >
+                    {d === -1 ? "Manual" : `${d}s`}
+                  </button>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      )}
 
       <button
         onMouseDown={triggerClick}
