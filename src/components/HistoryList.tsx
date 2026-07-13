@@ -7,9 +7,10 @@ interface HistoryListProps {
   onClear: () => void;
   isDarkMode: boolean;
   activeView: ViewType;
+  isTouchDevice?: boolean;
 }
 
-export default function HistoryList({ history, onClear, isDarkMode, activeView }: HistoryListProps) {
+export default function HistoryList({ history, onClear, isDarkMode, activeView, isTouchDevice }: HistoryListProps) {
   const filteredHistory = useMemo(() => {
     return history.filter((item) => {
       switch (activeView) {
@@ -96,11 +97,13 @@ export default function HistoryList({ history, onClear, isDarkMode, activeView }
           ? "border-white/10 bg-white/5"
           : "border-slate-200 bg-white shadow-xs"
       }`}>
-        <div className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b ${
-          isDarkMode ? "border-white/10 text-slate-400 bg-white/[0.02]" : "border-slate-200 text-slate-500 bg-slate-50"
-        }`}>
-          {title}
-        </div>
+        {title && (
+          <div className={`px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b ${
+            isDarkMode ? "border-white/10 text-slate-400 bg-white/[0.02]" : "border-slate-200 text-slate-500 bg-slate-50"
+          }`}>
+            {title}
+          </div>
+        )}
         {items.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 px-4 text-center min-h-[140px]">
             <p className="text-xs italic text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
@@ -181,10 +184,16 @@ export default function HistoryList({ history, onClear, isDarkMode, activeView }
             </button>
           )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {renderDragTable("Left Click Drag", leftDragHistory)}
-          {renderDragTable("Right Click Drag", rightDragHistory)}
-        </div>
+        {isTouchDevice ? (
+          <div className="w-full">
+            {renderDragTable("", filteredHistory)}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {renderDragTable("Left Click Drag", leftDragHistory)}
+            {renderDragTable("Right Click Drag", rightDragHistory)}
+          </div>
+        )}
       </section>
     );
   }

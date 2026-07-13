@@ -1890,6 +1890,7 @@ export default function App() {
                       onClear={handleClearHistory}
                       isDarkMode={isDarkMode}
                       activeView={activeView}
+                      isTouchDevice={isTouchDevice}
                     />
                   </div>
                 )}
@@ -1904,6 +1905,7 @@ export default function App() {
                     onClear={handleClearHistory}
                     isDarkMode={isDarkMode}
                     activeView={activeView}
+                    isTouchDevice={isTouchDevice}
                   />
                 )}
 
