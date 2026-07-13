@@ -66,7 +66,7 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
   };
 
   return (
-    <div className="w-full select-text">
+    <div className="w-full select-text" style={{ overflowAnchor: "none" }}>
       {/* Main Collapsible FAQ Trigger */}
       <button
         onClick={toggleMain}
@@ -106,6 +106,7 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.04, 0.62, 0.23, 0.98] }}
             className="overflow-hidden"
+            style={{ overflowAnchor: "none" }}
           >
             <div className="pt-4 pl-1 pr-1 space-y-2.5">
               {FAQ_LIST.map((faq, idx) => {
@@ -149,6 +150,7 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
                           exit={{ height: 0, opacity: 0 }}
                           transition={{ duration: 0.2, ease: "easeInOut" }}
                           className="overflow-hidden"
+                          style={{ overflowAnchor: "none" }}
                         >
                           <div className="px-4 pb-4 text-xs sm:text-sm leading-relaxed text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-white/5 pt-3 font-normal">
                             {faq.a}

@@ -1132,71 +1132,6 @@ export default function App() {
                   </section>
                 )}
 
-                {/* About CPS Precision Hub section on standard CPS page */}
-                {activeView === "cps" && (
-                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-xs space-y-6">
-                    <div className="space-y-3">
-                      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 dark:text-white">
-                        What is CPS Precision Hub?
-                      </h2>
-                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-                        CPS Precision Hub is an all-in-one testing suite built for gamers, Minecraft PvP players, and PC enthusiasts who want to measure and improve their clicking speed, reaction time, and overall input performance. Beyond the core CPS test, the site includes a full toolkit of related tests, including Spacebar Counter, Reaction Time, Key Ghosting, Polling Rate, Double Click, Scroll Speed, Drag Click, and more, so you can benchmark everything from your raw clicking speed to the responsiveness of your actual hardware, all in one place.
-                      </p>
-                    </div>
-
-                    <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
-                      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 dark:text-white">
-                        Why is it better than other CPS testing websites?
-                      </h2>
-                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
-                        Most CPS test sites are the same recycled click counter with a number and nothing else. CPS Precision Hub is built different, with real engineering behind the experience:
-                      </p>
-                      
-                      <ul className="space-y-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-                        <li className="flex items-start gap-2">
-                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
-                          <span>
-                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Smart device detection</strong> — the site automatically detects whether you're on PC or a touch device and adapts the entire testing experience accordingly, rather than showing everyone the same broken layout.
-                          </span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
-                          <span>
-                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">A built-in humour engine</strong> — after every test, you get sharp, personalized one-liners reacting to your results. Try to run a PC-only test (like Right Click or Polling Rate) on your phone, and the site will call you out for it instead of pretending it works.
-                          </span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
-                          <span>
-                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Context-aware humour</strong> — jokes aren't generic. PC users get peripheral-based roasts (mouse, keyboard, switches), while touch users get finger and thumb specific jokes, since a phone doesn't have a "right-click" to laugh about the same way a mouse does.
-                          </span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
-                          <span>
-                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Scroll lock during testing</strong> — on touch devices, the page automatically becomes non-scrollable while a test is running, since rapid tapping on a scrollable page causes accidental scrolls and ruins your score. It's a small detail most competitor sites completely ignore.
-                          </span>
-                        </li>
-                        <li className="flex items-start gap-2">
-                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
-                          <span>
-                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Adaptive reset controls</strong> — resetting a test isn't one size fits all either. PC users can double click to reset instantly, while touch users get a dedicated on screen reset button, since double clicking or tapping on mobile is unreliable and inconsistent.
-                          </span>
-                        </li>
-                      </ul>
-
-                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal pt-2">
-                        The result is a testing suite that actually understands what device you're on and adjusts itself to give you an accurate, frustration free result, instead of just being a click counter slapped onto a webpage.
-                      </p>
-
-                      {/* Frequently asked questions dropdown */}
-                      <div className="pt-6 border-t border-slate-100 dark:border-white/5">
-                        <FAQs isDarkMode={isDarkMode} />
-                      </div>
-                    </div>
-                  </section>
-                )}
-
                 {/* Retro Kohi Rating Tiers Showcase */}
                 {activeView === "kohi" && (
                   <section className={`w-full font-mono rounded-2xl border-2 p-5 ${
@@ -1356,6 +1291,74 @@ export default function App() {
                 )}
               </div>
             </div>
+          )}
+
+          {/* Full-width About & Frequently Asked Questions Section below the main layout grid */}
+          {activeView === "cps" && (
+            <section
+              className="w-full mt-8 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-xs space-y-6"
+              style={{ overflowAnchor: "none" }}
+            >
+              <div className="space-y-3">
+                <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 dark:text-white">
+                  What is CPS Precision Hub?
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                  CPS Precision Hub is an all-in-one testing suite built for gamers, Minecraft PvP players, and PC enthusiasts who want to measure and improve their clicking speed, reaction time, and overall input performance. Beyond the core CPS test, the site includes a full toolkit of related tests, including Spacebar Counter, Reaction Time, Key Ghosting, Polling Rate, Double Click, Scroll Speed, Drag Click, and more, so you can benchmark everything from your raw clicking speed to the responsiveness of your actual hardware, all in one place.
+                </p>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
+                <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 dark:text-white">
+                  Why is it better than other CPS testing websites?
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                  Most CPS test sites are the same recycled click counter with a number and nothing else. CPS Precision Hub is built different, with real engineering behind the experience:
+                </p>
+                
+                <ul className="space-y-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                    <span>
+                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">Smart device detection</strong> — the site automatically detects whether you're on PC or a touch device and adapts the entire testing experience accordingly, rather than showing everyone the same broken layout.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
+                    <span>
+                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">A built-in humour engine</strong> — after every test, you get sharp, personalized one-liners reacting to your results. Try to run a PC-only test (like Right Click or Polling Rate) on your phone, and the site will call you out for it instead of pretending it works.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                    <span>
+                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">Context-aware humour</strong> — jokes aren't generic. PC users get peripheral-based roasts (mouse, keyboard, switches), while touch users get finger and thumb specific jokes, since a phone doesn't have a "right-click" to laugh about the same way a mouse does.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
+                    <span>
+                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">Scroll lock during testing</strong> — on touch devices, the page automatically becomes non-scrollable while a test is running, since rapid tapping on a scrollable page causes accidental scrolls and ruins your score. It's a small detail most competitor sites completely ignore.
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                    <span>
+                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">Adaptive reset controls</strong> — resetting a test isn't one size fits all either. PC users can double click to reset instantly, while touch users get a dedicated on screen reset button, since double clicking or tapping on mobile is unreliable and inconsistent.
+                    </span>
+                  </li>
+                </ul>
+
+                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal pt-2">
+                  The result is a testing suite that actually understands what device you're on and adjusts itself to give you an accurate, frustration free result, instead of just being a click counter slapped onto a webpage.
+                </p>
+
+                {/* Frequently asked questions dropdown */}
+                <div className="pt-6 border-t border-slate-100 dark:border-white/5">
+                  <FAQs isDarkMode={isDarkMode} />
+                </div>
+              </div>
+            </section>
           )}
         </div>
 
