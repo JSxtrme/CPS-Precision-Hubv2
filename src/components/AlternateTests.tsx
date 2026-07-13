@@ -1498,11 +1498,29 @@ export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: 
   const [humorousMessage, setHumorousMessage] = useState("");
   const [touchWarning, setTouchWarning] = useState("");
   const [finalHps, setFinalHps] = useState(0);
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-spacebar-${duration}`);
+      return saved ? parseFloat(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
   const clicksRef = useRef(0);
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
 
   useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-spacebar-${duration}`);
+      setHighScore(saved ? parseFloat(saved) : 0);
+    } catch {
+      setHighScore(0);
+    }
+  }, [duration]);
 
   useEffect(() => {
     if (isTouchDevice) {
@@ -1524,7 +1542,18 @@ export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: 
     setFinalHps(hps);
     setHumorousMessage(getAltHumorousLine(hps, isTouchDevice));
     addHistory("Spacebar Counter", totalSeconds, hps, hps >= 12 ? "Legendary" : hps >= 9 ? "Pro" : hps >= 7 ? "Great" : hps >= 5 ? "Good" : hps >= 3 ? "Average" : "Beginner");
-  }, [addHistory, isTouchDevice]);
+    try {
+      const key = `cps-test-best-spacebar-${duration}`;
+      const saved = localStorage.getItem(key);
+      const prevHigh = saved ? parseFloat(saved) : 0;
+      if (hps > prevHigh) {
+        localStorage.setItem(key, hps.toString());
+        setHighScore(hps);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [addHistory, isTouchDevice, duration]);
 
   const handleReset = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -1728,7 +1757,11 @@ export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: 
         </div>
       )}
 
-      <div className="flex w-full justify-end">
+      <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-between">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Best for {duration === -1 ? "Manual" : `${duration}s`}:{" "}
+          <span className="font-semibold text-slate-800 dark:text-white">{highScore.toFixed(2)} HPS</span>
+        </p>
         <button
           onClick={handleReset}
           className={`flex items-center gap-1.5 rounded-lg border px-5 py-2 text-sm font-semibold cursor-pointer transition-colors ${
@@ -1756,6 +1789,15 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
   const [humorousMessage, setHumorousMessage] = useState("");
   const [touchWarning, setTouchWarning] = useState("");
   const [finalCps, setFinalCps] = useState(0);
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-right-${duration}`);
+      return saved ? parseFloat(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
   const clicksRef = useRef(0);
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
@@ -1763,6 +1805,15 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
   const lastFinishedClickRef = useRef<number>(0);
 
   useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-right-${duration}`);
+      setHighScore(saved ? parseFloat(saved) : 0);
+    } catch {
+      setHighScore(0);
+    }
+  }, [duration]);
 
   useEffect(() => {
     if (isTouchDevice) {
@@ -1777,7 +1828,18 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
     setFinalCps(cps);
     setHumorousMessage(getRightClickHumorousLine(cps, isTouchDevice));
     addHistory("Right Click Test", totalSeconds, cps, getRating(cps).label);
-  }, [addHistory, isTouchDevice]);
+    try {
+      const key = `cps-test-best-right-${duration}`;
+      const saved = localStorage.getItem(key);
+      const prevHigh = saved ? parseFloat(saved) : 0;
+      if (cps > prevHigh) {
+        localStorage.setItem(key, cps.toString());
+        setHighScore(cps);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [addHistory, isTouchDevice, duration]);
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (status === "finished") {
@@ -1976,7 +2038,11 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
         </div>
       )}
 
-      <div className="flex w-full justify-end">
+      <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-between">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Best for {duration === -1 ? "Manual" : `${duration}s`}:{" "}
+          <span className="font-semibold text-slate-800 dark:text-white">{highScore.toFixed(2)} CPS</span>
+        </p>
         <button
           onClick={handleReset}
           className={`flex items-center gap-1.5 rounded-lg border px-5 py-2 text-sm font-semibold cursor-pointer transition-colors ${
@@ -2145,6 +2211,14 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const [finalCps, setFinalCps] = useState(0);
   const [humorousMessage, setHumorousMessage] = useState("");
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-jitter-${duration}`);
+      return saved ? parseFloat(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
   
   const clickTimestamps = useRef<number[]>([]);
   const lastClickTime = useRef<number>(0);
@@ -2153,6 +2227,15 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
   const lastRightClickRef = useRef<number>(0);
 
   useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-jitter-${duration}`);
+      setHighScore(saved ? parseFloat(saved) : 0);
+    } catch {
+      setHighScore(0);
+    }
+  }, [duration]);
 
   const handleFinished = useCallback((totalSeconds: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -2174,7 +2257,18 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
     const calculatedStability = intervals.length >= 2 ? Math.max(0, Math.min(100, Math.round(100 - (stdDev / (avg || 1)) * 100))) : 0;
 
     setHumorousMessage(getJitterHumorousLine(cps, calculatedStability, isTouchDevice));
-  }, [addHistory, isTouchDevice]);
+    try {
+      const key = `cps-test-best-jitter-${duration}`;
+      const saved = localStorage.getItem(key);
+      const prevHigh = saved ? parseFloat(saved) : 0;
+      if (cps > prevHigh) {
+        localStorage.setItem(key, cps.toString());
+        setHighScore(cps);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [addHistory, isTouchDevice, duration]);
 
   const handleJitterReset = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -2400,7 +2494,11 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
         </div>
       )}
 
-      <div className="flex w-full justify-end">
+      <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-between">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Best for {duration === -1 ? "Manual" : `${duration}s`}:{" "}
+          <span className="font-semibold text-slate-800 dark:text-white">{highScore.toFixed(2)} CPS</span>
+        </p>
         <button
           onClick={handleJitterReset}
           className={`flex items-center gap-1.5 rounded-lg border px-5 py-2 text-sm font-semibold cursor-pointer transition-colors ${
@@ -2427,6 +2525,14 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
   const [ripples, setRipples] = useState<Ripple[]>([]);
   const [finalCps, setFinalCps] = useState(0);
   const [humorousMessage, setHumorousMessage] = useState("");
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-butterfly-${duration}`);
+      return saved ? parseFloat(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
   
   const clickTimestamps = useRef<number[]>([]);
   const lastClickTime = useRef<number>(0);
@@ -2435,6 +2541,15 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
   const lastRightClickRef = useRef<number>(0);
 
   useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-butterfly-${duration}`);
+      setHighScore(saved ? parseFloat(saved) : 0);
+    } catch {
+      setHighScore(0);
+    }
+  }, [duration]);
 
   const handleFinished = useCallback((totalSeconds: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -2445,7 +2560,18 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
     const rank = getRating(cps).label;
     addHistory("Butterfly Click Coach", totalSeconds, cps, rank);
     setHumorousMessage(getButterflyHumorousLine(cps, isTouchDevice));
-  }, [addHistory, isTouchDevice]);
+    try {
+      const key = `cps-test-best-butterfly-${duration}`;
+      const saved = localStorage.getItem(key);
+      const prevHigh = saved ? parseFloat(saved) : 0;
+      if (cps > prevHigh) {
+        localStorage.setItem(key, cps.toString());
+        setHighScore(cps);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [addHistory, isTouchDevice, duration]);
 
   const handleButterflyReset = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -2671,7 +2797,11 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
         </div>
       )}
 
-      <div className="flex w-full justify-end">
+      <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-between">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Best for {duration === -1 ? "Manual" : `${duration}s`}:{" "}
+          <span className="font-semibold text-slate-800 dark:text-white">{highScore.toFixed(2)} CPS</span>
+        </p>
         <button
           onClick={handleButterflyReset}
           className={`flex items-center gap-1.5 rounded-lg border px-5 py-2 text-sm font-semibold cursor-pointer transition-colors ${
@@ -2739,12 +2869,30 @@ export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { ad
   const [timeLeft, setTimeLeft] = useState(5);
   const [finalCps, setFinalCps] = useState(0);
   const [humorousMessage, setHumorousMessage] = useState("");
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-kohi-${duration}`);
+      return saved ? parseFloat(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
   const clicksRef = useRef(0);
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
   const lastRightClickRef = useRef<number>(0);
 
   useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-kohi-${duration}`);
+      setHighScore(saved ? parseFloat(saved) : 0);
+    } catch {
+      setHighScore(0);
+    }
+  }, [duration]);
 
   const handleFinished = useCallback((totalSeconds: number) => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -2754,7 +2902,18 @@ export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { ad
     const rank = getRating(cps).label;
     addHistory("Kohi Retro Test", totalSeconds, cps, rank);
     setHumorousMessage(getKohiHumorousLine(cps, isTouchDevice));
-  }, [addHistory, isTouchDevice]);
+    try {
+      const key = `cps-test-best-kohi-${duration}`;
+      const saved = localStorage.getItem(key);
+      const prevHigh = saved ? parseFloat(saved) : 0;
+      if (cps > prevHigh) {
+        localStorage.setItem(key, cps.toString());
+        setHighScore(cps);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [addHistory, isTouchDevice, duration]);
 
   const handleKohiReset = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -2967,16 +3126,21 @@ export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { ad
         </button>
       )}
 
-      <button
-        onClick={handleKohiReset}
-        className={`w-full py-2 font-bold text-xs uppercase tracking-widest cursor-pointer transition-colors rounded-lg border ${
-          isDarkMode
-            ? "bg-emerald-500/20 border border-emerald-500/50 hover:bg-emerald-500/30 text-emerald-400"
-            : "bg-emerald-50 border border-emerald-500/30 hover:bg-emerald-100 text-emerald-700"
-        }`}
-      >
-        [RESET_TERMINAL]
-      </button>
+      <div className="flex w-full flex-col gap-2 font-mono text-xs sm:flex-row sm:items-center sm:justify-between">
+        <p className={isDarkMode ? "text-emerald-500/80" : "text-emerald-700/80"}>
+          BEST_FOR_{duration === -1 ? "MANUAL" : `${duration}S`}: {highScore.toFixed(2)}_CPS
+        </p>
+        <button
+          onClick={handleKohiReset}
+          className={`px-4 py-2 font-bold uppercase tracking-widest cursor-pointer transition-colors rounded border ${
+            isDarkMode
+              ? "bg-emerald-500/10 border-emerald-500/40 hover:bg-emerald-500/25 text-emerald-400 text-[10px]"
+              : "bg-emerald-50/50 border-emerald-500/40 hover:bg-emerald-100/50 text-emerald-700 text-[10px]"
+          }`}
+        >
+          [RESET_TERMINAL]
+        </button>
+      </div>
     </div>
   );
 }
@@ -2986,16 +3150,36 @@ export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { ad
    ========================================================================== */
 export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }: AltTestProps) {
   const [duration, setDuration] = useState(3);
+  const [dragType, setDragType] = useState<"left" | "right">("left");
   const [status, setStatus] = useState<"idle" | "running" | "finished">("idle");
   const [count, setCount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(3);
   const [finalCps, setFinalCps] = useState(0);
   const [humorousMessage, setHumorousMessage] = useState("");
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-drag-${dragType}-${duration}`);
+      return saved ? parseFloat(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
+
   const clicksRef = useRef(0);
   const startTimeRef = useRef<number | null>(null);
   const timerRef = useRef<number | null>(null);
+  const lastResetClickRef = useRef<number>(0);
 
   useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`cps-test-best-drag-${dragType}-${duration}`);
+      setHighScore(saved ? parseFloat(saved) : 0);
+    } catch {
+      setHighScore(0);
+    }
+  }, [dragType, duration]);
 
   useEffect(() => {
     return () => {
@@ -3011,8 +3195,25 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
     
     setHumorousMessage(getDragClickHumorousLine(cps, isTouchDevice));
 
-    addHistory("Drag Click Test", totalSeconds, cps, getRating(cps).label);
-  }, [addHistory, isTouchDevice]);
+    addHistory(
+      dragType === "right" ? "Drag Right Click" : "Drag Left Click",
+      totalSeconds,
+      cps,
+      getRating(cps).label
+    );
+
+    try {
+      const key = `cps-test-best-drag-${dragType}-${duration}`;
+      const saved = localStorage.getItem(key);
+      const prevHigh = saved ? parseFloat(saved) : 0;
+      if (cps > prevHigh) {
+        localStorage.setItem(key, cps.toString());
+        setHighScore(cps);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [addHistory, isTouchDevice, dragType, duration]);
 
   const handleReset = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -3022,11 +3223,27 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
     setTimeLeft(duration === -1 ? 0 : duration);
     setStatus("idle");
     setHumorousMessage("");
+    lastResetClickRef.current = 0;
   }, [duration]);
 
   const triggerClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    if (status === "finished") return;
+    const isTargetClick = isTouchDevice || (dragType === "right" ? e.button === 2 : e.button === 0);
+    const isResetClick = dragType === "right" ? e.button === 0 : e.button === 2;
+
+    if (status === "finished") {
+      if (isResetClick) {
+        const now = Date.now();
+        if (now - lastResetClickRef.current < 500) {
+          handleReset();
+        } else {
+          lastResetClickRef.current = now;
+        }
+      }
+      return;
+    }
+
+    if (!isTargetClick) return;
 
     if (status === "idle") {
       clicksRef.current = 1;
@@ -3051,7 +3268,7 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
       clicksRef.current += 1;
       setCount(clicksRef.current);
     }
-  }, [status, duration, handleFinished]);
+  }, [status, duration, dragType, isTouchDevice, handleFinished, handleReset]);
 
   const handleStopManual = () => {
     if (status !== "running" || duration !== -1) return;
@@ -3072,28 +3289,62 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
       </div>
 
       {status === "idle" && (
-        <div className="flex flex-wrap gap-2 justify-center">
-          {[1, 2, 3, 5, 10, -1].map(d => (
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          {/* Left / Right Selector */}
+          <div className="flex gap-1 p-1 bg-slate-100 dark:bg-white/5 rounded-xl border border-slate-200/50 dark:border-white/5">
             <button
-              key={d}
-              onClick={() => {
-                setDuration(d);
-                setTimeLeft(d === -1 ? 0 : d);
-              }}
-              className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
-                duration === d
-                  ? "theme-active-key text-white border-transparent"
-                  : "bg-transparent text-slate-500 border-slate-200 dark:border-white/10 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
+              disabled={isTouchDevice}
+              onClick={() => setDragType("left")}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                isTouchDevice
+                  ? "opacity-40 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                  : dragType === "left"
+                    ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-xs border border-slate-200/50 dark:border-white/10 cursor-pointer"
+                    : "text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
               }`}
             >
-              {d === -1 ? "Manual" : `${d}s`}
+              Left Click Drag
             </button>
-          ))}
+            <button
+              disabled={isTouchDevice}
+              onClick={() => setDragType("right")}
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                isTouchDevice
+                  ? "opacity-40 text-slate-400 dark:text-slate-500 cursor-not-allowed"
+                  : dragType === "right"
+                    ? "bg-white dark:bg-white/10 text-emerald-600 dark:text-emerald-400 shadow-xs border border-slate-200/50 dark:border-white/10 cursor-pointer"
+                    : "text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+              }`}
+            >
+              Right Click Drag
+            </button>
+          </div>
+
+          {/* Durations */}
+          <div className="flex flex-wrap gap-2 justify-center">
+            {[1, 2, 3, 5, 10, -1].map(d => (
+              <button
+                key={d}
+                onClick={() => {
+                  setDuration(d);
+                  setTimeLeft(d === -1 ? 0 : d);
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors cursor-pointer ${
+                  duration === d
+                    ? "theme-active-key text-white border-transparent"
+                    : "bg-transparent text-slate-500 border-slate-200 dark:border-white/10 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5"
+                }`}
+              >
+                {d === -1 ? "Manual" : `${d}s`}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
       <button
         onMouseDown={triggerClick}
+        onContextMenu={(e) => e.preventDefault()}
         className={`w-full h-64 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300 select-none outline-none cursor-pointer ${
           status === "running"
             ? "bg-emerald-500/5 border-emerald-500/50 scale-[0.99] shadow-[0_0_20px_rgba(16,185,129,0.1)]"
@@ -3103,9 +3354,13 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
         }`}
       >
         {status === "idle" && (
-          <div className="space-y-1 text-center">
-            <p className="text-2xl font-bold text-emerald-500 dark:text-emerald-400">DRAG CLICK HERE</p>
-            <p className="text-xs text-slate-400 dark:text-slate-500">Slide your finger with friction to vibrate the mouse switches</p>
+          <div className="space-y-1 text-center px-4">
+            <p className="text-2xl font-bold text-emerald-500 dark:text-emerald-400 uppercase">
+              DRAG {dragType === "left" ? "LEFT" : "RIGHT"} CLICK HERE
+            </p>
+            <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm">
+              Slide your finger on the {dragType === "left" ? "Left" : "Right"} mouse button with friction to vibrate the switch
+            </p>
           </div>
         )}
 
@@ -3127,27 +3382,49 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
             <p className="text-xs italic py-1.5 px-3 rounded-xl max-w-sm mx-auto text-emerald-800 dark:text-emerald-200 bg-emerald-500/5 border border-emerald-500/15 font-medium leading-relaxed">
               "{humorousMessage}"
             </p>
+            {!isTouchDevice && (
+              <p className="text-[10px] font-bold tracking-widest text-emerald-600 dark:text-emerald-400 animate-pulse">
+                DOUBLE TAP {dragType === "right" ? "LEFT" : "RIGHT"} CLICK TO RESET
+              </p>
+            )}
           </div>
         )}
       </button>
 
-      <div className="w-full flex gap-3">
-        {duration === -1 && status === "running" && (
+      {duration === -1 && (
+        <div className="w-full">
           <button
+            type="button"
+            disabled={status !== "running"}
             onClick={handleStopManual}
-            className="flex-1 py-3 bg-red-600 hover:bg-red-700 text-white font-bold text-sm uppercase tracking-wider rounded-xl cursor-pointer transition-colors shadow-lg shadow-red-600/10"
+            className={`w-full py-4 rounded-2xl text-base font-bold tracking-wide uppercase transition-all shadow-md flex items-center justify-center gap-2 ${
+              status === "running"
+                ? "bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-white cursor-pointer active:scale-[0.99] hover:shadow-red-500/20"
+                : isDarkMode
+                  ? "bg-white/5 border border-white/10 text-slate-500 cursor-not-allowed"
+                  : "bg-slate-100 border border-slate-200 text-slate-400 cursor-not-allowed"
+            }`}
           >
-            Stop Test
+            🛑 Stop Test
           </button>
-        )}
-        {(status === "running" || status === "finished") && (
-          <button
-            onClick={handleReset}
-            className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-bold text-sm uppercase tracking-wider rounded-xl cursor-pointer transition-colors"
-          >
-            Reset
-          </button>
-        )}
+        </div>
+      )}
+
+      <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-between">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Best for {duration === -1 ? "Manual" : `${duration}s`}:{" "}
+          <span className="font-semibold text-slate-800 dark:text-white">{highScore.toFixed(2)} CPS</span>
+        </p>
+        <button
+          onClick={handleReset}
+          className={`flex items-center gap-1.5 rounded-lg border px-5 py-2 text-sm font-semibold cursor-pointer transition-colors ${
+            isDarkMode 
+              ? "border-white/15 bg-white/5 hover:bg-white/10 text-slate-200" 
+              : "border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-700"
+          }`}
+        >
+          <ResetIcon className="h-3.5 w-3.5" /> Reset
+        </button>
       </div>
     </div>
   );
@@ -3567,6 +3844,14 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
   const [downCount, setDownCount] = useState(0);
   const [humorousMessage, setHumorousMessage] = useState("");
   const [touchWarning, setTouchWarning] = useState("");
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      const saved = localStorage.getItem("cps-test-best-scroll-5");
+      return saved ? parseFloat(saved) : 0;
+    } catch {
+      return 0;
+    }
+  });
 
   const scrollZoneRef = useRef<HTMLDivElement | null>(null);
   const stepsRef = useRef(0);
@@ -3590,6 +3875,17 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
     const stepsSec = stepsRef.current / duration;
     setHumorousMessage(getScrollHumorousLine(stepsSec, isTouchDevice));
     addHistory("Scroll Speed Test", duration, stepsRef.current, `${stepsSec.toFixed(0)} steps/s`);
+    try {
+      const key = "cps-test-best-scroll-5";
+      const saved = localStorage.getItem(key);
+      const prevHigh = saved ? parseFloat(saved) : 0;
+      if (stepsSec > prevHigh) {
+        localStorage.setItem(key, stepsSec.toString());
+        setHighScore(stepsSec);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }, [addHistory, isTouchDevice]);
 
   const handleReset = () => {
@@ -3741,14 +4037,22 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
         )}
       </div>
 
-      {status === "running" && (
+      <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:justify-between">
+        <p className="text-sm text-slate-600 dark:text-slate-400">
+          Best Score:{" "}
+          <span className="font-semibold text-slate-800 dark:text-white">{highScore.toFixed(1)} steps/s</span>
+        </p>
         <button
           onClick={handleReset}
-          className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-200 font-bold text-xs uppercase tracking-wider rounded-xl cursor-pointer transition-colors"
+          className={`flex items-center gap-1.5 rounded-lg border px-5 py-2 text-sm font-semibold cursor-pointer transition-colors ${
+            isDarkMode 
+              ? "border-white/15 bg-white/5 hover:bg-white/10 text-slate-200" 
+              : "border-slate-200 bg-slate-100 hover:bg-slate-200 text-slate-700"
+          }`}
         >
-          Reset Test
+          <ResetIcon className="h-3.5 w-3.5" /> Reset
         </button>
-      )}
+      </div>
     </div>
   );
 }
