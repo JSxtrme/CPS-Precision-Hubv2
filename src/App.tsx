@@ -1422,10 +1422,60 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
 }
 
 /* ==========================================================================
+   ROUTE CONFIGURATION AND HELPERS
+   ========================================================================== */
+const PATH_TO_VIEW: Record<string, ViewType> = {
+  "/": "cps",
+  "/cps": "cps",
+  "/more-tests": "menu",
+  "/more-tests/drag-test": "dragclick",
+  "/more-tests/reaction-test": "reaction",
+  "/more-tests/spacebar-test": "spacebar",
+  "/more-tests/rightclick-test": "rightclick",
+  "/more-tests/polling-rate-test": "polling",
+  "/more-tests/key-ghosting-test": "ghosting",
+  "/more-tests/jitter-test": "jitter",
+  "/more-tests/butterfly-test": "butterfly",
+  "/more-tests/kohi-test": "kohi",
+  "/more-tests/doubleclick-test": "doubleclick",
+  "/more-tests/aim-test": "aim",
+  "/more-tests/scroll-test": "scroll",
+};
+
+const VIEW_TO_PATH: Record<ViewType, string> = {
+  cps: "/cps",
+  menu: "/more-tests",
+  dragclick: "/more-tests/drag-test",
+  reaction: "/more-tests/reaction-test",
+  spacebar: "/more-tests/spacebar-test",
+  rightclick: "/more-tests/rightclick-test",
+  polling: "/more-tests/polling-rate-test",
+  ghosting: "/more-tests/key-ghosting-test",
+  jitter: "/more-tests/jitter-test",
+  butterfly: "/more-tests/butterfly-test",
+  kohi: "/more-tests/kohi-test",
+  doubleclick: "/more-tests/doubleclick-test",
+  aim: "/more-tests/aim-test",
+  scroll: "/more-tests/scroll-test",
+};
+
+function getInitialView(): ViewType {
+  try {
+    const path = window.location.pathname;
+    for (const [p, v] of Object.entries(PATH_TO_VIEW)) {
+      if (path === p || path.replace(/\/$/, "") === p) {
+        return v;
+      }
+    }
+  } catch {}
+  return "cps";
+}
+
+/* ==========================================================================
    MAIN EXPORT APP
    ========================================================================== */
 export default function App() {
-  const [activeView, setActiveView] = useState<ViewType>("cps");
+  const [activeView, setActiveView] = useState<ViewType>(getInitialView);
   const [cameFromMenu, setCameFromMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     try {
@@ -1504,22 +1554,42 @@ export default function App() {
     }
   }, [isDarkMode]);
 
+  // Pre-populate history on mount if we're not on the home page
+  useEffect(() => {
+    const initialView = getInitialView();
+    if (initialView === "menu") {
+      window.history.replaceState({ view: "cps", cameFromMenu: false }, "", "/");
+      window.history.pushState({ view: "menu", cameFromMenu: false }, "", "/more-tests");
+    } else if (initialView !== "cps") {
+      window.history.replaceState({ view: "cps", cameFromMenu: false }, "", "/");
+      window.history.pushState({ view: "menu", cameFromMenu: false }, "", "/more-tests");
+      window.history.pushState({ view: initialView, cameFromMenu: true }, "", VIEW_TO_PATH[initialView] || "/");
+    } else {
+      window.history.replaceState({ view: "cps", cameFromMenu: false }, "", "/");
+    }
+  }, []);
+
   // Sync state navigation using browser popstate
   useEffect(() => {
     const handlePopState = (e: PopStateEvent) => {
       const state = e.state;
-      if (state) {
-        if (state.view !== undefined) setActiveView(state.view);
+      if (state && state.view) {
+        setActiveView(state.view);
         if (state.cameFromMenu !== undefined) setCameFromMenu(state.cameFromMenu);
       } else {
-        setActiveView("cps");
-        setCameFromMenu(false);
+        // Fallback based on pathname if state is missing
+        const path = window.location.pathname;
+        let matchedView: ViewType = "cps";
+        for (const [p, v] of Object.entries(PATH_TO_VIEW)) {
+          if (path === p || path.replace(/\/$/, "") === p) {
+            matchedView = v;
+            break;
+          }
+        }
+        setActiveView(matchedView);
       }
     };
     window.addEventListener("popstate", handlePopState);
-    if (!window.history.state) {
-      window.history.replaceState({ view: "cps", cameFromMenu: false, historyIndex: 0 }, "");
-    }
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
@@ -1537,26 +1607,17 @@ export default function App() {
     }
     setCameFromMenu(nextCameFromMenu);
 
-    const currentState = window.history.state || {};
-    const currentIdx = currentState.historyIndex || 0;
-
-    const movingToCps = (view === "cps");
-    const movingToMenuFromSubtest = (view === "menu" && activeView !== "cps");
-
-    if ((movingToCps && currentIdx > 0) || (movingToMenuFromSubtest && currentIdx > 1)) {
-      setActiveView(view);
-      window.history.back();
-      return;
-    }
-
-    setActiveView(view);
-    const nextIdx = view === "cps" ? 0 : currentIdx + 1;
-
     if (view === "cps") {
-      window.history.replaceState({ ...currentState, view, cameFromMenu: nextCameFromMenu, historyIndex: 0 }, "");
+      window.history.replaceState({ view: "cps", cameFromMenu: false }, "", "/");
+    } else if (view === "menu") {
+      window.history.replaceState({ view: "cps", cameFromMenu: false }, "", "/");
+      window.history.pushState({ view: "menu", cameFromMenu: false }, "", "/more-tests");
     } else {
-      window.history.pushState({ ...currentState, view, cameFromMenu: nextCameFromMenu, historyIndex: nextIdx }, "");
+      window.history.replaceState({ view: "cps", cameFromMenu: false }, "", "/");
+      window.history.pushState({ view: "menu", cameFromMenu: false }, "", "/more-tests");
+      window.history.pushState({ view, cameFromMenu: nextCameFromMenu }, "", VIEW_TO_PATH[view] || "/");
     }
+    setActiveView(view);
   };
 
   const handleAddHistory = (testType: string, duration: number, score: number, rating: string) => {
