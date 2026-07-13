@@ -3282,12 +3282,6 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
 
   return (
         <div className="w-full max-w-xl flex flex-col items-center gap-6 animate-fade-in">
-          <div className="text-center space-y-2">
-            <h3 className="text-2xl font-black tracking-tight">Drag Click Test</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-              Drag-clicking relies on friction between your skin and the mouse shell to generate super-fast clicks. Perfect for testing switch compatibility and debounce thresholds!
-            </p>
-          </div>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
             {/* Left / Right Selector */}
