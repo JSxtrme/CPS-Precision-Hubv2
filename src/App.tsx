@@ -29,7 +29,7 @@ import {
   AimTrainer,
   ScrollTest
 } from './components/AlternateTests';
-import { ReactionTimeTest } from './components/ReactionTime';
+import { ReactionTimeTest, REACTION_TIERS as REACTION_TIERS_DATA } from './components/ReactionTime';
 
 // Time durations in seconds
 const DURATIONS = [1, 2, 3, 5, 10, 15, 30, 60, -1];
@@ -1668,7 +1668,7 @@ export default function App() {
             {activeView !== "cps" && (
               <button
                 onClick={() => {
-                  if (cameFromMenu && activeView !== "menu") {
+                  if (activeView !== "cps" && activeView !== "menu") {
                     navigateToView("menu");
                   } else {
                     navigateToView("cps");
@@ -1881,17 +1881,31 @@ export default function App() {
                   {activeView === "aim" && <AimTrainer addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                   {activeView === "scroll" && <ScrollTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                 </main>
+
+                {/* If dragclick or reaction, render HistoryList below the testing box */}
+                {(activeView === "dragclick" || activeView === "reaction") && (
+                  <div className="w-full mt-2">
+                    <HistoryList
+                      history={history}
+                      onClear={handleClearHistory}
+                      isDarkMode={isDarkMode}
+                      activeView={activeView}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Right Column (4-col on desktop): History list & Ranking showcase */}
               <div className="lg:col-span-4 w-full space-y-6 lg:sticky lg:top-6">
                 {/* History Log Panel */}
-                <HistoryList
-                  history={history}
-                  onClear={handleClearHistory}
-                  isDarkMode={isDarkMode}
-                  activeView={activeView}
-                />
+                {!(activeView === "dragclick" || activeView === "reaction") && (
+                  <HistoryList
+                    history={history}
+                    onClear={handleClearHistory}
+                    isDarkMode={isDarkMode}
+                    activeView={activeView}
+                  />
+                )}
 
                 {/* Standard Rating Tiers Showcase */}
                 {(activeView === "cps" || activeView === "butterfly" || activeView === "jitter" || activeView === "rightclick" || activeView === "dragclick") && (
@@ -1972,6 +1986,35 @@ export default function App() {
                     <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
                       A spacebar counter measures how many times you can press the spacebar within a set time period (usually 1, 5, 10, or 60 seconds). It's popular among Minecraft players for practicing bunny-hopping (auto-jumping to gain movement speed) and is also used as a general reflex and stamina test for your pressing speed.
                     </p>
+                  </section>
+                )}
+
+                {/* Reaction Time Rating Tiers Showcase */}
+                {activeView === "reaction" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs animate-fade-in">
+                    <div className="flex items-center gap-1.5 mb-4">
+                      <Trophy className="h-4 w-4 text-rose-500" />
+                      <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        Reaction Ranking Levels
+                      </h2>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {REACTION_TIERS_DATA.filter(tier => tier.label.toLowerCase() !== "godlike").reverse().map(tier => (
+                        <div
+                          key={tier.label}
+                          className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-2.5 text-center transition-all ${
+                            isDarkMode 
+                              ? "border-white/5 bg-white/[0.02]" 
+                              : "border-slate-100 bg-slate-50/50 hover:bg-slate-50"
+                          }`}
+                        >
+                          <span className={`text-xs font-bold ${tier.color}`}>{tier.label}</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
+                            {tier.max === Infinity ? `${tier.min}ms+` : `${tier.min}-${tier.max}ms`}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </section>
                 )}
 

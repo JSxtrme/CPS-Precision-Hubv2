@@ -3359,10 +3359,12 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
         {status === "idle" && (
           <div className="space-y-1 text-center px-4">
             <p className="text-2xl font-bold text-emerald-500 dark:text-emerald-400 uppercase">
-              DRAG {dragType === "left" ? "LEFT" : "RIGHT"} CLICK HERE
+              {isTouchDevice ? "DRAG CLICK HERE" : `DRAG ${dragType === "left" ? "LEFT" : "RIGHT"} CLICK HERE`}
             </p>
             <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm">
-              Slide your finger on the {dragType === "left" ? "Left" : "Right"} mouse button with friction to vibrate the switch
+              {isTouchDevice 
+                ? "Tap or slide your finger on the screen to simulate drag clicking" 
+                : `Slide your finger on the ${dragType === "left" ? "Left" : "Right"} mouse button with friction to vibrate the switch`}
             </p>
           </div>
         )}
