@@ -2275,11 +2275,13 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
 function KohiDurationSelector({
   selected,
   disabled,
-  onSelect
+  onSelect,
+  isDarkMode
 }: {
   selected: number;
   disabled: boolean;
   onSelect: (duration: number) => void;
+  isDarkMode: boolean;
 }) {
   const durations = [1, 2, 3, 5, 10, 15, 30, 60, -1];
   return (
@@ -2292,10 +2294,14 @@ function KohiDurationSelector({
             type="button"
             disabled={disabled}
             onClick={() => onSelect(d)}
-            className={`px-2 py-1 border transition-colors cursor-pointer ${
+            className={`px-2 py-1 border transition-colors ${
               isSelected
-                ? "bg-emerald-500 text-black border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
-                : "bg-black text-emerald-500 border-emerald-500/30 hover:border-emerald-500"
+                ? isDarkMode
+                  ? "bg-emerald-500 text-black border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                  : "bg-emerald-600 text-white border-emerald-500 shadow-xs"
+                : isDarkMode
+                  ? "bg-black text-emerald-500 border-emerald-500/30 hover:border-emerald-500"
+                  : "bg-white text-emerald-800 border-emerald-500/50 hover:border-emerald-600 hover:bg-emerald-50/50"
             } ${disabled && !isSelected ? "opacity-35 cursor-not-allowed" : ""} ${
               disabled && isSelected ? "cursor-not-allowed" : "cursor-pointer"
             }`}
@@ -2308,7 +2314,7 @@ function KohiDurationSelector({
   );
 }
 
-export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (testType: string, duration: number, score: number, rating: string) => void; isTouchDevice?: boolean }) {
+export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { addHistory: (testType: string, duration: number, score: number, rating: string) => void; isDarkMode: boolean; isTouchDevice?: boolean }) {
   const [duration, setDuration] = useState(5);
   const [status, setStatus] = useState<"idle" | "running" | "finished">("idle");
   const [clicks, setClicks] = useState(0);
@@ -2400,14 +2406,23 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
       : 0;
 
   return (
-    <div className="flex w-full max-w-md flex-col items-center gap-6 font-mono text-emerald-400 bg-black p-6 rounded-3xl border-2 border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)] select-none">
-      <div className="w-full border-b border-emerald-500/30 pb-3 text-center">
-        <p className="text-sm tracking-widest uppercase font-bold text-emerald-500">[KOHI_SPEED_TRIAL v1.8]</p>
+    <div className={`flex w-full max-w-md flex-col items-center gap-6 font-mono p-6 rounded-3xl border-2 select-none ${
+      isDarkMode 
+        ? "text-emerald-400 bg-black border-emerald-500 shadow-[0_0_20px_rgba(16,185,129,0.3)]" 
+        : "text-emerald-800 bg-white border-emerald-500 shadow-md"
+    }`}>
+      <div className={`w-full border-b pb-3 text-center ${
+        isDarkMode ? "border-emerald-500/30" : "border-emerald-500/25"
+      }`}>
+        <p className={`text-sm tracking-widest uppercase font-bold ${
+          isDarkMode ? "text-emerald-500" : "text-emerald-700"
+        }`}>[KOHI_SPEED_TRIAL v1.8]</p>
       </div>
 
       <KohiDurationSelector
         selected={duration}
         disabled={status === "running"}
+        isDarkMode={isDarkMode}
         onSelect={(d) => {
           setDuration(d);
           setTimeLeft(d === -1 ? 0 : d);
@@ -2420,15 +2435,21 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
       />
 
       <div className="w-full space-y-2 text-xs">
-        <div className="flex justify-between border-b border-emerald-500/20 py-1">
+        <div className={`flex justify-between border-b py-1 ${
+          isDarkMode ? "border-emerald-500/20" : "border-emerald-500/15"
+        }`}>
           <span>{duration === -1 ? "TIME_ELAPSED:" : "TIME_REMAINING:"}</span>
           <span>{timeLeft.toFixed(2)}s</span>
         </div>
-        <div className="flex justify-between border-b border-emerald-500/20 py-1">
+        <div className={`flex justify-between border-b py-1 ${
+          isDarkMode ? "border-emerald-500/20" : "border-emerald-500/15"
+        }`}>
           <span>TOTAL_CLICKS:</span>
           <span>{clicks}</span>
         </div>
-        <div className="flex justify-between border-b border-emerald-500/20 py-1">
+        <div className={`flex justify-between border-b py-1 ${
+          isDarkMode ? "border-emerald-500/20" : "border-emerald-500/15"
+        }`}>
           <span>RUNNING_CPS:</span>
           <span>{currentCps.toFixed(2)}</span>
         </div>
@@ -2437,10 +2458,14 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
       <button
         onContextMenu={(e) => e.preventDefault()}
         onMouseDown={handleMouseDown}
-        className={`relative w-full h-44 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all ${
+        className={`relative w-full min-h-60 md:min-h-64 py-6 px-4 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all ${
           status === "running"
-            ? "bg-emerald-500/10 border-emerald-400 animate-pulse"
-            : "bg-[#050505] border-emerald-500/40 hover:border-emerald-400"
+            ? isDarkMode
+              ? "bg-emerald-500/10 border-emerald-400 animate-pulse"
+              : "bg-emerald-500/5 border-emerald-500 animate-pulse"
+            : isDarkMode
+              ? "bg-[#050505] border-emerald-500/40 hover:border-emerald-400"
+              : "bg-slate-50 border-emerald-500/30 hover:border-emerald-600 hover:bg-emerald-50/20"
         }`}
       >
         {isTouchDevice && status === "finished" && (
@@ -2457,7 +2482,11 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
             onTouchStart={(e) => {
               e.stopPropagation();
             }}
-            className="absolute top-3 right-3 z-30 flex items-center gap-1 rounded border border-emerald-500/30 bg-emerald-500/15 hover:bg-emerald-500/25 px-2.5 py-1 text-[10px] font-bold text-emerald-400 cursor-pointer shadow-sm active:scale-95 transition-all"
+            className={`absolute top-3 right-3 z-30 flex items-center gap-1 rounded border px-2.5 py-1 text-[10px] font-bold cursor-pointer shadow-sm active:scale-95 transition-all ${
+              isDarkMode
+                ? "border-emerald-500/30 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400"
+                : "border-emerald-500/40 bg-emerald-50 hover:bg-emerald-100 text-emerald-700"
+            }`}
           >
             <ResetIcon className="h-3 w-3" /> RESET
           </div>
@@ -2465,7 +2494,9 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
         {status === "idle" && (
           <div className="space-y-1 text-center">
             <p className="text-base font-bold">&gt;&gt;&gt; TAP_PAD &lt;&lt;&lt;</p>
-            <p className="text-[10px] text-emerald-500/60">CLICK TO COMMENCE SEQUENCE</p>
+            <p className={`text-[10px] ${
+              isDarkMode ? "text-emerald-500/60" : "text-emerald-700/60"
+            }`}>CLICK TO COMMENCE SEQUENCE</p>
           </div>
         )}
         {status === "running" && (
@@ -2475,14 +2506,24 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
           <div className="text-center space-y-2">
             <p className="text-sm font-bold">[SEQUENCE_TERMINATED]</p>
             <p className="text-3xl font-black">{finalCps.toFixed(2)} CPS</p>
-            <p className="text-xs font-bold tracking-widest text-emerald-300">[RANK: {getRating(finalCps).label.toUpperCase()}]</p>
+            <p className={`text-xs font-bold tracking-widest ${
+              isDarkMode ? "text-emerald-300" : "text-emerald-600"
+            }`}>[RANK: {getRating(finalCps).label.toUpperCase()}]</p>
             {humorousMessage && (
-              <p className="text-[10px] italic py-1.5 px-2 rounded max-w-[280px] mx-auto text-emerald-300 bg-emerald-500/5 border border-emerald-500/20 font-medium leading-relaxed my-1">
+              <p className={`text-[10px] italic py-1.5 px-2 rounded max-w-[280px] mx-auto font-medium leading-relaxed my-1 ${
+                isDarkMode 
+                  ? "text-emerald-300 bg-emerald-500/5 border border-emerald-500/20" 
+                  : "text-emerald-800 bg-emerald-50/50 border border-emerald-500/20"
+              }`}>
                 &gt; "{humorousMessage.toUpperCase()}"
               </p>
             )}
             <div className="pt-1">
-              <span className="text-[10px] font-bold text-emerald-400 border border-emerald-500/20 bg-emerald-500/5 px-2.5 py-1 rounded-full inline-block animate-pulse">
+              <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full inline-block animate-pulse ${
+                isDarkMode 
+                  ? "text-emerald-400 border border-emerald-500/20 bg-emerald-500/5" 
+                  : "text-emerald-700 border border-emerald-500/25 bg-emerald-500/10"
+              }`}>
                 {isTouchDevice ? "TAP_RESET_BUTTON_BELOW" : "DOUBLE_TAP_RIGHT_CLICK_TO_RESET"}
               </span>
             </div>
@@ -2496,8 +2537,12 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
           disabled={status !== "running"}
           className={`w-full py-3 font-bold text-sm tracking-widest uppercase transition-colors rounded-lg border ${
             status === "running"
-              ? "bg-red-950/40 hover:bg-red-900/60 text-red-500 border-red-500/60 cursor-pointer shadow-[0_0_10px_rgba(239,68,68,0.2)] animate-pulse"
-              : "bg-black text-emerald-500/30 border-emerald-500/10 cursor-not-allowed"
+              ? isDarkMode
+                ? "bg-red-950/40 hover:bg-red-900/60 text-red-500 border-red-500/60 cursor-pointer shadow-[0_0_10px_rgba(239,68,68,0.2)] animate-pulse"
+                : "bg-red-50 hover:bg-red-100 text-red-600 border-red-500/60 cursor-pointer animate-pulse"
+              : isDarkMode
+                ? "bg-black text-emerald-500/30 border-emerald-500/10 cursor-not-allowed"
+                : "bg-white text-emerald-700/30 border-emerald-500/10 cursor-not-allowed"
           }`}
         >
           [STOP_SEQUENCE]
@@ -2506,7 +2551,11 @@ export function KohiTest({ addHistory, isTouchDevice = false }: { addHistory: (t
 
       <button
         onClick={handleKohiReset}
-        className="w-full py-2 bg-emerald-500/20 border border-emerald-500/50 hover:bg-emerald-500/30 text-emerald-400 font-bold text-xs uppercase tracking-widest cursor-pointer transition-colors rounded-lg"
+        className={`w-full py-2 font-bold text-xs uppercase tracking-widest cursor-pointer transition-colors rounded-lg border ${
+          isDarkMode
+            ? "bg-emerald-500/20 border border-emerald-500/50 hover:bg-emerald-500/30 text-emerald-400"
+            : "bg-emerald-50 border border-emerald-500/30 hover:bg-emerald-100 text-emerald-700"
+        }`}
       >
         [RESET_TERMINAL]
       </button>

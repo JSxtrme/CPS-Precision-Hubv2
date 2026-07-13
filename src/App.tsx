@@ -797,7 +797,6 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
    ========================================================================== */
 export default function App() {
   const [activeView, setActiveView] = useState<ViewType>("cps");
-  const [showFaqs, setShowFaqs] = useState(false);
   const [cameFromMenu, setCameFromMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     try {
@@ -854,20 +853,23 @@ export default function App() {
       const state = e.state;
       if (state) {
         if (state.view !== undefined) setActiveView(state.view);
-        if (state.faqs !== undefined) setShowFaqs(state.faqs);
         if (state.cameFromMenu !== undefined) setCameFromMenu(state.cameFromMenu);
       } else {
         setActiveView("cps");
-        setShowFaqs(false);
         setCameFromMenu(false);
       }
     };
     window.addEventListener("popstate", handlePopState);
     if (!window.history.state) {
-      window.history.replaceState({ view: "cps", faqs: false, cameFromMenu: false }, "");
+      window.history.replaceState({ view: "cps", cameFromMenu: false, historyIndex: 0 }, "");
     }
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
+
+  // Always scroll to the top of the page when changing active test/view
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [activeView]);
 
   const navigateToView = (view: ViewType) => {
     let nextCameFromMenu = cameFromMenu;
@@ -877,9 +879,27 @@ export default function App() {
       nextCameFromMenu = false;
     }
     setCameFromMenu(nextCameFromMenu);
+
+    const currentState = window.history.state || {};
+    const currentIdx = currentState.historyIndex || 0;
+
+    const movingToCps = (view === "cps");
+    const movingToMenuFromSubtest = (view === "menu" && activeView !== "cps");
+
+    if ((movingToCps && currentIdx > 0) || (movingToMenuFromSubtest && currentIdx > 1)) {
+      setActiveView(view);
+      window.history.back();
+      return;
+    }
+
     setActiveView(view);
-    const state = window.history.state || {};
-    window.history.pushState({ ...state, view, cameFromMenu: nextCameFromMenu }, "");
+    const nextIdx = view === "cps" ? 0 : currentIdx + 1;
+
+    if (view === "cps") {
+      window.history.replaceState({ ...currentState, view, cameFromMenu: nextCameFromMenu, historyIndex: 0 }, "");
+    } else {
+      window.history.pushState({ ...currentState, view, cameFromMenu: nextCameFromMenu, historyIndex: nextIdx }, "");
+    }
   };
 
   const handleAddHistory = (testType: string, duration: number, score: number, rating: string) => {
@@ -916,7 +936,7 @@ export default function App() {
       case "jitter": return <>Jitter Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Coach</span></>;
       case "butterfly": return <>Butterfly Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Coach</span></>;
       case "reaction": return <>Reaction Time <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
-      case "kohi": return <span className="font-mono text-emerald-400">[KOHI RETRO TEST]</span>;
+      case "kohi": return <span className={`font-mono ${isDarkMode ? "text-emerald-400" : "text-emerald-700 font-bold"}`}>[KOHI RETRO TEST]</span>;
       case "dragclick": return <>Drag Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
       case "doubleclick": return <>Double Click <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Test</span></>;
       case "aim": return <>Aim <span className="bg-gradient-to-r from-fuchsia-400 to-indigo-400 bg-clip-text text-transparent">Trainer</span></>;
@@ -946,10 +966,10 @@ export default function App() {
   };
 
   return (
-    <div className={`relative min-h-screen overflow-hidden ${activeView === "kohi" ? "bg-black" : isDarkMode ? "bg-[#0b0b16] text-white" : "bg-slate-50 text-slate-900"}`}>
+    <div className={`relative min-h-screen overflow-hidden ${activeView === "kohi" && isDarkMode ? "bg-black" : isDarkMode ? "bg-[#0b0b16] text-white" : "bg-slate-50 text-slate-900"}`}>
       
       {/* Decorative ambient blurred layout */}
-      {activeView !== "kohi" && (
+      {!(activeView === "kohi" && isDarkMode) && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-40 -top-40 h-96 w-96 rounded-full bg-fuchsia-600/20 blur-3xl" />
           <div className="absolute -bottom-40 -right-40 h-96 w-96 rounded-full bg-indigo-600/20 blur-3xl" />
@@ -1012,13 +1032,6 @@ export default function App() {
               )}
             </div>
 
-            <FAQs
-              isOpen={showFaqs}
-              onOpen={() => setShowFaqs(true)}
-              onClose={() => setShowFaqs(false)}
-              isDarkMode={isDarkMode}
-              activeView={activeView}
-            />
             <button
               onClick={() => setIsDarkMode(!isDarkMode)}
               className={`rounded-lg p-1.5 transition-colors cursor-pointer border ${
@@ -1072,7 +1085,7 @@ export default function App() {
                   {activeView === "jitter" && <JitterTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                   {activeView === "butterfly" && <ButterflyTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                   {activeView === "reaction" && <ReactionTimeTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />}
-                  {activeView === "kohi" && <KohiTest addHistory={handleAddHistory} isTouchDevice={isTouchDevice} />}
+                  {activeView === "kohi" && <KohiTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                   {activeView === "dragclick" && <DragClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                   {activeView === "doubleclick" && <DoubleClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
                   {activeView === "aim" && <AimTrainer addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />}
@@ -1119,20 +1132,101 @@ export default function App() {
                   </section>
                 )}
 
+                {/* About CPS Precision Hub section on standard CPS page */}
+                {activeView === "cps" && (
+                  <section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-xs space-y-6">
+                    <div className="space-y-3">
+                      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 dark:text-white">
+                        What is CPS Precision Hub?
+                      </h2>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                        CPS Precision Hub is an all-in-one testing suite built for gamers, Minecraft PvP players, and PC enthusiasts who want to measure and improve their clicking speed, reaction time, and overall input performance. Beyond the core CPS test, the site includes a full toolkit of related tests, including Spacebar Counter, Reaction Time, Key Ghosting, Polling Rate, Double Click, Scroll Speed, Drag Click, and more, so you can benchmark everything from your raw clicking speed to the responsiveness of your actual hardware, all in one place.
+                      </p>
+                    </div>
+
+                    <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
+                      <h2 className="text-lg sm:text-xl font-bold tracking-tight text-slate-800 dark:text-white">
+                        Why is it better than other CPS testing websites?
+                      </h2>
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                        Most CPS test sites are the same recycled click counter with a number and nothing else. CPS Precision Hub is built different, with real engineering behind the experience:
+                      </p>
+                      
+                      <ul className="space-y-3 text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+                        <li className="flex items-start gap-2">
+                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                          <span>
+                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Smart device detection</strong> — the site automatically detects whether you're on PC or a touch device and adapts the entire testing experience accordingly, rather than showing everyone the same broken layout.
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
+                          <span>
+                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">A built-in humour engine</strong> — after every test, you get sharp, personalized one-liners reacting to your results. Try to run a PC-only test (like Right Click or Polling Rate) on your phone, and the site will call you out for it instead of pretending it works.
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                          <span>
+                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Context-aware humour</strong> — jokes aren't generic. PC users get peripheral-based roasts (mouse, keyboard, switches), while touch users get finger and thumb specific jokes, since a phone doesn't have a "right-click" to laugh about the same way a mouse does.
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
+                          <span>
+                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Scroll lock during testing</strong> — on touch devices, the page automatically becomes non-scrollable while a test is running, since rapid tapping on a scrollable page causes accidental scrolls and ruins your score. It's a small detail most competitor sites completely ignore.
+                          </span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full bg-fuchsia-500 dark:bg-fuchsia-400" />
+                          <span>
+                            <strong className="text-slate-700 dark:text-slate-300 font-semibold">Adaptive reset controls</strong> — resetting a test isn't one size fits all either. PC users can double click to reset instantly, while touch users get a dedicated on screen reset button, since double clicking or tapping on mobile is unreliable and inconsistent.
+                          </span>
+                        </li>
+                      </ul>
+
+                      <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-normal pt-2">
+                        The result is a testing suite that actually understands what device you're on and adjusts itself to give you an accurate, frustration free result, instead of just being a click counter slapped onto a webpage.
+                      </p>
+
+                      {/* Frequently asked questions dropdown */}
+                      <div className="pt-6 border-t border-slate-100 dark:border-white/5">
+                        <FAQs isDarkMode={isDarkMode} />
+                      </div>
+                    </div>
+                  </section>
+                )}
+
                 {/* Retro Kohi Rating Tiers Showcase */}
                 {activeView === "kohi" && (
-                  <section className="w-full font-mono bg-black text-emerald-400 rounded-2xl border-2 border-emerald-500/50 p-5 shadow-[0_0_15px_rgba(16,185,129,0.2)]">
-                    <div className="flex items-center gap-2 mb-4 border-b border-emerald-500/30 pb-2">
-                      <span className="text-xs font-bold uppercase tracking-widest text-emerald-500">[RANKING_MATRIX]</span>
+                  <section className={`w-full font-mono rounded-2xl border-2 p-5 ${
+                    isDarkMode
+                      ? "bg-black text-emerald-400 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                      : "bg-white text-emerald-900 border-emerald-500/50 shadow-md"
+                  }`}>
+                    <div className={`flex items-center gap-2 mb-4 border-b pb-2 ${
+                      isDarkMode ? "border-emerald-500/30" : "border-emerald-500/20"
+                    }`}>
+                      <span className={`text-xs font-bold uppercase tracking-widest ${
+                        isDarkMode ? "text-emerald-500" : "text-emerald-700"
+                      }`}>[RANKING_MATRIX]</span>
                     </div>
                     <div className="grid grid-cols-2 gap-2 text-xs">
                       {RATING_TIERS.map(tier => (
                         <div
                           key={tier.label}
-                          className="flex flex-col items-center gap-1 rounded border border-emerald-500/20 bg-emerald-500/5 px-2 py-2.5 text-center"
+                          className={`flex flex-col items-center gap-1 rounded border px-2 py-2.5 text-center ${
+                            isDarkMode
+                              ? "border-emerald-500/20 bg-emerald-500/5"
+                              : "border-emerald-500/25 bg-emerald-50/50"
+                          }`}
                         >
-                          <span className="font-bold text-emerald-300 uppercase">{tier.label}</span>
-                          <span className="text-[10px] text-emerald-500/70">
+                          <span className={`font-bold uppercase ${
+                            isDarkMode ? "text-emerald-300" : "text-emerald-800"
+                          }`}>{tier.label}</span>
+                          <span className={`text-[10px] ${
+                            isDarkMode ? "text-emerald-500/70" : "text-emerald-700/70"
+                          }`}>
                             {tier.max !== undefined ? `${tier.min}-${tier.max}` : `${tier.min}+`} CPS
                           </span>
                         </div>
