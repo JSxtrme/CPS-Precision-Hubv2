@@ -54,6 +54,24 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   const toggleMain = () => {
+    const isCollapsing = isMainOpen;
+    
+    if (isCollapsing) {
+      const mainDropdownElement = document.getElementById("faq-main-dropdown");
+      if (mainDropdownElement) {
+        const height = mainDropdownElement.scrollHeight;
+        const isAtBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 120;
+        
+        if (isAtBottom) {
+          // Smoothly scroll up by the height of the collapsing main dropdown to prevent browser scroll clamping jerk
+          window.scrollBy({
+            top: -height,
+            behavior: "smooth"
+          });
+        }
+      }
+    }
+
     setIsMainOpen(!isMainOpen);
     if (isMainOpen) {
       setExpandedIndex(null);
@@ -62,6 +80,36 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
 
   const toggleQuestion = (idx: number, e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    const isCollapsing = expandedIndex === idx;
+    
+    if (isCollapsing) {
+      const answerElement = document.getElementById(`faq-answer-${idx}`);
+      if (answerElement) {
+        const height = answerElement.scrollHeight;
+        const isAtBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 120;
+        
+        if (isAtBottom) {
+          // Smoothly scroll up by the height of the collapsing answer to prevent browser scroll clamping jerk
+          window.scrollBy({
+            top: -height,
+            behavior: "smooth"
+          });
+        }
+      }
+    } else {
+      // Smoothly scroll expanded question content into view after a tiny layout timeout
+      setTimeout(() => {
+        const answerElement = document.getElementById(`faq-answer-${idx}`);
+        if (answerElement) {
+          answerElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest"
+          });
+        }
+      }, 100);
+    }
+
     setExpandedIndex(expandedIndex === idx ? null : idx);
   };
 
@@ -101,6 +149,7 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
       <AnimatePresence initial={false}>
         {isMainOpen && (
           <motion.div
+            id="faq-main-dropdown"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -145,6 +194,7 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
                     <AnimatePresence initial={false}>
                       {isExpanded && (
                         <motion.div
+                          id={`faq-answer-${idx}`}
                           initial={{ height: 0, opacity: 0 }}
                           animate={{ height: "auto", opacity: 1 }}
                           exit={{ height: 0, opacity: 0 }}

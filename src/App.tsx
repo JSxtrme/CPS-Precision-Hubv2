@@ -53,7 +53,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "The screen's digitizer is wondering if it's dead or just lonely.",
         "We sent search parties for your index finger, but they came back empty-handed.",
         "Are you attempting a 0-click speedrun? Spoiler: You nailed it.",
-        "The glass is so untouched, it's starting to collect virtual dust."
+        "The glass is so untouched, it's starting to collect virtual dust.",
+        "Did you mistake the screen for a picture frame? You have to tap it!",
+        "Are your thumbs currently glued together? 0 clicks detected.",
+        "That's a perfectly polished, fingerprint-free screen. Truly a zero.",
+        "Are you practicing mime performance art? Tap the screen, mime!",
+        "My battery is draining from old age waiting for your first touch.",
+        "Did you mistake this for a staring contest with glass? Tap it!",
+        "Your fingertip must be in a committed long-distance relationship with the screen.",
+        "Zero touch events. Somewhere, a capacitive sensor is playing violin for you.",
+        "Are you holding a high-stakes meeting with your index finger? Press go!",
+        "0 CPS. You are officially as active as a picture of a sleeping potato.",
+        "Is your finger waiting for a written invitation or a formal royal decree?",
+        "If inaction was worth money, you'd be a billionaire tap-mogul by now.",
+        "The touchscreen called. It wants to know if you've broken up with it."
       );
     } else if (cps > 0 && cps < 1.5) {
       choices.push(
@@ -71,7 +84,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your hand has the reactivity of a dial-up modem on a rainy Tuesday.",
         "You tap like you're trying to not wake up a sleeping cat on your lap.",
         "This is a speed test, not a tactile inspection of mobile glass durability.",
-        "Your tap interval is long enough to brew a cup of chamomile tea."
+        "Your tap interval is long enough to brew a cup of chamomile tea.",
+        "My battery is draining faster than you're tapping the glass.",
+        "Are you clicking in braille? Because that was extremely slow.",
+        "That was a single gentle tap. The screen barely felt your existence.",
+        "You tap like you're playing chess against a deep-thinking supercomputer.",
+        "Are you waiting for the glass to give you consent after each individual tap?",
+        "Your velocity is slower than an operating system update on dial-up.",
+        "Is your finger moving through highly pressurized marshmallow fluff?",
+        "At this rate, you could type a three-letter word by next Tuesday.",
+        "You're tapping like you are trying to read the microscopic grain of the glass.",
+        "A sleepy caterpillar just crossed my desk faster than your finger lifted.",
+        "Are you tapping, or is your screen just catching crumbs falling from your mouth?",
+        "Your index finger is taking a 500-millisecond vacation between every single touch.",
+        "Did you think this was a turn-based strategy game? Tap continuously!"
       );
     } else if (cps >= 1.5 && cps < 3) {
       choices.push(
@@ -89,7 +115,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "You tap like an archaeologist handling a fossilized dragonfly wing.",
         "At this speed, you aren't tapping, you're merely introducing your hand to the screen.",
         "Your pace is perfect for reading a slow-scrolling manual. Speed up!",
-        "Are you trying to type in Morse code, or is this your actual maximum effort?"
+        "Are you trying to type in Morse code, or is this your actual maximum effort?",
+        "Your finger's reactivity is comparable to frozen maple syrup.",
+        "You're tapping the screen like it's a hot stovetop. Just leave the finger close and vibrate!",
+        "Is your index finger feeling shy? Give it some encouragement.",
+        "You are tapping with the enthusiastic energy of an unpaid intern on Monday morning.",
+        "Are you trying to compose a very slow and dramatic distress signal in Morse code?",
+        "Your speed is perfect if you are trying to simulate a dripping icicle.",
+        "Is that your maximum speed, or are you just doing some light tactile stretching?",
+        "You tap with the speed of someone trying to avoid leaving fingerprints at a crime scene.",
+        "Your hand is moving with the velocity of an official government inquiry.",
+        "A lazy squirrel has better high-frequency finger rhythm than this.",
+        "You are treating that screen like a priceless museum exhibit from the Mesozoic Era.",
+        "Is there a custom heavy-gravity field centered directly on your index finger?",
+        "Not quite zero, but definitely not fast enough to escape a slow-moving roomba."
       );
     } else if (cps >= 3 && cps < 5) {
       choices.push(
@@ -107,7 +146,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your fingers are doing light cardio when they should be running a marathon!",
         "Not slow enough to be lazy, not fast enough to be impressive. The sweet spot of mediocrity.",
         "Your index finger is giving 'I had a cup of decaf' vibes.",
-        "Is that a tap, or is your screen just registering your thumb's heavy breathing?"
+        "Is that a tap, or is your screen just registering your thumb's heavy breathing?",
+        "Decent speed for a typing test, but highly average for a clicking challenge.",
+        "Your thumb is moving, but its heart isn't in it. Wake it up!",
+        "You have the speed of a tired office clerk checking off items.",
+        "Your fingers are doing standard office admin work instead of elite gaming actions.",
+        "You tap like a librarian searching for a misfiled book. A bit more chaos please!",
+        "The speed is respectable if you are testing the screen's basic functionality, but let's go!",
+        "Your hand is giving strong 'I drink herbal decaf tea before bed' vibes.",
+        "You have successfully achieved the velocity of a casual shopper browsing fresh produce.",
+        "It is a steady rhythm, but we need an absolute storm of rapid fingertip strikes!",
+        "Are you reading a recipe card between touches? Accelerate those thumbs!",
+        "This is a solid pace for browsing real-estate listings. Not so much for clicking speed.",
+        "Your tapping speed is currently keeping pace with a sleepy tortoise on a treadmill.",
+        "You're tapping with the intensity of someone gently selecting a ripe avocado."
       );
     } else if (cps >= 5 && cps < 7) {
       choices.push(
@@ -125,7 +177,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Solid performance if you're playing a casual puzzle game. Otherwise, turn it up!",
         "Your wrist is doing some work, but your hand looks like it's daydreaming.",
         "You're tapping with the intensity of someone swiping through a mediocre dating app.",
-        "Average speed confirmed. Your finger has officially earned its participation trophy."
+        "Average speed confirmed. Your finger has officially earned its participation trophy.",
+        "Not bad, but your screen is yawn-detecting. Let's see some arm movement!",
+        "This is the absolute baseline of competitive tapping. Go faster!",
+        "Your finger has standard-grade responsiveness. Time to overclock it.",
+        "Solid! You've officially graduated from 'absolute beginner' to 'slightly active human'.",
+        "Your finger has achieved the kinetic momentum of a moderately excited house cat.",
+        "Very stable pace. Your capacitive screen is mildly entertained by your presence.",
+        "You're moving like you've had exactly one sip of energy drink. Chug the rest!",
+        "You're tapping with the speed of a teenager looking for their misplaced keys.",
+        "Nice rhythm. If you were a drummer, we'd have a decent slow-tempo pop song going.",
+        "You've reached the speed of a professional bank teller counting small bills.",
+        "Not slow enough to be roast-worthy, but not fast enough to escape our sarcasm.",
+        "Your finger is doing some nice warm-up jogs. Time to sprint for the finish line!",
+        "Your pace is perfect for skipping standard dialogue. Let's aim for speedrun level!"
       );
     } else if (cps >= 7 && cps < 10) {
       choices.push(
@@ -143,7 +208,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "That index finger is vibrating like a honeybee on a sugar rush. Magnificent!",
         "The screen's glass is getting quite warm. Watch out for spontaneous friction fire!",
         "Your finger is flying! You're definitely skipping the tutorial in every mobile RPG.",
-        "Tapping speed is high enough to make your mobile device concerned for its hardware."
+        "Tapping speed is high enough to make your mobile device concerned for its hardware.",
+        "You tap so fast you might accidentally activate voice commands. Stay focused!",
+        "Your thumb is generating actual aerodynamic drag. Solid speed!",
+        "Now we're cooking. Your finger is a blur to the naked eye!",
+        "Your finger is moving like it's trying to send an extremely urgent text about free pizza.",
+        "Nice! That's a highly competitive rhythm. The screen's digitizer is wide awake!",
+        "You tap like a professional stenographer during a highly controversial trial.",
+        "Your hand is starting to twitch like you've unlocked a secret coffee reservoir.",
+        "Very snappy taps! If you were playing a tap RPG, the monsters would be sweating.",
+        "You're starting to look like high-frequency hummingbird wings on glass.",
+        "Excellent! Your hand-eye coordination has definitely bypassed normal human latency.",
+        "Your thumbs are dancing a highly synchronized tap routine. Beautiful pacing!",
+        "The electrostatic field on your screen is getting a real workout. Solid velocity!",
+        "Now you are tapping with some serious intent! Keep that index finger vibrating!"
       );
     } else if (cps >= 10 && cps < 15) {
       choices.push(
@@ -161,7 +239,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your hand is vibrating like an active jackhammer. Absolutely devastating touch speed.",
         "Are you tapping with multiple thumbs or is your index finger just highly caffeinated?",
         "That's not tapping, that's a localized seismic event on a piece of Corning Gorilla Glass.",
-        "Your fingers are drumming a rhythm that could summon rain in the Sahara."
+        "Your fingers are drumming a rhythm that could summon rain in the Sahara.",
+        "Is there static electricity jumping between your fingers and the OLED panel? Insane!",
+        "You're tapping faster than the refresh rate of the actual screen. Incredible!",
+        "Are your fingers double-jointed, or did you practice tapping on a hot stove? Epic performance.",
+        "Your finger has turned into a high-frequency electrostatic jackhammer! Incredible!",
+        "Is your wrist hooked up to a commercial massage gun? The glass is rattling!",
+        "You're skipping dialogues faster than the engine can render the next scene!",
+        "Absolutely majestic speed! Your finger looks like a physical blur to the human eye.",
+        "Are you sure you aren't using a touchscreen stylus attached to a reciprocating saw?",
+        "That is some elite-tier tapping speed. You are definitely a threat to any tapping leaderboard.",
+        "Your index finger is moving at a frequency that could scramble local Wi-Fi signals.",
+        "Outstanding! Your screen is feeling a relentless barrage of capacitive shockwaves.",
+        "Your hand is vibrating like a high-frequency tuning fork. Magnificent energy!",
+        "The digitizer is working overtime to translate your speed. Truly marvelous!"
       );
     } else if (cps >= 15 && cps < 20) {
       choices.push(
@@ -179,25 +270,45 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your fingers are moving so fast they are leaving visual afterimages on the display.",
         "The digitizer is having a full-blown existential crisis trying to count your touch points.",
         "If we attached a battery to your finger right now, we could power a small village.",
-        "You're tapping with the raw intensity of a heavy metal drummer on double bass."
+        "You're tapping with the raw intensity of a heavy metal drummer on double bass.",
+        "Your finger is a blur. The capacitive grid is practically screaming 'No more!'",
+        "Your touch rate is entering the quantum-tunneling realm. Simply magnificent!",
+        "Did you grease your fingers or are you just a touch screen speedrunner? Astonishing.",
+        "This level of speed should require a licensed permit for digital demolition!",
+        "Are your fingers made of pure lightning? The screen's capacitive grid is literally weeping.",
+        "You are tapping so fast you are starting to create localized electrostatic weather patterns.",
+        "Your index finger has bypassed biological muscle limits. Are you a synthetic android?",
+        "Absolutely legendary speed! The pixels under your fingers are begging for liquid cooling.",
+        "You are skipping cuts and unskippable intros in games before they even think about loading.",
+        "Your wrist is vibrating with the raw frequency of a supercar's crankshaft at 8000 RPM.",
+        "Simply phenomenal! We might need to recalibrate our speed limits just for your hand.",
+        "Your finger has achieved full molecular escape velocity. Pure electrostatic friction fire!",
+        "That's not tapping, that's a high-frequency drum roll performed by a cyborg hummingbird."
       );
     } else {
       choices.push(
-        "20+ CPS! Absolute God Tier. Is your finger a pneumatic drill, or did you just hack the physics engine?",
-        "20+ CPS! Your finger just reached escape velocity and left orbit.",
-        "Are you tapping with an industrial massage gun? That speed is borderline illegal!",
-        "20+ CPS? You aren't tapping, you are literally whispering sweet math to the capacitive sensor!",
-        "The screen has melted into liquid gold. You are the Chosen One of tapping!",
-        "Stop! The laws of physics cannot sustain this level of mechanical vibration!",
-        "Your index finger should be registered as a lethal weapon in thirty-four countries.",
-        "Are you a cyborg sent from the future to destroy mobile hardware? Magnificent!",
-        "You tapped so fast, the processor had to query a supercomputer to verify your existence.",
-        "This is the legendary multi-tap of the gods. The touch controller is weeping tears of joy.",
-        "Capacitive registers have completely overflowed. You are tapping in a separate dimension.",
-        "Did you cover your screen in butter and drum with four fingers? Unbelievable speed!",
-        "There are hummingbirds watching your fingers and taking notes on high-speed frequency.",
-        "Your finger is vibrating fast enough to split atoms. Absolutely terrifying speed.",
-        "The screen has officially declared you its supreme ruler. All hail the vibrating finger!"
+        "⚡ Godlike Touch Tier! Are you butterfly-drumming with four fingers, or did you drop liquid mercury on the screen?",
+        "⚡ Godlike Touch Tier! The capacitive sensors just filed a class-action lawsuit for glass abuse. Mental touch rate!",
+        "⚡ Godlike Touch Tier! Your screen is so hot from those rapid taps, you could fry an egg on the glass.",
+        "⚡ Godlike Touch Tier! You just reached escape velocity. The digitizer is crying tears of electrostatic joy.",
+        "⚡ Godlike Touch Tier! Did you lubricate your screen with Teflon or is your finger a mini-jackhammer? Legendary!",
+        "⚡ Godlike Touch Tier! You're drumming on that display like a professional bongo player on double espresso. Beautiful!",
+        "⚡ Godlike Touch Tier! Your touchscreen's controller is querying a supercomputer to verify if a human can even move this fast.",
+        "⚡ Godlike Touch Tier! Unbelievable! You just registered more touch events in 5 seconds than an average user does in a year.",
+        "⚡ Godlike Touch Tier! Your screen has officially declared you its supreme ruler. All hail the vibrating finger!",
+        "⚡ Godlike Touch Tier! If we attached an alternator to your tapping thumb, we could power the city of Tokyo for an hour.",
+        "⚡ Godlike Touch Tier! There are hummingbirds watching your fingers and taking notes on high-frequency oscillations.",
+        "⚡ Godlike Touch Tier! Are you secretly a high-frequency massage gun with internet access? That touch rate is illegal!",
+        "⚡ Godlike Touch Tier! Your finger is moving so fast it's starting to trigger quantum tunneling on the glass!",
+        "⚡ Godlike Touch Tier! Are you secretly using a pneumatic drilling rig on your phone? Simply unbelievable!",
+        "⚡ Godlike Touch Tier! The capacitive grid is operating at 99.9% saturation. You are a biological DDoS attack!",
+        "⚡ Godlike Touch Tier! You are tapping so fast that your screen is trying to register a fifth dimension.",
+        "⚡ Godlike Touch Tier! Your finger's electrostatic signature is so powerful it just rebooted a nearby smart TV.",
+        "⚡ Godlike Touch Tier! All hail the absolute emperor of touch-screens! Your thumbs are certified hyper-drives.",
+        "⚡ Godlike Touch Tier! There are physics professors studying your hand muscles to rewrite kinetic theory.",
+        "⚡ Godlike Touch Tier! That's not a finger, that's a cybernetic piston powered by a micro-nuclear reactor.",
+        "⚡ Godlike Touch Tier! The screen digitizer has given up on counting and is now just applauding your speed.",
+        "⚡ Godlike Touch Tier! You have officially transcended biological limits. Your hand is a beautiful vibrating masterpiece!"
       );
     }
   } else {
@@ -217,7 +328,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "The copper leaf spring inside your mouse switch is resting peacefully.",
         "Perfect score for a ghost. Absolutely inactive on the click front.",
         "Did you fall asleep with your hand on the mousepad?",
-        "Your click speed is so zero, the mouse is entering deep hibernation mode."
+        "Your click speed is so zero, the mouse is entering deep hibernation mode.",
+        "Did you buy a custom mouse just to use it as a paperweight?",
+        "Even a wireless mouse with dead batteries has more action than this.",
+        "Did your pointer finger go on permanent holiday? Let's click!",
+        "Are you holding a mouse or a block of cheese? Click it!",
+        "0 CPS. The mechanical switch is basically rusting away as we speak.",
+        "Did you buy a custom aluminum coiled cable just to transmit absolute zero?",
+        "Your mouse button has forgotten what tactile feedback feels like.",
+        "A sloth on anesthesia has a higher reaction rate than your index finger.",
+        "Your USB port is wondering if you've unplugged your hand entirely.",
+        "No clicks detected. Somewhere, a microswitch is crying tears of solder.",
+        "Did you mistake your mouse for a decorative paperweight?",
+        "Zero activity. Your finger's posture is incredibly motionless.",
+        "Your left-click is waiting for a formal written invitation to be pressed."
       );
     } else if (cps > 0 && cps < 1.5) {
       choices.push(
@@ -235,7 +359,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your mouse switch is yawning. It has never experienced such a gentle pace.",
         "You clicked once and then went to make coffee. Let's get moving!",
         "At this rate, you aren't clicking, you are just occasionally leaning on the mouse.",
-        "Your clicking has the rhythm of continental plate subduction. Speed up!"
+        "Your clicking has the rhythm of continental plate subduction. Speed up!",
+        "Are you trying to measure the mechanical debounce filter in minutes instead of milliseconds?",
+        "This isn't a touch-and-hold interaction. Lift, tap, repeat!",
+        "Even dial-up internet sends packets faster than you click.",
+        "Are you clicking in Morse code, or is your hand moving in slow motion?",
+        "Your index finger is taking a 10-second union break between clicks.",
+        "You're clicking like you're trying to carefully avoid waking up a sleeping lion.",
+        "Your click interval is long enough to install a major operating system update.",
+        "Are you paying for each individual click? They are completely free, I promise!",
+        "This speed is perfect if you are trying to read a scroll at a snail's pace.",
+        "Your clicking has the latency of a dial-up modem on a rainy Tuesday.",
+        "Are you checking the mechanical tension of your mouse button after every press?",
+        "This is a speed test, not a gentle massage session for your Omron switches!",
+        "At this rate, you aren't clicking, you are just occasionally leaning on the mouse."
       );
     } else if (cps >= 1.5 && cps < 3) {
       choices.push(
@@ -253,7 +390,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Are you trying to not click too hard to save the mechanical switches? Mash it!",
         "This isn't a library! You can make some clicking noise, it's allowed!",
         "You're clicking like a turtle trying to navigate a computer terminal.",
-        "Your finger is moving at the speed of a dial-up connection in 1995."
+        "Your finger is moving at the speed of a dial-up connection in 1995.",
+        "Your forearm has entered a state of cryogenic freeze. Let's melt it and speed up!",
+        "Are you double-checking each click with a team of lawyers? Just press the button!",
+        "The copper contacts are wondering if you've abandoned them. Clack them!",
+        "You are clicking with the speed of an ice glacier. Accelerate!",
+        "Is your finger suffering from existential dread? Just clack the button!",
+        "You click like an archaeologist handling a fragile fossilized wing.",
+        "Your mouse is wondering if you are trying to perform a very slow double-click.",
+        "This isn't a museum. You are allowed to make some mechanical noise!",
+        "Your speed is perfect if you are trying to simulate a leaky pipe dripping.",
+        "Are you double-checking your click coordinates with a lawyer before pressing?",
+        "Your forearm has entered a state of deep cryogenic hibernation. Shake it up!",
+        "Not quite zero, but definitely not fast enough to escape a hungry turtle.",
+        "You are treating that mouse like a priceless 18th-century porcelain doll."
       );
     } else if (cps >= 3 && cps < 5) {
       choices.push(
@@ -271,7 +421,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your mouse button is getting clicked, but it's not even sweating yet.",
         "You click with the speed of an average bureaucrat stamping paperwork.",
         "Are you using your pinky finger to click? Try using your index finger!",
-        "Rhythm is okay, but you're treating the left switch like a delicate flower."
+        "Rhythm is okay, but you're treating the left switch like a delicate flower.",
+        "This speed is great for reading terms of service, but absolute doom for gaming.",
+        "Your mouse switch has a nice resting heartbeat. Let's make it beat a little faster!",
+        "A casual office pace. Let's turn it into a competitive sprint.",
+        "Your index finger is giving strong 'I drink chamomile tea before PvP' vibes.",
+        "You click like a librarian searching for a quiet book. Let's see some aggression!",
+        "Your mouse button is getting clicked, but the switch is barely even warm.",
+        "Decent speed for a spreadsheet session, but highly mediocre for gaming.",
+        "You click with the speed of an average bureaucrat stamping paperwork.",
+        "Are you clicking with your pinky? Try using your index finger!",
+        "Rhythm is okay, but you're treating the switch like a delicate flower. Mash it!",
+        "This speed is great for reading terms of service, but absolute doom for gaming.",
+        "A highly polite clicking sound. This is a speed test, not a library!",
+        "Your hand is doing light cardio when it should be running a gold-medal sprint."
       );
     } else if (cps >= 5 && cps < 7) {
       choices.push(
@@ -289,7 +452,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "You click like you're selecting files in a folder. We need high-speed action!",
         "Decent baseline. Now shake that hand and start vibrating!",
         "Your finger is warm, but we need to see some real mechanical stress on those switches.",
-        "Perfect speed for clicking 'Next' on a software installer."
+        "Perfect speed for clicking 'Next' on a software installer.",
+        "Your left-click is consistent, but so is a grandfather clock. Let's shatter the tempo!",
+        "Ordinary human speed. Perfect for an NPC, but you want to be the main character, right?",
+        "Your mouse brand is highly disappointed in this standard office pacing. Shake that forearm!",
+        "Solid! You have officially achieved the speed of an average office clerk.",
+        "Your finger is moving, but you're still in comfortable cruise control.",
+        "Nice steady clacking, but we need a rapid-fire mechanical storm!",
+        "You click like a casual gamer playing a cozy farming simulator. Speed up!",
+        "Your left-click is consistent, but so is a grandfather clock. Let's break the tempo!",
+        "Your wrist is doing some work, but your arm looks like it's daydreaming.",
+        "Average human speed confirmed. Your mouse has earned its participation award.",
+        "Not bad, but your mouse is yawn-detecting. Let's see some forearm vibration!",
+        "Your mouse brand is highly disappointed in this standard office pacing. Lock that wrist!",
+        "This is the absolute baseline of competitive clicking. Go faster!"
       );
     } else if (cps >= 7 && cps < 10) {
       choices.push(
@@ -307,7 +483,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your forearm is starting to tense. Let the click flow through you!",
         "Great speed! The local mouse community is highly impressed by your finger agility.",
         "You click fast enough to trigger double-clicks on an old office mouse.",
-        "Solid performance! You are definitely ready for competitive clicking action."
+        "Solid performance! You are definitely ready for competitive clicking action.",
+        "Your mouse switches are clacking in rapid-fire succession. Very snappy!",
+        "Your index finger is moving with real purpose. Excellent speed runner potential!",
+        "A highly solid click rate. You're definitely not a casual clicker anymore.",
+        "Very snappy clacking! Your switches are sounding like a miniature machine gun.",
+        "Nice! That's a highly competitive tempo. Your mouse pad is feeling the friction.",
+        "You click like a professional stenographer during a highly controversial trial.",
+        "Your hand is starting to twitch like you've unlocked a secret coffee reservoir.",
+        "Great speed! You've definitely mastered the basic click-vibration technique.",
+        "Your index finger is moving with real purpose. Excellent speed runner potential!",
+        "The mouse switch is singing a very snappy tune. Keep the tempo steady!",
+        "Solid performance! You are definitely ready for competitive PvP lobbies.",
+        "Your mechanical switches are clacking in rapid-fire succession. Very crisp!",
+        "Awesome finger agility! Your mouse switch is getting a legitimate workout."
       );
     } else if (cps >= 10 && cps < 15) {
       choices.push(
@@ -325,7 +514,20 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Your double-finger drumming technique is highly optimized. Insane rate!",
         "The mouse sensor is starting to lose track of your sheer mechanical speed.",
         "Did you replace your index finger with a high-frequency pneumatic piston?",
-        "The microswitches in your mouse are begging for a splash of liquid nitrogen."
+        "The microswitches in your mouse are begging for a splash of liquid nitrogen.",
+        "Omron and Kailh switches are singing your praises. Brilliant vibration control!",
+        "Your hand is moving so fast it looks like a low-framerate video. Exceptional!",
+        "This is the sweet spot of competitive Minecraft PvP click speed. Simply outstanding.",
+        "Absolutely majestic speed! Your finger looks like a physical blur on the switch.",
+        "Are you sure you aren't using a high-frequency reciprocating saw on your mouse?",
+        "That is some elite-tier clicking speed. You are definitely a threat to PvP players.",
+        "Your index finger is moving at a frequency that could scramble local radio signals.",
+        "Outstanding! Your mouse button is feeling a relentless barrage of mechanical strikes.",
+        "Your hand is vibrating like a high-frequency tuning fork. Magnificent energy!",
+        "The microswitches in your mouse are begging for a splash of liquid nitrogen.",
+        "Omron and Kailh switches are singing your praises. Brilliant vibration control!",
+        "Did you replace your index finger with a high-frequency pneumatic piston?",
+        "Your hand is moving so fast it looks like a low-framerate video. Exceptional!"
       );
     } else if (cps >= 15 && cps < 20) {
       choices.push(
@@ -343,25 +545,45 @@ function getHumorousLine(cps: number, lastMessage?: string, isTouchDevice: boole
         "Omron/Kailh switches are screaming in absolute terror right now.",
         "Your hand looks like a high-speed vibration plate. Truly magnificent click rate!",
         "Are you a professional rhythm game player or is your hand possessed by a clicking demon?",
-        "This is speedrunner level! You could probably skip entire cutscenes with this rate."
+        "This is speedrunner level! You could probably skip entire cutscenes with this rate.",
+        "Your double-clicking threshold is completely shattered. Pure physical mastery!",
+        "If we attached a dynamo to your mouse button, we could charge a Tesla. Outstanding!",
+        "Your local computer store is celebrating your finger speed because you'll need a new mouse soon.",
+        "This level of clicking should require a licensed permit for mechanical demolition!",
+        "Are your fingers made of pure steel? Your mouse's copper spring is literally weeping.",
+        "You are clicking so fast you are starting to create localized sonic booms in your room.",
+        "Your index finger has bypassed biological muscle limits. Are you a synthetic android?",
+        "Absolutely legendary speed! The microswitches are begging for a fire extinguisher.",
+        "You are registering clicks faster than the game server's anti-cheat can verify!",
+        "Your wrist is vibrating with the raw frequency of a supercar's crankshaft at 8000 RPM.",
+        "Simply phenomenal! We might need to recalibrate our speed limits just for your hand.",
+        "Your mouse button has achieved full molecular escape velocity. Pure mechanical friction fire!",
+        "That's not clicking, that's a high-frequency drum roll performed by a cyborg woodpecker."
       );
     } else {
       choices.push(
-        "20+ CPS! Absolute God Tier. Is your finger a pneumatic drill, or did you just hack the space-time continuum?",
-        "20+ CPS! Your mouse just reached escape velocity and left orbit.",
-        "Are you clicking with an industrial massage gun? That speed is borderline illegal!",
-        "20+ CPS? You aren't clicking, you are literally whispering sweet math to the mouse sensor!",
-        "The mouse switch has melted into liquid gold. You are the Chosen One of clicking!",
-        "Stop! The laws of physics cannot sustain this level of mechanical vibration!",
-        "Your index finger should be registered as a lethal weapon in thirty-four countries.",
-        "Are you a cyborg sent from the future to destroy mouse hardware? Magnificent!",
-        "You clicked so fast, the server had to query a supercomputer to verify your existence.",
-        "This is the legendary drag-click of the gods. The scroll wheel is weeping tears of joy.",
-        "Your mouse is about to turn into a black hole from sheer click density.",
-        "You are clicking so fast you've probably broken the sound barrier inside your mouse casing.",
-        "Did you hack the USB polling rate or is your finger vibrating at 500Hz?",
-        "The physical copper contact in the mouse is welded shut from thermal energy.",
-        "We had to upgrade our server database just to store the sheer number of clicks you made."
+        "⚡ Godlike PC Tier! Your left-click has officially entered a state of quantum superposition. Razer's engineering team is crying in the corner.",
+        "⚡ Godlike PC Tier! You clicked 20+ times per second. Are you abusing a drag-click tape, or did you plug in an industrial massager?",
+        "⚡ Godlike PC Tier! The copper leaf spring in your switch has welded itself shut from pure kinetic friction. Magnificent!",
+        "⚡ Godlike PC Tier! You are clicking so fast, the polling rate is struggling to keep up. Turn on your RGB to cooling mode.",
+        "⚡ Godlike PC Tier! Is your finger an Omron-certified drill? Your mouse switch is filing for early retirement.",
+        "⚡ Godlike PC Tier! Absolute God Tier! You aren't just clicking, you are literally talking in binary to the USB controller.",
+        "⚡ Godlike PC Tier! Your hand is vibrating at 500Hz. If we attach an alternator, we can power our entire database cluster.",
+        "⚡ Godlike PC Tier! You're clicking faster than a keyboard warrior typing their 10,000-word essay about why they are not bad.",
+        "⚡ Godlike PC Tier! You are registering double-clicks at a rate that defies modern physics. Absolute mouse abuse!",
+        "⚡ Godlike PC Tier! Your microswitches are tensing up on their own. Beautiful alternate-drumming velocity!",
+        "⚡ Godlike PC Tier! Stop! The local gravity field cannot sustain this level of mechanical vibration!",
+        "⚡ Godlike PC Tier! Your left mouse button has melted into liquid gold. You are the Chosen One of clicking!",
+        "⚡ Godlike PC Tier! Your index finger has achieved the legendary status of a biological Gatling gun!",
+        "⚡ Godlike PC Tier! Did you spill Red Bull directly on your forearm, or is your hand a physical jackhammer?",
+        "⚡ Godlike PC Tier! The microswitch contacts are operating at a rate that violates several local laws of thermodynamics.",
+        "⚡ Godlike PC Tier! Your mechanical click rate is so fast, the USB polling rate has entered a state of panic.",
+        "⚡ Godlike PC Tier! Are you double-finger drumming or did you attach a high-frequency massage gun to your hand? Insane!",
+        "⚡ Godlike PC Tier! The mouse switches are praying to the mechanical gods for early retirement. Magnificent velocity!",
+        "⚡ Godlike PC Tier! You are clicking so fast that your mouse has declared you its supreme master. Absolute legend!",
+        "⚡ Godlike PC Tier! There are physics professors studying your hand muscles to rewrite kinetic theory.",
+        "⚡ Godlike PC Tier! That's not a finger, that's a cybernetic piston powered by a micro-nuclear reactor.",
+        "⚡ Godlike PC Tier! Your left mouse button has melted into liquid gold. You are the Chosen One of clicking!"
       );
     }
   }

@@ -73,7 +73,19 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "Your touch-spacebar speed is so non-existent, the virtual spring has dissolved.",
         "Did you forget that the spacebar is on the screen, not in the physical world?",
         "A fossilized dinosaur has more spacebar activation than your finger right now.",
-        "Screen spacebar power-saver mode: fully activated."
+        "Screen spacebar power-saver mode: fully activated.",
+        "Are your thumbs currently glued together? Not a single space hit.",
+        "Did you think the spacebar was a decorative frame? Tap it!",
+        "Zero HPS. Your thumb has entered deep hibernation mode on glass.",
+        "The touchscreen's virtual spacebar is wondering if it's dead or just lonely.",
+        "Is the spacebar invisible to you on glass, or are you hoping for telepathic touch activations?",
+        "Perfect zero. Your thumb is currently resting on the bezel like a sleepy lizard.",
+        "Your touch-spacebar is so clean, it still has the original screen-protector aroma.",
+        "Are you afraid of leaving a fingerprint? Give that virtual spacebar a heavy thumb slam!",
+        "Zero space activations. Did your fingers choose to take an unpaid leave of absence?",
+        "The screen is literally glowing, but your thumbs are in complete visual denial.",
+        "No inputs. Even the dust settling on your screen is registering more static electricity than you.",
+        "Your capacitive sensor is feeling extremely ignored. Show it some love!"
       );
     } else if (score > 0 && score < 3) {
       choices.push(
@@ -82,7 +94,19 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "Is the digital spacebar key too slippery for your fingers? Press it!",
         "You're tapping with the intensity of a gentle breeze on a windowpane.",
         "Touch spacebar speed matches the speed of a snail climbing an oily glass surface.",
-        "Are you afraid of wearing out the virtual spring? Touch is completely free!"
+        "Are you afraid of wearing out the virtual spring? Touch is completely free!",
+        "You tap like you're reading the terms of service letter-by-letter. Accelerate!",
+        "Your thumbs have the reaction velocity of cold cheese. Shake them up!",
+        "Are you examining the glass molecules before every touch? Speed up!",
+        "At this speed, you aren't tapping, you are just occasionally leaning on the display.",
+        "Are you typing with a feather? Speak up, the glass can barely feel you!",
+        "Your thumbs are reacting with the speed of continental drift. Let's pick it up!",
+        "You tap like you're playing a turn-based board game in slow motion. Smash it!",
+        "This rate is great if you are trying to write one word per hour. Step on it!",
+        "Are your thumbs made of heavy concrete blocks? Vibrate them!",
+        "Is your thumb checking its GPS coordinates before every single glass contact?",
+        "Your tapping interval is so long, the screen has time to go into power-saving mode.",
+        "You're tapping like you are trying to read a menu in a dark restaurant. Speed up!"
       );
     } else if (score >= 3 && score < 6) {
       choices.push(
@@ -91,7 +115,19 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "Not bad for a slow-motion simulation of typing, but we need speed!",
         "You're tapping the screen like you're trying not to wake up a sleeping puppy.",
         "Your spacebar tapping has the consistency of a slow dripping kitchen faucet.",
-        "Are you reading the instruction manual between taps? Get moving!"
+        "Are you reading the instruction manual between taps? Get moving!",
+        "Decent typing-test speed, but highly average for a spacebar slam challenge.",
+        "Your finger is doing light cardio when it should be running a gold-medal sprint.",
+        "A very polite, soft rhythm. Too bad politeness doesn't win speed tests!",
+        "Your pace is perfect for reading a slow-scrolling document. Let's see some arm power!",
+        "A steady, polite rhythm, like a clock ticking in a quiet library.",
+        "Your thumb is doing light stretching. Let's turn that stretch into a dynamic sprint!",
+        "Decent, but your grandma's voice-to-text typing is still faster than this.",
+        "You are tapping at the speed of a dial-up modem handshake. We need broadband speed!",
+        "Your thumbs have a nice leisurely pace. Too bad this is a speed challenge, not a stroll!",
+        "This tempo is perfect for scrolling a cooking blog. Let's see some PvP panic!",
+        "Rhythm is solid, but you're treating the touchscreen like a fragile priceless painting.",
+        "Your thumb is tensing up. Release the tension and vibrate that wrist!"
       );
     } else if (score >= 6 && score < 9) {
       choices.push(
@@ -99,15 +135,55 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "Solid touch rate. Your screen's capacitive sensor is actually paying attention now.",
         "You tap faster than a teenager texting gossip to their best friend.",
         "Very stable tempo. You're definitely skipping dialogues in mobile RPGs easily.",
-        "Good effort! The glass is feeling a tiny bit of friction now."
+        "Good effort! The glass is feeling a tiny bit of friction now.",
+        "Are you jitter-tapping your thumb or just in a state of caffeine panic?",
+        "That's a solid drumbeat. If you had a miniature drum, we'd have a nice groove.",
+        "The virtual spacebar is starting to feel some serious tactile pressure. Keep going!",
+        "Your finger agility is very impressive for a touch device. Solid rate!",
+        "You are definitely ready to skip every single unskippable cutscene in mobile games.",
+        "Solid clacking on glass! Your thumb is officially in the zone.",
+        "Nice, fast thumb-drumming! You could easily skip all cutscenes in a mobile RPG.",
+        "Your thumb is moving like a happy puppy's wagging tail. Very respectable speed!",
+        "Excellent! The capacitive matrix is really feeling your rhythmic taps now.",
+        "You are skipping dialogues faster than a speedrunner. Very impressive glass-tapping!",
+        "Your thumbs are definitely experienced with virtual controller buttons. Smooth rate!",
+        "Now we're talking! The glass is getting quite warm from your rapid thumb maneuvers.",
+        "Excellent! A highly consistent tapping sound that commands respect."
       );
-    } else {
+    } else if (score >= 9 && score < 12) {
       choices.push(
-        "9+ HPS! Absolute drum-tapping legend! Your index finger is a piston on glass.",
+        "9-11 HPS! Absolute drum-tapping legend! Your index finger is a piston on glass.",
         "Whoa! Are you using multiple fingers on that spacebar or is your hand possessed?",
         "The screen's digitizer is having a full-blown crisis trying to count your spacebar taps.",
         "Incredible! If we hooked up a battery to your thumb, we could power a small streetlamp.",
-        "That's not tapping, that's a high-frequency vibration on glass. Magnificent!"
+        "That's not tapping, that's a high-frequency vibration on glass. Magnificent!",
+        "Are you butterfly-drumming with two fingers? Your velocity is spectacular!",
+        "The capacitive grid is getting extremely warm. Watch out for screen sweat!",
+        "Incredible finger speed! You're skipping cutscenes faster than light travels.",
+        "Your hand is vibrating like a high-speed massage gun. Beautiful touch control!",
+        "Simply superb touch coordination. The virtual spacebar is practically crying.",
+        "Amazing glass-vibration! Your fingers are moving with serious kinetic authority.",
+        "Are you alternate-drumming with both thumbs? That's some pro-level mobile setup!",
+        "The capacitive grid is getting extremely sweaty. Absolutely incredible finger speed!",
+        "You're typing blank characters faster than the screen can refresh. Magnificent!",
+        "Your thumb is a physical jackhammer. The virtual spacebar is running for its life!",
+        "This is elite-tier touch speed! You could probably type a novel in five seconds flat.",
+        "Your hand is vibrating like a phone on vibrate mode. Exceptional wrist control!",
+        "Absolutely brilliant tempo! Your thumbs have bypassed standard human muscle limits."
+      );
+    } else {
+      choices.push(
+        "⚡ Godlike Spacebar Touch Tier! 12+ HPS! Your capacitive screen is registering so many spacebar hits, it's starting to type blank spaces in our actual database.",
+        "⚡ Godlike Spacebar Touch Tier! Did you lubricate your thumb with WD-40 or is your thumb a literal pneumatic piston? Simply mindblowing touch speed!",
+        "⚡ Godlike Spacebar Touch Tier! The capacitive screen digitizer is running on 100% CPU capacity just to track your spacebar drumming.",
+        "⚡ Godlike Spacebar Touch Tier! You are tapping that digital bar faster than a heavy metal drummer on double bass. Outstanding electrostatic drum roll!",
+        "⚡ Godlike Spacebar Touch Tier! Unbelievable! You just registered more space-touches in 5 seconds than a social media influencer does in a month.",
+        "⚡ Godlike Spacebar Touch Tier! Your screen has officially declared you its supreme ruler. All hail the vibrating thumb!",
+        "⚡ Godlike Spacebar Touch Tier! Your thumbs are vibrating so fast, you are literally generating friction static electricity!",
+        "⚡ Godlike Spacebar Touch Tier! Are you drumming with three fingers or did you attach a massage gun to your hand? Insane velocity!",
+        "⚡ Godlike Spacebar Touch Tier! The touchscreen is begging for an ice bath. Pure electrostatic thunder!",
+        "⚡ Godlike Spacebar Touch Tier! Your thumbs have officially entered the quantum realm. Magnificent touch frequency!",
+        "⚡ Godlike Spacebar Touch Tier! You are register-tapping faster than the mobile CPU can calculate. Absolute legend!"
       );
     }
   } else {
@@ -118,7 +194,19 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "Did you buy a custom aluminum keyboard just to never touch the largest key on it?",
         "Are you trying to protect your stabilizer wire from rattling by not clicking?",
         "If doing absolutely nothing was an Olympic event, your thumb would win the gold.",
-        "Your spacebar is checking its own USB connection. Are you there?"
+        "Your spacebar is checking its own USB connection. Are you there?",
+        "Perfect 0. The copper leaf spring inside your spacebar switch is resting peacefully.",
+        "Did you fall asleep with your hand next to the keyboard?",
+        "Your spacebar is entering deep hibernation mode. Clack it!",
+        "Did you buy custom linear switches just to use them as paperweights?",
+        "Did you press the spacebar with a ghost's finger? Speak up, the switch can't hear you!",
+        "Your aluminum custom mechanical keyboard is crying in the corner, feeling neglected.",
+        "0 HPS. Did you forget that the longest key on your keyboard is actually a button?",
+        "Your stabilizers are perfectly silent, but only because you haven't touched them once!",
+        "Are you treating the spacebar like an explosive mine? It won't blow up, press it!",
+        "Did your thumb choose to take a vacation today? Not a single mechanical clack!",
+        "Zero space activations. Perfect rate for doing absolutely nothing.",
+        "Your Gateron switches are completely unbothered. Let's hear some clacking noise!"
       );
     } else if (score > 0 && score < 3) {
       choices.push(
@@ -127,7 +215,19 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "Are you playing in slow-mo, or did you buy a linear switch with 10kg actuation force?",
         "You clack like a sleepy typist on a 1920 typewriter. Wake up!",
         "At this speed, you aren't space-bar clicking; you are writing a slow love letter to your keyboard.",
-        "Is your keyboard's steel plate too heavy for your thumb? Let's see some power!"
+        "Is your keyboard's steel plate too heavy for your thumb? Let's see some power!",
+        "You are treating that massive spacebar like a fragile ancient relic. Slam it!",
+        "Your stabilizer bars are yawning. Give them a reason to click!",
+        "Your thumb's reactivity is comparable to frozen maple syrup. Overclock your forearm!",
+        "Are you carefully inspecting the keycap texture before every single clack?",
+        "1-2 HPS. Your thumb has the reaction time of a frozen maple syrup jar.",
+        "Is your spacebar switch spring rated for 500 grams? It feels like you're lifting weights!",
+        "Are you carefully reading the brand name on the keycap before every single clack?",
+        "You clack like a sleepy typist on a heavy vintage typewriter from 1890. Speed up!",
+        "Your stabilizer wire is yawning. Give it a real mechanical workout!",
+        "At this speed, your character would jump once and get shot three times before landing.",
+        "Your hand looks like it's taking a gentle nap on the lower row. Vibrate that thumb!",
+        "Is there a sticky spill under your spacebar keycap? Let's get that mechanical clack moving!"
       );
     } else if (score >= 3 && score < 6) {
       choices.push(
@@ -136,7 +236,19 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "We can hear your stabilizers rattling from here, but only because they rattle once a year.",
         "Decent speed for a spreadsheet session, but highly mediocre for gaming.",
         "Your thumb looks like it's dreaming of a mattress. Give it some caffeine!",
-        "Spacebar spring is working, but it's not even warm. Pick up the tempo!"
+        "Spacebar spring is working, but it's not even warm. Pick up the tempo!",
+        "You click with the speed of an average bureaucrat stamping paperwork. Accelerate!",
+        "Rhythm is okay, but you're treating the space switch like a delicate flower. Mash it!",
+        "A highly polite clacking sound. This is a speed test, not a library!",
+        "Your stabilizer wire is mildly amused. It expected some real vibration.",
+        "3-5 HPS. Polite office typing speed. The PvP lobby is highly unimpressed.",
+        "You're clicking the spacebar like you're trying to not wake up a sleeping house. Mash it!",
+        "Rhythm is okay, but you're treating the space switch like a delicate flower.",
+        "We can hear your stabilizers rattling, but only because they rattle once a year.",
+        "A highly polite clacking sound. This is a speed test, not a public library!",
+        "Your spacebar is getting clicked, but the switch copper leaf isn't even warm yet.",
+        "Decent typing-test speed, but absolute doom for any competitive speedrun jumping.",
+        "Your thumb is doing light stretching when it should be performing high-frequency sprints."
       );
     } else if (score >= 6 && score < 9) {
       choices.push(
@@ -144,15 +256,55 @@ function getAltHumorousLine(score: number, isTouchDevice: boolean = false): stri
         "Great speed! You've definitely mastered the thumb-roll technique on the bottom row.",
         "Your mechanical switches are sounding like a miniature drum roll. Respectable!",
         "Nice, fast spacebar presses. You can definitely jump-bridge with this speed.",
-        "The steel plate of your keyboard is vibrating. Excellent rhythm!"
+        "The steel plate of your keyboard is vibrating. Excellent rhythm!",
+        "Now we're cooking. Your mechanical stabilizers are getting a decent workout.",
+        "A very snappy clack! You're definitely skipping dialogue in RPGs like a pro.",
+        "Your index or thumb is moving with real purpose. Excellent speed runner potential!",
+        "Solid performance! You are definitely ready for competitive typing speedruns.",
+        "Your keyboard backplate is starting to sing. Keep the clacking tempo steady!",
+        "6-8 HPS! Solid clacking! Your mechanical spacebar is getting a real workout.",
+        "Excellent thumb-roll technique! The mechanical spring is singing in solid rhythm.",
+        "Your keyboard plate is vibrating. Excellent tempo and beautiful mechanical clack!",
+        "Now we're cooking. Your custom lubed stabilizers are finally earning their keep.",
+        "Very snappy clack! You are definitely skipping dialogues in RPGs like an elite speedrunner.",
+        "Nice, fast spacebar presses. Your hand coordination is looking highly competent.",
+        "Your mechanical switch is clacking happily. A beautiful rhythmic drum solo!",
+        "Solid performance! You are definitely ready for competitive typing battles."
       );
-    } else {
+    } else if (score >= 9 && score < 12) {
       choices.push(
-        "9+ HPS! Absolute clack master! Your thumb is moving faster than a machine gun!",
+        "9-11 HPS! Absolute clack master! Your thumb is moving faster than a machine gun!",
         "Are you vibrating your entire wrist on that spacebar or are you just a machine?",
         "The stabilizers have entered a state of quantum superposition. Absolutely legendary clacking!",
         "Your mechanical switches are crying tears of solder. Incredible speed!",
-        "You've bottomed out that spacebar so many times it's practically part of the desk now."
+        "You've bottomed out that spacebar so many times it's practically part of the desk now.",
+        "Are you alternate-fingering the spacebar? That mechanical speed is incredible!",
+        "The copper contacts are operating at maximum thermal design limits. Pure fire!",
+        "Your mechanical spacebar sounds like an active jackhammer. Spectacular speed!",
+        "Logitech and Razer are celebrating your thumb speed because you'll need a new keyboard soon.",
+        "Simply epic! The mechanical clacking sounds like a professional drum-roll solo.",
+        "9-11 HPS! Absolute clack master! Your thumb is moving faster than an active jackhammer!",
+        "Are you alternate-drumming the spacebar with both index fingers? That mechanical speed is unreal!",
+        "The stabilizers have entered a state of quantum superposition. Absolutely epic clacking!",
+        "Your mechanical switches are crying tears of hot solder. Incredible thumb velocity!",
+        "You've bottomed out that keycap so many times it's practically fused with the desk.",
+        "Your mechanical spacebar sounds like a high-speed machine gun. Incredible rhythm!",
+        "Logitech and Razer are celebrating your speed because you'll need a new spacebar soon.",
+        "Simply phenomenal! The mechanical clacking sounds like a professional drum-roll solo."
+      );
+    } else {
+      choices.push(
+        "⚡ Godlike Spacebar PC Tier! 12+ HPS! The stabilizer bars on your spacebar are currently glowing orange from pure kinetic heat. Magnificent clacking!",
+        "⚡ Godlike Spacebar PC Tier! You're clicking so fast, your spacebar switches are about to trigger a localized seismic warning.",
+        "⚡ Godlike Spacebar PC Tier! The copper contacts inside your mechanical spacebar switch have officially welded themselves shut. Absolute legend!",
+        "⚡ Godlike Spacebar PC Tier! Your keyboard's backplate is vibrating at 400Hz. If we attach an alternator, we can power a small gaming setup.",
+        "⚡ Godlike Spacebar PC Tier! Did you borrow a woodpecker's beak to hit the spacebar or is your thumb just built different? Simply incredible!",
+        "⚡ Godlike Spacebar PC Tier! The mechanical microswitches are tensing up on their own. Absolute master of bottoming out!",
+        "⚡ Godlike Spacebar PC Tier! The stabilizer wires are currently glowing bright red from pure kinetic friction. Magnificent!",
+        "⚡ Godlike Spacebar PC Tier! Are you alternate-finger drumming or did you attach a high-frequency massage gun? Outstanding clacking!",
+        "⚡ Godlike Spacebar PC Tier! The copper leaf spring has welded itself shut from sheer velocity. Magnificent performance!",
+        "⚡ Godlike Spacebar PC Tier! Your keyboard backplate is vibrating at 400Hz. If we attach an alternator, we can power a small village!",
+        "⚡ Godlike Spacebar PC Tier! The switches are praying to the mechanical gods for mercy. Absolute master of bottoming out!"
       );
     }
   }
@@ -170,56 +322,103 @@ function getRightClickHumorousLine(cps: number, isTouchDevice: boolean = false):
         "0 HPS! Perfect speed for doing absolutely nothing.",
         "Your right click gesture is so non-existent, the touch screen is checking its own hardware.",
         "Did you forget where the touch trigger was or is your screen covered in grease?",
-        "Perfect 0. The digitizer is literally taking a nap right now."
+        "Perfect 0. The digitizer is literally taking a nap right now.",
+        "Are your thumbs currently glued together? Not a single right touch.",
+        "The glass has remained completely untouched on the right side. Perfect zero!",
+        "The right-touch quadrant is wondering if you lost your hand in a tragic speed-scrolling accident.",
+        "Zero right clicks on glass. Did you think the right side of the screen was haunted?",
+        "No inputs. Even the static charges on your screen are laughing at this zero.",
+        "Are you clicking in your dreams or is your screen too afraid of your right hand?"
       );
     } else if (cps > 0 && cps < 2) {
       choices.push(
         "1-2 HPS. At this rate, your finger is moving like it's stuck in a vat of cold peanut butter.",
         "Are you tapping with your nose? Speed it up!",
         "Very slow right tapping. The local snail just zoomed past your touch cursor.",
-        "You tap like you're carefully placing a fragile glass sticker. Give it some energy!"
+        "You tap like you're carefully placing a fragile glass sticker. Give it some energy!",
+        "Your touch-responsiveness has the latency of a dial-up connection. Wake up!",
+        "That was a single gentle tap. The screen barely noticed your middle finger.",
+        "You are tapping the glass with the speed of an apple falling from a tree in slow-motion.",
+        "Is there a sticky layer of pancake syrup on the right side of your phone? Speed up!",
+        "You click like you're trying to carefully count every single RGB subpixel. Faster!",
+        "Your right touch-responsiveness is currently modeled after continental plate tectonics."
       );
     } else if (cps >= 2 && cps < 4) {
       choices.push(
         `${Math.round(cps)} HPS. Decent if you are opening a menu, but absolute doom in any speed challenge.`,
         "You tap like you're politely knocking on a window. Tap that screen like it owes you lunch money!",
         "Continental drift is currently keeping up with your tap speed. Accelerate!",
-        "Your middle finger feels like it needs a major software update. Wake up!"
+        "Your middle finger feels like it needs a major software update. Wake up!",
+        "You tap like you're trying to not wake up a sleeping cat on your lap.",
+        "Is your finger feeling shy? Give it some physical encouragement!",
+        "A lovely, leisurely rate. Too bad this is a speed test, not a spa massage!",
+        "Your middle finger is moving like it's trying to make a very polite, low-stakes request.",
+        "Decent, if you're selecting an app icon. Disaster if you are aiming for survival.",
+        "You're tapping like you're trying to not wake up a sleeping hamster on your shoulder."
       );
     } else if (cps >= 4 && cps < 6) {
       choices.push(
         `${Math.round(cps)} HPS. Average speed. Not terrible, but you're definitely not breaking any records.`,
         "The screen is mildly amused. It expected a workout, not a gentle massage.",
         "Like a steady dripping faucet. We need a fire hose of rapid taps!",
-        "Are you tapping with your knuckles? Lift those fingers and use your tip!"
+        "Are you tapping with your knuckles? Lift those fingers and use your tip!",
+        "Average touch responsiveness. Your finger has officially earned its participation trophy.",
+        "Decent baseline. Now start vibrating that arm and double down!",
+        "Average right-tapping speed. Perfect for an NPC dialogue skip, but highly mediocre!",
+        "The screen's capacitive sensor is nodding politely. It's not impressed, but it's paying attention.",
+        "A steady tempo of tapping. Let's see some wrist vibration and turn up the heat!",
+        "Your middle finger has earned a standard-grade certificate for moderate screen touching."
       );
     } else if (cps >= 6 && cps < 8) {
       choices.push(
         `${Math.round(cps)} HPS! Respectable! Your fingers have definitely spent time on intense games.`,
         "Your right clicks are getting fast. Is your tapping hand secretly working out behind your back?",
         "Good speed! You can actually hold your ground with this touch rate.",
-        "The glass is warming up! The capacitive field is feeling your authority."
+        "The glass is warming up! The capacitive field is feeling your authority.",
+        "That's a solid vibration. Are you alternate-tapping or just in sheer panic?",
+        "Your finger is flying! You're definitely skipping dialogue in mobile games easily.",
+        "Nice snapping rhythm! Your middle finger is definitely showing some genuine coordination.",
+        "Very fast right taps! You are skipping cutscenes with elite-level speed runner energy.",
+        "Good velocity! The glass digitizer is feeling some warm, high-frequency energy now.",
+        "Solid tempo. Your hand is moving in a beautiful rhythm of competitive focus."
       );
     } else if (cps >= 8 && cps < 11) {
       choices.push(
         `${Math.round(cps)} HPS! Phenomenal! Your hand is moving so fast it's generating its own weather system.`,
         "Are you vibrating your wrist or did you drink four double espressos right before this?",
         "That is a professional level of right tapping. The glass is crying tears of friction.",
-        "Your double-tap right clicks are incredibly crisp. Highly optimized touch finger!"
+        "Your double-tap right clicks are incredibly crisp. Highly optimized touch finger!",
+        "Excellent high-fidelity tapping. The screen's glass is getting quite warm.",
+        "Are you tapping with multiple fingers or is your index finger just highly caffeinated?",
+        "Incredible drum roll! Your middle finger is a blur on the right side of the screen!",
+        "Are you alternate-tapping with both fingers, or does your wrist have a built-in motor?",
+        "Outstanding high-fidelity right clicks on glass. The touchscreen is getting seriously warm!",
+        "Your finger is moving so fast it's generating a small, localized static storm on the glass."
       );
-    } else if (cps >= 11 && cps < 15) {
+    } else if (cps >= 11 && cps < 20) {
       choices.push(
         `${Math.round(cps)} HPS! Incredible! You are basically the John Wick of touch tapping.`,
         "Your screen is screaming for mercy. Phenomenal arm vibration!",
         "Did you replace your hand with a pneumatic piston? Absolute god-tier speed!",
-        "Is your screen about to shatter or are your fingers just vibrating at high frequencies?"
+        "Is your screen about to shatter or are your fingers just vibrating at high frequencies?",
+        "The capacitive digitizer is crying tears of electrostatic joy.",
+        "Your hand looks like a high-speed vibration plate. Truly magnificent click rate!",
+        "Pure touch speed wizardry! You're block-clutching like an absolute champion on mobile!",
+        "The digitizer has entered panic mode trying to record this many electrostatic coordinate shifts.",
+        "Did you replace your hand with a pneumatic piston? Absolute god-tier tapping velocity!",
+        "Your hand looks like an industrial massager. Unrivaled touchscreen right clicking!"
       );
     } else {
       choices.push(
-        "15+ HPS! You aren't tapping, you are speaking binary directly to the screen controller!",
-        "The laws of physics have left the room. You're tapping fast enough to reverse time!",
-        "Your other fingers are extremely jealous. Your tapping finger is now a registered lethal weapon!",
-        "Capacitive sensors are completely overloaded. You are tapping in a separate dimension."
+        "⚡ Godlike Right Click Touch Tier! 20+ HPS! The screen thinks you have four hands or a high-frequency vibration motor strapped to your finger.",
+        "⚡ Godlike Right Click Touch Tier! Did you spill Red Bull on your finger or are you just a biological jackhammer on Gorilla Glass? Spectacular!",
+        "⚡ Godlike Right Click Touch Tier! You are tapping that secondary touch coordinate faster than a machine gun firing blank cartridges.",
+        "⚡ Godlike Right Click Touch Tier! Capacitive sensors are short-circuiting trying to keep up with your middle finger's rhythm.",
+        "⚡ Godlike Right Click Touch Tier! Absolute God Tier! If we attached a dynamo to your finger, we could power our entire cloud cluster.",
+        "⚡ Godlike Right Click Touch Tier! Your index and middle fingers are vibrating in complete quantum harmony on glass!",
+        "⚡ Godlike Right Click Touch Tier! The capacitive screen has declared a local thermal warning. Pure friction fire!",
+        "⚡ Godlike Right Click Touch Tier! You are registering touches faster than the mobile hardware clock can poll!",
+        "⚡ Godlike Right Click Touch Tier! Stop! The local gravity fields cannot sustain this level of glass vibration!"
       );
     }
   } else {
@@ -229,56 +428,103 @@ function getRightClickHumorousLine(cps: number, isTouchDevice: boolean = false):
         "0 HPS! Perfect speed for not playing Minecraft Bedwars.",
         "Your right click is so non-existent, the mouse sensor is checking its own pulse.",
         "Did you unplug your secondary mouse switch or did you forget you have a middle finger?",
-        "Perfect 0. The mechanical switch inside is currently celebrating its longevity."
+        "Perfect 0. The mechanical switch inside is currently celebrating its longevity.",
+        "Are your fingers currently locked? Not a single right-click.",
+        "The right mouse switch is completely silent. Absolute zero action!",
+        "Your right mouse button has been sitting in complete, dusty silence for an eternity.",
+        "Did your middle finger take a personal day off? Click that mechanical switch!",
+        "0 HPS. Perfect speed for not launching a single secondary ability.",
+        "Your Omron switch is crying tears of absolute loneliness. Give it a clack!"
       );
     } else if (cps > 0 && cps < 2) {
       choices.push(
         "1-2 HPS. If you tried to right-click block-clutch in Minecraft, you'd fall into the void before the block even realized you clicked.",
         "Are you clicking with your toe? Your middle finger is moving like it's stuck in a vat of cold peanut butter.",
         "Very slow right clicking. The local snail just zoomed past your cursor.",
-        "Did you buy a gaming mouse with Kailh switches just to look at them? Click it!"
+        "Did you buy a gaming mouse with Kailh switches just to look at them? Click it!",
+        "Your middle finger's reactivity is comparable to frozen maple syrup.",
+        "The microswitch has barely felt your presence. Push that mechanical spring!",
+        "Your right clicks are so slow, the game server thinks you're typing with a physical broomstick.",
+        "Are your Kailh switches lubricated with wet cement? Speed up!",
+        "You click like you're checking your bank balance before committing to a purchase. Accelerate!",
+        "Your middle finger reactivity is roughly comparable to a sleepy turtle on a sandy beach."
       );
     } else if (cps >= 2 && cps < 4) {
       choices.push(
         `${Math.round(cps)} HPS. Decent if you are opening a folder, but absolute doom in a PVP bridge fight.`,
         "You click like you're politely knocking on a door. Tap that button like it owes you lunch money!",
         "Continental drift is currently keeping up with your click speed. Accelerate!",
-        "Your right-click button is yawning. It has never experienced such a lazy pace."
+        "Your right-click button is yawning. It has never experienced such a lazy pace.",
+        "Are you trying to not click too hard to save the mechanical switches? Mash it!",
+        "This isn't a library! You can make some right-clacking noise, it's allowed!",
+        "Decent for opening a context menu, but absolute doom in any PvP block-clutch duel.",
+        "You click like you're politely asking the mouse button for permission. Smash it!",
+        "Your right-click button is yawning. It has never experienced such a casual, lazy tempo.",
+        "Are you afraid of wearing out the mechanical copper spring? Mechanical clicks are free, go fast!"
       );
     } else if (cps >= 4 && cps < 6) {
       choices.push(
         `${Math.round(cps)} HPS. Average middle finger. Not terrible, but you're definitely not winning any PVP matches.`,
         "The mouse switch is mildly amused. It expected a workout, not a gentle massage.",
         "Like a steady dripping faucet. We need a fire hose of right-clicking!",
-        `Is your wrist braced? It should be, because ${Math.round(cps)} HPS is barely a warm-up!`
+        `Is your wrist braced? It should be, because ${Math.round(cps)} HPS is barely a warm-up!`,
+        "Your mechanical right-click has standard-grade responsiveness. Time to overclock it.",
+        "Perfect speed for opening a contextual menu on your desktop. Mediocre for gaming!",
+        "Average right-click speed. Perfect for navigating a web browser, absolute failure for gaming.",
+        "The mouse switch is mildly amused. It expected an earthquake, not a gentle massage.",
+        "Steady clacking, but your wrist looks like it's daydreaming. Step on the gas!",
+        "Your middle finger is running on basic battery-saver mode. Turn on high performance!"
       );
     } else if (cps >= 6 && cps < 8) {
       choices.push(
         `${Math.round(cps)} HPS! Respectable! Your middle finger has definitely spent time on a gaming mouse.`,
         "Your right clicks are getting fast. Is your middle finger secretly working out behind your back?",
-        "Good speed! You can actually set up some decent defense with this rate.",
-        "Your mouse switches are clacking happily now. Very solid speed!"
+        "Good speed! You can actually hold your ground with this touch rate.",
+        "Your mouse switches are clacking happily now. Very solid speed!",
+        "Solid performance! You are definitely ready for competitive PvP right-click actions.",
+        "Your middle finger is moving with real purpose. Excellent speed runner potential!",
+        "Respectable right clacking! Your middle finger is definitely showing some gaming experience.",
+        "Solid tempo. The microswitch is clicking happily and getting a genuine mechanical workout.",
+        "Good speed! Your right-click block-clutches must look very clean and reliable.",
+        "You are skipping dialogues faster than a professional speedrunner. Solid speed!"
       );
     } else if (cps >= 8 && cps < 11) {
       choices.push(
         `${Math.round(cps)} HPS! Phenomenal! Your middle finger is moving so fast it's generating its own weather system.`,
         "Are you vibrating your wrist or did you drink four double espressos right before this?",
         "That is a professional level of right clicking. The mouse switch is crying tears of friction.",
-        "Your block-clutches must look majestic. Exceptional finger control!"
+        "Your block-clutches must look majestic. Exceptional finger control!",
+        "The microswitches in your mouse are begging for a splash of liquid nitrogen.",
+        "Omron and Kailh switches are singing your praises. Brilliant vibration control!",
+        "Phenomenal wrist vibration! Your right mouse switch is screaming under your rapid clacks!",
+        "Are you jitter-clicking your middle finger or did you spill cold brew all over your forearm?",
+        "Superb speed! The microswitches are begging for a splash of liquid nitrogen.",
+        "Kailh and Omron are celebrating your finger speed because you'll need a new mouse next week!"
       );
-    } else if (cps >= 11 && cps < 15) {
+    } else if (cps >= 11 && cps < 20) {
       choices.push(
         `${Math.round(cps)} HPS! Incredible! You are basically the John Wick of right clicking.`,
         "Your mouse button is screaming for mercy. Phenomenal arm vibration!",
         "Did you replace your hand with a pneumatic piston? Absolute god-tier speed!",
-        "The middle microswitch is tensing up. Let the absolute click density take over!"
+        "The middle microswitch is tensing up. Let the absolute click density take over!",
+        "You click faster than the speed of rumor propagation. Absolutely wild!",
+        "If you clicked any faster, you'd rip a hole in the fabric of the space-time continuum.",
+        "Incredible! Your middle finger is moving with the velocity of an automatic mechanical drill.",
+        "Your mouse mouse button is begging for mercy. Phenomenal wrist and forearm coordination!",
+        "Did you strap an electric toothbrush to your knuckle? This clicking rate is absolute magic!",
+        "Unbelievable density! The copper contacts are vibrating at maximum thermal limits."
       );
     } else {
       choices.push(
-        "15+ HPS! You aren't right-clicking, you are literally speaking binary code directly to the mouse sensor!",
-        "The laws of physics have left the room. You're clicking fast enough to reverse time!",
-        "Your index finger is extremely jealous. Your middle finger is now a registered lethal weapon!",
-        "We had to upgrade our server database just to store the sheer number of right-clicks you made."
+        "⚡ Godlike Right Click PC Tier! 20+ HPS! Your right-click is clicking so fast the game server's anti-cheat is currently calling a board meeting.",
+        "⚡ Godlike Right Click PC Tier! Did you replace your middle finger with an industrial drilling machine? Your mechanical switch has literally melted!",
+        "⚡ Godlike Right Click PC Tier! 20+ HPS! You are block-clutching in mid-air with absolutely zero effort. Minecraft Bedwars players are trembling.",
+        "⚡ Godlike Right Click PC Tier! Your mouse's right-side copper spring is crying out in mechanical agony. Truly legendary speed!",
+        "⚡ Godlike Right Click PC Tier! Stop! The local gravity field cannot sustain this level of mechanical right-click vibration!",
+        "⚡ Godlike Right Click PC Tier! 20+ HPS! Your right-click is clicking so fast the game server's anti-cheat has officially called an emergency board meeting to study your hand.",
+        "⚡ Godlike Right Click PC Tier! Your mouse's right-side copper spring has officially welded itself shut from kinetic friction.",
+        "⚡ Godlike Right Click PC Tier! You are block-clutching in mid-air with absolute cosmic confidence. Minecraft players are weeping.",
+        "⚡ Godlike Right Click PC Tier! Stop! The mechanical switches are begging the laws of physics for early retirement!"
       );
     }
   }
@@ -294,31 +540,56 @@ function getJitterHumorousLine(cps: number, stability: number, isTouchDevice: bo
       choices.push(
         "Is your hand completely paralyzed, or is your screen's digitizer on vacation?",
         "0 CPS. Did you forget to vibrate your hand, or is your finger too scared of the glass?",
-        "Perfect 0. The capacitive screen is wondering if you still exist."
+        "Perfect 0. The capacitive screen is wondering if you still exist.",
+        "No tremor detected. Tense that forearm and let's shake the screen!",
+        "Did you mistake the screen for a sleeping baby? Wake it up with a jitter!",
+        "No Jitter detected. Is your forearm having an union strike right now?",
+        "Zero vibration on screen. Lock your wrist and let the finger shake begin!",
+        "You are holding the mobile screen so gently, it's starting to hum a lullaby."
       );
     } else if (cps > 0 && cps < 4) {
       choices.push(
         "Jitter clicking is about tensing your arm, not gently patting the glass. Wake those muscles up!",
         "Your fingers look like they are taking a leisurely stroll on the screen. Start shaking!",
-        "Are you checking the temperature of the mobile device with your finger? Vibration required!"
+        "Are you checking the temperature of the mobile device with your finger? Vibration required!",
+        "Very weak hand vibration. Shake that index finger like it touched a static spark!",
+        "You look like you're trying to carefully brush away dust. Vibrate that arm!",
+        "That is not jittering, that's just a mild, lazy itch. Shake that finger!",
+        "Are you afraid of cracking the touchscreen glass with your arm spasms? Vibrate!",
+        "Your hand has the tension of a sleeping marshmallow. Grip tight and spasm!"
       );
     } else if (cps >= 4 && cps < 8) {
       choices.push(
         "Not a bad tremor, but your stability is all over the place. Tighten your forearm grip!",
         "Your hand is shaking, but it looks like you are holding a cup of hot tea. Tense that wrist!",
-        "You have a tiny bit of vibration, but it's more like a polite wiggle. We need a jackhammer!"
+        "You have a tiny bit of vibration, but it's more like a polite wiggle. We need a jackhammer!",
+        "Good start, but your muscle strain is too low. Grip that mobile device and vibrate!",
+        "Steady wiggling. We need high-frequency alternate spasms!",
+        "A decent wiggle, but your forearm needs 10x more tension. Shake harder!",
+        "Steady light vibration. Good for checking a notification, mediocre for PvP!",
+        "Your index finger is trying to shake, but the rest of your arm is on battery-saver mode."
       );
-    } else if (cps >= 8 && cps < 12) {
+    } else if (cps >= 8 && cps < 15) {
       choices.push(
         "Incredible wrist vibration! You're making the phone glass rattle at high frequencies.",
         "Excellent jitter-tap form! Your screen's glass is getting quite warm from the pure friction.",
-        "Your forearm is a blur of high-fidelity spasms. Exceptional mobile jitter speed!"
+        "Your forearm is a blur of high-speed spasms. Exceptional mobile jitter speed!",
+        "Awesome vibration frequency! Your mobile targets are shaking from your sheer tapping rate.",
+        "A highly solid tremor! You've definitely mastered mobile jitter click mechanics.",
+        "Wow! You are making the mobile glass vibrate like a tuning fork! Exceptional!",
+        "Incredible wrist spasms! You've definitely spent hours practicing this technique.",
+        "Solid Jitter! The phone digitizer is screaming under your high-frequency muscle shakes."
       );
     } else {
       choices.push(
-        "Absolute cybernetic vibration! Your fingers are vibrating at 60Hz. Corning Gorilla Glass is sweating!",
-        "Are you holding an electric sander in your hand? Your jitter rate is absolutely terrifying!",
-        "The laws of gravity do not apply to your hand. You are tensing at a molecular level!"
+        "⚡ Godlike Jitter Touch Tier! 15+ CPS! Your forearm is tensing so hard the physical phone is vibrating out of your hand.",
+        "⚡ Godlike Jitter Touch Tier! Did you replace your finger with an electric sander, or is your arm powered by an industrial diesel turbine?",
+        "⚡ Godlike Jitter Touch Tier! The capacitive screen digitizer is running on 100% CPU capacity just to track your fingertip spasms.",
+        "⚡ Godlike Jitter Touch Tier! Corning Gorilla Glass is sweating under your atomic-vibration fingers!",
+        "⚡ Godlike Jitter Touch Tier! Absolute cybernetic tremor! Your forearm has transcended biological limitations!",
+        "⚡ Godlike Jitter Touch Tier! Your index finger is vibrating at a rate that violates local zoning laws!",
+        "⚡ Godlike Jitter Touch Tier! Are you a humanoid android powered by an unstable lithium generator?",
+        "⚡ Godlike Jitter Touch Tier! The capacitive screen has reached full quantum thermo-friction levels!"
       );
     }
   } else {
@@ -326,31 +597,56 @@ function getJitterHumorousLine(cps: number, stability: number, isTouchDevice: bo
       choices.push(
         "Did you even tense your forearm? Your mouse is sitting completely still, looking bored.",
         "0 CPS. Mechanical switches are fully asleep. Try shaking that hand!",
-        "Your mouse is checking its USB connection because your finger didn't move a millimeter."
+        "Your mouse is checking its USB connection because your finger didn't move a millimeter.",
+        "No muscle tremor found. Grip that mouse tight and make your whole arm vibrate!",
+        "Perfect zero. Your Omron switches are completely unbothered.",
+        "0 Jitter CPS. Did you forget to tense your arm, or is your hand completely asleep?",
+        "No forearm spasms detected. Your mouse is sitting in absolute, dusty silence.",
+        "Your mechanical switch is wondering if you still have a pulse."
       );
     } else if (cps > 0 && cps < 4) {
       choices.push(
         "Jittering requires localized muscle spasms. You click like you're browsing a cooking blog. Let's go!",
         "Are you clicking with your pinky? Forearm tension is nonexistent!",
-        "This is a speed test, not a museum tour of mouse switch durability. Vibrate that arm!"
+        "This is a speed test, not a museum tour of mouse switch durability. Vibrate that arm!",
+        "Your index finger looks like a sleepy caterpillar. Tense those muscles!",
+        "You click like a polite librarian stamping a library card. Vibrate that wrist!",
+        "You click like a sleepy accountant typing in spreadsheets. Tense that forearm!",
+        "Are your Kailh switches made of lead? Vibrate that index finger like a jackhammer!",
+        "You have the wrist tension of cooked spaghetti. Lock the elbow and shake!"
       );
     } else if (cps >= 4 && cps < 8) {
       choices.push(
         "Good hand tremor! The mouse sensor is tracking your shakes nicely. Lock that wrist for more stability!",
         "Your hand is shaking, but your mouse button is only half-convinced. Tense up your wrist!",
-        "Decent shaking. The click frequency is climbing, but the microswitch wants more heat!"
+        "Decent shaking. The click frequency is climbing, but the microswitch wants more heat!",
+        "Solid beginning. But your forearm looks like it's daydreaming. Lock the elbow!",
+        "A very polite hand spasm. We need an earthquake, not a gentle breeze!",
+        "Decent hand tremor! The mouse sensor is tracking your shakes nicely. Lock that wrist!",
+        "You are shaking, but it's more like a polite wiggle. We need high-frequency spasms!",
+        "Good baseline muscle strain, but step on the gas! Let's hear some rapid mechanical clacking!"
       );
-    } else if (cps >= 8 && cps < 12) {
+    } else if (cps >= 8 && cps < 15) {
       choices.push(
         "Whoa! Your mouse switch is vibrating like a pneumatic drill. Excellent jitter-click form!",
         "The Omron switches are screaming under your forearm spasms. Highly optimized vibration!",
-        "Your wrist is fully locked and your elbow is generating pure velocity. Fantastic jittering!"
+        "Your wrist is fully locked and your elbow is generating pure velocity. Fantastic jittering!",
+        "Beautiful high-frequency click vibration. The clacking sound is perfectly steady!",
+        "Excellent forearm tremor. You could definitely win any standard jitter duel with this.",
+        "Incredible forearm tremor! Your mouse switch sounds like an active mechanical drill!",
+        "Outstanding jitter-click form! You could hold your ground in any competitive PvP duel.",
+        "Your Omron switches are literally singing under your rapid wrist spasms!"
       );
     } else {
       choices.push(
-        "Insane forearm tremors! Your mouse is vibrating so hard it's slowly walking across your desk. Absolute beast!",
-        "Are you a human woodpecker? Your mouse switch has entered a separate dimension of mechanical strain!",
-        "This click rate should be illegal in competitive play. Your wrist is tensing at 1000Hz!"
+        "⚡ Godlike Jitter PC Tier! 15+ CPS! Your mouse is vibrating so hard it's literally drifting across your mousepad without you moving it.",
+        "⚡ Godlike Jitter PC Tier! Razer and Logitech engineering teams just had an emergency meeting to study your muscle fibers.",
+        "⚡ Godlike Jitter PC Tier! You're vibrating your wrist at 1000Hz. If we attach an alternator, we can power a small server rack.",
+        "⚡ Godlike Jitter PC Tier! Insane forearm tremors! Your mouse switch has entered a separate dimension of mechanical strain!",
+        "⚡ Godlike Jitter PC Tier! This click rate should be illegal in competitive play. Your wrist is tensing at atomic frequencies!",
+        "⚡ Godlike Jitter PC Tier! Razer and Logitech are sending representatives to study your forearm muscle fibers!",
+        "⚡ Godlike Jitter PC Tier! Your hand is vibrating so fast, the mouse has achieved full molecular escape velocity!",
+        "⚡ Godlike Jitter PC Tier! Absolutely legendary arm spasms! The microswitches are begging for a fire extinguisher!"
       );
     }
   }
@@ -366,31 +662,50 @@ function getButterflyHumorousLine(cps: number, isTouchDevice: boolean = false): 
       choices.push(
         "No fingers on the glass. Are the butterflies extinct?",
         "0 CPS. Did your index and middle fingers get locked in a digital safe?",
-        "Zero taps. The screen is staring back at you in absolute silence."
+        "Zero taps. The screen is staring back at you in absolute silence.",
+        "Did both your drumming fingers fall asleep at once? Lift them up!",
+        "Perfect 0. Capacitive sensors are waiting for some twin-finger action.",
+        "Zero butterfly taps on the screen. Did both drumming fingers go on strike?",
+        "No touch inputs. Did your fingers forget they have a screen to drum on?"
       );
     } else if (cps > 0 && cps < 5) {
       choices.push(
         "Butterfly tapping requires alternating fingers. You look like you're tapping with a single tired thumb.",
         "Are you tapping with a single digit? The point of a butterfly is having TWO wings!",
-        "Your alternate fingers are moving in slow motion. Synchronization error!"
+        "Your alternate fingers are moving in slow motion. Synchronization error!",
+        "One-finger drumming is not butterfly tapping. Let's see that double-finger lift!",
+        "You look like you're trying to carefully count glass molecules. Tap faster!",
+        "Butterfly tapping requires alternating fingers. You look like you're tapping with a single sleepy toe.",
+        "Are you clicking with only one index finger? Give the middle finger some tapping action!"
       );
     } else if (cps >= 5 && cps < 10) {
       choices.push(
         "Decent alternating speed. Your fingers are starting to do gymnastics on the glass surface.",
         "Good rhythm! One-two, one-two. Keep the drumming tempo steady!",
-        "The touchscreen is feeling the alternate drumming now. Pick up the pace for pro status."
+        "The touchscreen is feeling the alternate drumming now. Pick up the pace for pro status.",
+        "Nice, steady alternate touch. Now speed up the alternate lifting action!",
+        "Good baseline synchronization. Let's see some real high-speed coordinate bursts!",
+        "Decent alternate tapping tempo. One-two, one-two. Keep the drumming steady!",
+        "Your alternate finger lifts are nice, but step on the gas! Let's hear some rapid drumming."
       );
-    } else if (cps >= 10 && cps < 15) {
+    } else if (cps >= 10 && cps < 20) {
       choices.push(
         "Superb drumming! Your two fingers are hitting the screen like a rapid bongo drum solo.",
         "Excellent alternate lift technique! The glass is getting a serious beatdown.",
-        "Your alternate finger lifts are highly synchronized. Great touch butterfly speed!"
+        "Your alternate finger lifts are highly synchronized. Great touch butterfly speed!",
+        "Outstanding rhythm control! Both index and middle fingers are flying on the screen.",
+        "Simply epic! The touchscreen is fully saturated with your rapid twin tapping.",
+        "Excellent alternate glass-tapping speed! Both fingers are drumming in solid, rapid sync.",
+        "Outstanding alternate touch agility! The capacitive matrix is really feeling your authority."
       );
     } else {
       choices.push(
-        "What on earth! You are drum-tapping with 4 fingers like a classical pianist playing Flight of the Bumblebee!",
-        "Your fingers are vibrating fast enough to split atoms on the touchscreen surface!",
-        "Capacitive sensors are completely flooded with alternate touch coordinates. Epic speed!"
+        "⚡ Godlike Butterfly Touch Tier! 20+ CPS! Your two-finger drumming technique on the glass has reached supersonic speeds. Absolutely mindblowing!",
+        "⚡ Godlike Butterfly Touch Tier! Are your index and middle fingers connected to a pneumatic actuator? The screen digitizer cannot fathom this speed!",
+        "⚡ Godlike Butterfly Touch Tier! The glass has entered a state of thermo-kinetic overload. You're drumming faster than a professional bongo player on double espresso!",
+        "⚡ Godlike Butterfly Touch Tier! Unbelievable! The capacitive digitizer is crying tears of pure electrostatic joy under your fingers!",
+        "⚡ Godlike Butterfly Touch Tier! Unbelievable double-finger drumming! Your fingertips are a blur of static-electric joy!",
+        "⚡ Godlike Butterfly Touch Tier! The capacitive screen has declared a localized thermal meltdown. Superb drumming!"
       );
     }
   } else {
@@ -398,31 +713,50 @@ function getButterflyHumorousLine(cps: number, isTouchDevice: boolean = false): 
       choices.push(
         "Zero clicks! Did both your index and middle fingers go on strike at the same time?",
         "0 CPS. The mechanical mouse buttons are completely safe from your butterfly wings.",
-        "Did you forget how to lift your fingers? Both switches are completely silent."
+        "Did you forget how to lift your fingers? Both switches are completely silent.",
+        "Perfect zero clicks. Did you disconnect your mouse entirely?",
+        "No butterfly wings found. Please place both fingers on the clicker!",
+        "Zero butterfly clacks. Did you unplug your mouse, or did both clicking fingers fall asleep?",
+        "No inputs. Your Omron switches are completely unbothered."
       );
     } else if (cps > 0 && cps < 5) {
       choices.push(
         "Butterfly clicking requires drumming your index and middle fingers alternately on the left click. You click like a sleeping turtle.",
         "Are you clicking with only one finger? Give the middle finger some clicking duties!",
-        "That alternating clack is so slow, it sounds like an old grandfather clock. Speed up!"
+        "That alternating clack is so slow, it sounds like an old grandfather clock. Speed up!",
+        "Your alternate click interval has its own ZIP code. Drum those fingers!",
+        "Cherry MX or mechanical mouse switches want alternate clacks, not slow solo taps!",
+        "That alternating clack is so slow, it sounds like a leaking pipe. Speed up!",
+        "Are you clicking with only one finger? Give your middle finger some clicking duties!"
       );
     } else if (cps >= 5 && cps < 10) {
       choices.push(
         "Good double-finger drumming! The switches are clacking in tandem. Now synchronize your lifts!",
         "Solid alternating tempo. Your mouse switches are humming a nice, fast tune.",
-        "Nice rhythm, but we need to see some real mechanical stress. Drum those switches faster!"
+        "Nice rhythm, but we need to see some real mechanical stress. Drum those switches faster!",
+        "Your alternate fingers are starting to hum a fast tune. Lock that wrist and lift higher!",
+        "Decent clack speed. Overclock your mechanical contacts for a proper speed boost!",
+        "Good double-finger drumming! Your mouse switches are clacking in nice tandem.",
+        "Nice steady alternate clack tempo. Now let's double that speed and wake up the springs!"
       );
-    } else if (cps >= 10 && cps < 15) {
+    } else if (cps >= 10 && cps < 20) {
       choices.push(
         "Incredible butterfly speed! Your mechanical mouse switches are sounding like automatic gunfire. PVP gods are smiling.",
         "The alternate lifting of your index and middle fingers is extremely crisp. Double-clicks galore!",
-        "Excellent bounce-clicking! You are definitely ready to dominate any block-clutch duel."
+        "Excellent bounce-clicking! You are definitely ready to dominate any block-clutch duel.",
+        "The switches are singing in high-frequency succession. Brilliant lift control!",
+        "Fabulous alternate drumming technique. Your clicking speed is simply exceptional.",
+        "Incredible butterfly speed! Your mechanical mouse switches sound like automatic gunfire. Elite PvP tier!",
+        "Beautiful alternate lifting of your index and middle fingers! Outstanding mechanical coordination."
       );
     } else {
       choices.push(
-        "Insane double-clicking! Your fingers are a blur of alternate lifts. Razer/Logitech switches are praying for safety!",
-        "You are registering double-clicks at a rate that defies modern physics. Absolute butterfly master!",
-        "Your mouse is practically tensing up on its own. Beautiful alternate-drumming velocity!"
+        "⚡ Godlike Butterfly PC Tier! 20+ CPS! Your mechanical mouse switches are tensing up on their own. Absolutely divine alternate-drumming velocity!",
+        "⚡ Godlike Butterfly PC Tier! You are registering double-clicks at a rate that defies modern physics. Absolute butterfly master! Your switches are screaming in terror.",
+        "⚡ Godlike Butterfly PC Tier! 20+ CPS! Did you grease your mouse click with butter or are your fingers literally mechanical pistons? Magnificent speed!",
+        "⚡ Godlike Butterfly PC Tier! Razer/Logitech switches are praying to the mechanical gods for early retirement. Absolutely devastating click speed!",
+        "⚡ Godlike Butterfly PC Tier! Absolute bounce-clicking mastery! Razer's switch engineering team is crying in the corner.",
+        "⚡ Godlike Butterfly PC Tier! Your mouse switches have officially entered a state of quantum vibration. Absolute legend!"
       );
     }
   }
@@ -438,31 +772,47 @@ function getKohiHumorousLine(cps: number, isTouchDevice: boolean = false): strin
       choices.push(
         "No clicks. Even in the retro age of 2012 Minecraft, this would get you banned for inactivity.",
         "0 CPS. Your touch retro sequence has completely expired.",
-        "Perfect 0. The Kohi server kicked you for being a stationary statue."
+        "Perfect 0. The Kohi server kicked you for being a stationary statue.",
+        "No classic touches. Tap the screen like it's 2013 and you're fighting for your faction!",
+        "0 classic touches. Even a fossilized dinosaur would click faster than this.",
+        "No retro inputs. Tap the glass like it's 2013 and your faction is getting raided!"
       );
     } else if (cps > 0 && cps < 4) {
       choices.push(
         "Very retro, indeed! Your tap speed is so slow it reminds us of 9600-baud dial-up internet.",
         "You tap like you're browsing a medieval library. Lift those digits!",
-        "Your mobile retro sequence is moving like an old slow-loading VHS tape."
+        "Your mobile retro sequence is moving like an old slow-loading VHS tape.",
+        "At this speed, any 2013 pocket-edition PvP player would combo you in circles. Speed up!",
+        "Your finger's retro reactivity is on par with a dial-up connection. Wake up!",
+        "Your tap speed is so slow it reminds us of 1995 dial-up internet. Lift those digits!",
+        "Very retro, indeed! Your hand has the reaction time of frozen molasses."
       );
     } else if (cps >= 4 && cps < 8) {
       choices.push(
         "Good old-school pacing. Respectable speed for classic touch gaming.",
         "Solid retro tap tempo. Your glass screen is feeling some classical pressure.",
-        "A respectable classic touch rate. Perfect for some casual vintage pocket-edition combos."
+        "A respectable classic touch rate. Perfect for some casual vintage pocket-edition combos.",
+        "Decent rhythm. But legacy factions need real high-vibration finger action. Double down!",
+        "Consistent retro clicks. Your hand is warmed up, now turn it up!",
+        "Good old-school pacing. Respectable speed for classic touch gaming.",
+        "Steady vintage tapping. Now let's see some arm power and double that frequency!"
       );
-    } else if (cps >= 8 && cps < 12) {
+    } else if (cps >= 8 && cps < 16) {
       choices.push(
         "You are tapping like an absolute legend from the legacy mobile server days. Incredible speed!",
         "Excellent classic velocity! You are skip-dialogue comboing like a professional retro speedrunner.",
-        "Your finger is moving fast enough to trigger nostalgia sensors in our server database!"
+        "Your finger is moving fast enough to trigger nostalgia sensors in our server database!",
+        "Spectacular vintage tapping rate! You are skipping retro cutscenes with elite agility.",
+        "Brilliant touch speed. You are definitely a veteran of the classical mobile server lobbies.",
+        "Excellent vintage velocity! You are clicking like a seasoned veteran of legacy pocket edition PvP.",
+        "Incredible speed! Your finger is moving fast enough to trigger nostalgia sensors in our database."
       );
     } else {
       choices.push(
-        "Retro god tier! Capacitive sensors are breaking under the weight of your classic retro tap gymnastics!",
-        "Your finger has reached 1999 arcade-cabinet speeds! Absolute legend of the retro tap scene!",
-        "You've unlocked the secret classic combos! All retro touch-screens bow to your speed."
+        "⚡ Godlike Kohi Retro Touch Tier! 16+ CPS! You are tapping that screen like a 2012 mobile PvP sweat god on double caffeine.",
+        "⚡ Godlike Kohi Retro Touch Tier! The capacitive touch matrix has entered a parallel dimension of retro combos.",
+        "⚡ Godlike Kohi Retro Touch Tier! Retro screen-tapping champions are shedding tears of joy watching your thumbs fly.",
+        "⚡ Godlike Kohi Retro Touch Tier! Unbelievable classic velocity! The touchscreen digitizer has completely run out of registers!"
       );
     }
   } else {
@@ -470,31 +820,41 @@ function getKohiHumorousLine(cps: number, isTouchDevice: boolean = false): strin
       choices.push(
         "0 CPS. You would get instant-killed on Kohi in 0.2 seconds. Plug in the mouse!",
         "Did you get comboed into next week before clicking once? Wake up, PvP soldier!",
-        "0 CPS. Your legacy mouse has been disconnected from the server for pure sleepiness."
+        "0 CPS. Your legacy mouse has been disconnected from the server for pure sleepiness.",
+        "0 CPS. You would get comboed into orbit on Kohi in 0.1 seconds. Click!",
+        "Did you forget your mouse is a physical device you have to press? Wake up, PvP soldier!"
       );
     } else if (cps > 0 && cps < 4) {
       choices.push(
         "Is your mouse a serial-port ball mouse from 1995? Click those retro switches faster!",
         "Your PvP speed is so slow, you're practically block-clutching in reverse.",
-        "At this speed, you'd get comboed into orbit on any Kohi lobby. Shake that wrist!"
+        "At this speed, you'd get comboed into orbit on any Kohi lobby. Shake that wrist!",
+        "You clack like a sleepy legacy typist. Let's see some retro competitive effort!",
+        "Is your mouse a serial-port ball mouse from 1995? Click those retro switches faster!",
+        "Your click rate is so slow, you're practically block-clutching in reverse."
       );
     } else if (cps >= 4 && cps < 8) {
       choices.push(
         "Decent nostalgic pace. Good enough to fight some legacy mobs, but too slow for hardcore factions.",
         "Classic Minecraft PvP sweat speed is within reach. Now start vibrating your middle finger!",
-        "Decent old-school clicking. Your mouse switches are recalling memories of 2013 Minecraft servers."
+        "Decent old-school clicking. Your mouse switches are recalling memories of 2013 Minecraft servers.",
+        "Decent old-school clicking. Your switches are recalling memories of 2013 Minecraft lobbies.",
+        "Classic PvP sweat speed is within reach. Now start tensing that wrist for more power!"
       );
-    } else if (cps >= 8 && cps < 12) {
+    } else if (cps >= 8 && cps < 16) {
       choices.push(
         "Outstanding! You have that classic 2013 Minecraft PvP sweat speed. Your mechanical switches are screaming!",
         "Excellent Kohi clacking! You are definitely triggering those legacy double-click combos.",
-        "Your click rate is high enough to make any legacy factions leader proud. Solid battle speed!"
+        "Your click rate is high enough to make any legacy factions leader proud. Solid battle speed!",
+        "Outstanding! You have that classic 2013 Minecraft PvP sweat speed. Your mechanical switches are screaming!",
+        "Excellent Kohi clacking! You are definitely triggering those legacy double-click combos."
       );
     } else {
       choices.push(
-        "Absolute Kohi Legend! You are click-clutching, drag-clicking, and comboing like a caffeinated teenager from 2014!",
-        "Omron switch contacts are practically welded together from your retro velocity. Phenomenal!",
-        "Are you wearing a headset and yelling about combos? Because your click rate is pure competitive sweat!"
+        "⚡ Godlike Kohi Retro PC Tier! 16+ CPS! You are click-clutching, drag-clicking, and comboing like a caffeinated teenager from 2014 Kohi lobby.",
+        "⚡ Godlike Kohi Retro PC Tier! Your Kailh mechanical switches are screaming for a liquid nitrogen cooling block. Pure physical sweat!",
+        "⚡ Godlike Kohi Retro PC Tier! 16+ CPS! You just registered more old-school PvP combos in 5 seconds than entire factions did in a month.",
+        "⚡ Godlike Kohi Retro PC Tier! Absolute Kohi Legend! All legacy forums are celebrating your phenomenal finger velocity!"
       );
     }
   }
@@ -640,31 +1000,42 @@ function getDragClickHumorousLine(cps: number, isTouchDevice: boolean = false): 
       choices.push(
         "No drag touches. Are you waiting for a magic sliding carpet?",
         "0 CPS. Did your finger completely forget how to slide on the glass screen?",
-        "Zero drag-clicking registered. Give that glass surface a gentle drag!"
+        "Zero drag-clicking registered. Give that glass surface a gentle drag!",
+        "The screen's digitizer is wondering if your finger has been replaced by a block of frozen wood.",
+        "0 drag clicks. Did you think dragging was forbidden by the local authorities?",
+        "No sliding inputs. Let's see some glass-dragging friction!"
       );
     } else if (cps > 0 && cps < 5) {
       choices.push(
         "Dragging on glass? Your finger is just squeaking like a wet window wiper. Try some dry sliding or tape!",
         "Very low friction detected. It feels like you are petting a sleeping cat on the screen.",
-        "Your drag speed is so gentle, it wouldn't even activate a touch zoom!"
+        "Your drag speed is so gentle, it wouldn't even activate a touch zoom!",
+        "You are sliding your finger like you're trying to not disturb a light layer of morning dew.",
+        "Very low friction. It feels like you're gently petting a sleeping kitten on the screen.",
+        "Your sliding action is so gentle, it wouldn't even activate a scroll bar."
       );
     } else if (cps >= 5 && cps < 12) {
       choices.push(
         "Decent friction slide! The glass is warming up, but that screen digitizer isn't breaking a sweat yet.",
         "Good effort sliding on the touchscreen. Try adding a little bit of thumb-tip pressure!",
-        "Nice, consistent drag-sliding tempo. Let's see some real screen squeaking!"
+        "Nice, consistent drag-sliding tempo. Let's see some real screen squeaking!",
+        "Decent friction slide! Try adding a little bit of thumb-tip pressure to get that sweet bounce.",
+        "Nice consistent drag-sliding tempo. The capacitive sensor is starting to wake up.",
+        "Your finger is sliding with a nice light rhythm. Time to turn up the heat!"
       );
     } else if (cps >= 12 && cps < 20) {
       choices.push(
         "Wow! Your finger is drumming on that glass like a rapid-fire woodpecker. Incredible touch control!",
-        "Are you using grip-tape on your finger? That capacitive sensor is registering some serious friction vibrations!",
-        "Superb screen slide frequency! Highly responsive touch coordinate tracking."
+        "Are you using grip-tape on your finger? That capacitive sensor is registering serious friction vibrations!",
+        "Superb screen slide frequency! Highly responsive touch coordinate tracking.",
+        "Incredible finger drumming! You are making the mobile glass vibrate at beautiful frequencies."
       );
     } else {
       choices.push(
-        "Unbelievable glass vibration! Are you sure your finger isn't a high-frequency massage gun?",
-        "You are registering drag-slides at a rate that defies modern physics on glass. Absolute slide master!",
-        "The touchscreen is begging for mercy from your hyper-speed finger dragging gymnastics!"
+        "⚡ Godlike Drag Touch Tier! Unbelievable glass vibration! Are you sure your finger isn't a high-frequency massage gun?",
+        "⚡ Godlike Drag Touch Tier! You are registering drag-slides at a rate that defies modern physics on glass. Absolute slide master!",
+        "⚡ Godlike Drag Touch Tier! The touchscreen is begging for mercy from your hyper-speed finger dragging gymnastics!",
+        "⚡ Godlike Drag Touch Tier! Your skin is generating so much friction heat on the Gorilla glass, we need thermal pads!"
       );
     }
   } else {
@@ -672,31 +1043,44 @@ function getDragClickHumorousLine(cps: number, isTouchDevice: boolean = false): 
       choices.push(
         "Zero drag clicks. Did your finger slide completely off the mouse?",
         "0 Drag CPS. The switches didn't vibrate at all. Are you holding a block of wood?",
-        "Did you forget to drag click or is your mouse switch made of solid steel?"
+        "Did you forget to drag click or is your mouse switch made of solid steel?",
+        "0 drag clicks. Did your finger slide completely off the mouse and hit your coffee cup?",
+        "Did you forget to drag click, or is your mouse switch made of industrial concrete?",
+        "Your mouse button has experienced absolute zero vibration. Pure stillness!"
       );
     } else if (cps > 0 && cps < 5) {
       choices.push(
         "Standard Mouse switch: Switch is too stiff or you aren't sliding with enough friction. Or did you forget to apply grip tape?",
         "Your finger is sliding too smoothly. We need switch-vibration, not a relaxing massage!",
-        "At this rate, you aren't drag-clicking; you're just polishing your left mouse button."
+        "At this rate, you aren't drag-clicking; you're just polishing your left mouse button.",
+        "You are sliding too smoothly. We need mechanical bounce, not a gentle massage!",
+        "At this rate, you aren't drag-clicking; you're just polishing your left mouse button for resale.",
+        "No switch chatter detected. Apply some electrical tape for traction!"
       );
     } else if (cps >= 5 && cps < 12) {
       choices.push(
         "Decent drag-clicking potential. Try applying some electrical or grip tape for extra finger traction!",
         "Good vibration chatter! The switches are starting to hum nicely.",
-        "Nice, consistent drag sliding. You are beginning to master the switch-bounce technique!"
+        "Nice, consistent drag sliding. You are beginning to master the switch-bounce technique!",
+        "Decent drag-clicking potential. Try applying some electrical or grip tape for extra finger traction!",
+        "Good vibration chatter! The switches are starting to hum a nice rapid tune.",
+        "Consistent sliding vibration. You are beginning to master the switch-bounce technique!"
       );
     } else if (cps >= 12 && cps < 20) {
       choices.push(
         "Excellent switch vibration! Your hardware has a highly optimized debounce threshold for insane drag chatter.",
         "Outstanding! You can hear those Omron switches screaming in rapid succession.",
-        "Beautiful drag friction! Your Minecraft bridging is going to look incredibly smooth."
+        "Beautiful drag friction! Your Minecraft bridging is going to look incredibly smooth.",
+        "Excellent switch vibration! Your hardware has a highly optimized debounce threshold for insane drag chatter.",
+        "Outstanding! You can hear those Omron switches screaming in rapid succession.",
+        "Beautiful drag friction! Your Minecraft bridging is going to look incredibly smooth and fast."
       );
     } else {
       choices.push(
-        "God-Tier Drag Clicker! Unrivaled switch chatter abuse detected. Your Minecraft PVP opponents stand absolutely no chance!",
-        "Your mouse switches have officially entered a state of quantum vibration. Superb drag clacking!",
-        "Are you sure your mouse hasn't melted from all that friction? That's an legendary speed!"
+        "⚡ Godlike Drag PC Tier! God-Tier Drag Clicker! Unrivaled switch chatter abuse detected. Your Minecraft opponents stand absolutely no chance!",
+        "⚡ Godlike Drag PC Tier! Your mouse switches have officially entered a state of quantum vibration. Superb drag clacking!",
+        "⚡ Godlike Drag PC Tier! Are you sure your mouse hasn't melted from all that friction? That's an legendary speed!",
+        "⚡ Godlike Drag PC Tier! Simply sublime bounce-clicking mastery. The microswitch debounce filters have completely dissolved."
       );
     }
   }
@@ -712,19 +1096,23 @@ function getDoubleClickHumorousLine(ratio: number, isTouchDevice: boolean = fals
       choices.push(
         "Solid Tap Timing: Perfectly clean individual taps. No capacitive lag or static-electric ghosting detected.",
         "100% precision taps. Your touchscreen is perfectly calibrated to your fingers.",
-        "Consistent single touches. Excellent for accurate navigation on mobile screens."
+        "Consistent single touches. Excellent for accurate navigation on mobile screens.",
+        "No ghosting clicks found. Your screen's capacitive controller is running with pristine logic.",
+        "Extremely tidy touch coordinates. A model touchscreen citizen!"
       );
     } else if (ratio < 0.15) {
       choices.push(
         "Quick Tap-Double: Registering some rapid consecutive touches. Handy for double-tap zoom features!",
         "Sensitive touch sensing! A few swift multi-touches detected. Perfect for action games.",
-        "Nice double-tapping rhythm. Great for skipping forward in mobile media players."
+        "Nice double-tapping rhythm. Great for skipping forward in mobile media players.",
+        "You have a tiny double-tap frequency. Perfect for double-tap photo zooms."
       );
     } else {
       choices.push(
-        "Ultra-Sonic Flutter: Your finger is fluttering on the screen like a rapid butterfly wings. Pure raw speed!",
-        "Insane screen-drumming sensitivity! The capacitive grid can barely keep up with your double taps.",
-        "Absolute flutter master! Your fingers are vibrating across the glass like static electricity."
+        "⚡ Godlike Double Tap Touch Tier! Ultra-Sonic Flutter: Your finger is fluttering on the screen like a rapid butterfly wings. Pure raw speed!",
+        "⚡ Godlike Double Tap Touch Tier! Insane screen-drumming sensitivity! The capacitive grid can barely keep up with your double taps.",
+        "⚡ Godlike Double Tap Touch Tier! Absolute flutter master! Your fingers are vibrating across the glass like static electricity.",
+        "⚡ Godlike Double Tap Touch Tier! Your touch digitizer is completely confused by how many rapid double-taps you are throwing. Magnificent!"
       );
     }
   } else {
@@ -732,19 +1120,23 @@ function getDoubleClickHumorousLine(ratio: number, isTouchDevice: boolean = fals
       choices.push(
         "Standard Clicks Only: Safe and steady. Consistently registering single clicks. Perfect for general accuracy and desktop navigation.",
         "No unintended double clicks detected. Great for precision work, but maybe too slow for block-clutch duels.",
-        "Perfect debounce filter. Your mouse is acting like a perfectly disciplined hardware citizen."
+        "Perfect debounce filter. Your mouse is acting like a perfectly disciplined hardware citizen.",
+        "No double-clicking found. Your mechanical switches are operating with perfect isolation.",
+        "Tidy mechanical execution. Ideal for standard administrative and design work."
       );
     } else if (ratio < 0.15) {
       choices.push(
         "Moderate CPS Boost: Sensitive switches with moderate double-clicks detected. Great for gaining a quick mechanical speed advantage without sacrificing normal control.",
         "A hint of switch chatter detected! Just enough to help you squeeze out an extra CPS or two.",
-        "Nice responsive switches. They are perfectly primed for rapid-fire trigger clicks."
+        "Nice responsive switches. They are perfectly primed for rapid-fire trigger clicks.",
+        "Excellent mechanical rebound. You are getting a decent double-click ratio to help PvP actions."
       );
     } else {
       choices.push(
-        "High CPS Potential / Active Chatter: Highly responsive double-clicking active! Outstanding potential for pushing ultra-high CPS limits in competitive clicking or games like Minecraft.",
-        "Your mouse switch is practically double-clicking on its own. That's a built-in mechanical cheat code!",
-        "Incredible bounce chatter! If you play PvP, you are absolutely blessed with this mechanical sensitivity."
+        "⚡ Godlike Double Click PC Tier! High CPS Potential / Active Chatter: Highly responsive double-clicking active! Outstanding potential for pushing ultra-high CPS limits in competitive clicking or games like Minecraft.",
+        "⚡ Godlike Double Click PC Tier! Your mouse switch is practically double-clicking on its own. That's a built-in mechanical cheat code!",
+        "⚡ Godlike Double Click PC Tier! Incredible bounce chatter! If you play PvP, you are absolutely blessed with this mechanical sensitivity.",
+        "⚡ Godlike Double Click PC Tier! The microswitches have entered a state of terminal chatter. Minecraft PvP sweats are salivating!"
       );
     }
   }
@@ -762,31 +1154,39 @@ function getAimHumorousLine(hits: number, accuracy: number, avgReaction: number,
       choices.push(
         "0 hits! Did you target the screen, or were you aiming at the reflection of your own confused face?",
         "No targets popped. Did your finger forget how to tap or are you playing with your eyes closed?",
-        "The targets came and went, completely untouched. Like ships passing in the night."
+        "The targets came and went, completely untouched. Like ships passing in the night.",
+        "Perfect 0. Your fingers are actively dodging the targets. Truly remarkable avoidance!"
       );
     } else if (finalScore < 6) {
       choices.push(
         "Slow response on touch! Did you tap a target or just pet the screen? Keep your hand moving!",
         "Your finger is wandering around the screen like a lost tourist in a big city.",
-        "Tapping too slow! Those micro-targets are laughing at your touch reflexes."
+        "Tapping too slow! Those micro-targets are laughing at your touch reflexes.",
+        "You tap with the speed of an ice glacier. Accelerate that finger movement!",
+        "Your touch accuracy is okay, but you're treating the screen like fragile ancient glass."
       );
     } else if (finalScore >= 6 && finalScore < 14) {
       choices.push(
         "Decent hand-eye coordination. Tapping glass with good rhythm. Practice more to lock your muscle memory.",
         "Nice, steady tapping. You're catching a solid amount of targets, but we need more speed!",
-        "Solid touch accuracy. Now try to flick your finger to the next target instantly!"
+        "Solid touch accuracy. Now try to flick your finger to the next target instantly!",
+        "Good performance. Your index finger has standard gaming-grade coordination.",
+        "Steady pops. You're definitely hitting the target centers with respectable frequency."
       );
     } else if (finalScore >= 14 && finalScore < 22) {
       choices.push(
         "Excellent mobile aim! Highly competitive speed, popping targets like bubble wrap!",
         "Your touch reflexes are extremely sharp! Popping targets left and right with superb accuracy.",
-        "Great hand-to-screen synchronization. You are definitely ready for mobile competitive action!"
+        "Great hand-to-screen synchronization. You are definitely ready for mobile competitive action!",
+        "Superb flick speed! Your thumb is navigating the capacitive field with exceptional agility.",
+        "Fantastic rate! You're popping those dots faster than popcorn in a microwave."
       );
     } else {
       choices.push(
-        "Superhuman finger speed! Your reflexes are sharper than a cat chasing a laser pointer!",
-        "Absolute touch screen dominance! Are you tapping with multiple fingers or are you just a touch god?",
-        "Phenomenal coordination! The targets are popping so fast the screen looks like a sparkling starry night."
+        "⚡ Godlike Aim Touch Tier! Superhuman finger speed! Your reflexes are sharper than a cat chasing a laser pointer!",
+        "⚡ Godlike Aim Touch Tier! Absolute touch screen dominance! Are you tapping with multiple fingers or are you just a touch god?",
+        "⚡ Godlike Aim Touch Tier! Phenomenal coordination! The targets are popping so fast the screen looks like a sparkling starry night.",
+        "⚡ Godlike Aim Touch Tier! Your brain's latency has been measured in single-digit microseconds. Simply magnificent finger-flick velocity!"
       );
     }
   } else {
@@ -794,31 +1194,39 @@ function getAimHumorousLine(hits: number, accuracy: number, avgReaction: number,
       choices.push(
         "0 hits. Your crosshair is so far off, it has registered its own ZIP code.",
         "Did you click the arena or your desk? Not a single target was harmed in this test.",
-        "Are you using a trackball or just aiming with your elbow? Complete silence on the targets."
+        "Are you using a trackball or just aiming with your elbow? Complete silence on the targets.",
+        "Zero hits! Your mouse sensor might be looking at the ceiling. Check your connection!"
       );
     } else if (finalScore < 6) {
       choices.push(
         "Slow response times. Keep your wrist loose, check your mouse DPI/sensitivity, and try again.",
         "You're tracking those targets with the velocity of a heavy freight train. Flick that mouse!",
-        "Did your mouse cord get stuck? That reaction time has some serious network lag vibes."
+        "Did your mouse cord get stuck? That reaction time has some serious network lag vibes.",
+        "Your pointer movement looks like a slow slide-show. Overclock your wrist!",
+        "Are you using your non-dominant hand? Let's loose that forearm tension!"
       );
     } else if (finalScore >= 6 && finalScore < 14) {
       choices.push(
         "Decent precision tracking. Your muscle memory is developing. Keep practicing to flick faster!",
         "Nice consistent target pops. Good accuracy, now let's crank up the speed dial!",
-        "Not bad! A highly solid baseline accuracy. Work on your click-to-movement timing."
+        "Not bad! A highly solid baseline accuracy. Work on your click-to-movement timing.",
+        "Your wrist coordination is developing nicely. Focus on centering your flicks!",
+        "Decent target-clipping rate. You can definitely hold your ground in standard FPS titles."
       );
     } else if (finalScore >= 14 && finalScore < 22) {
       choices.push(
         "Excellent aim and trigger control. Highly competitive speed. Shroud would be proud!",
         "Flick city! Your crosshair is landing perfectly on target centers with minimal overshoot.",
-        "Outstanding wrist precision! You are definitely ready for some high-tier ranked lobby climbing."
+        "Outstanding wrist precision! You are definitely ready for some high-tier ranked lobby climbing.",
+        "Superb centering and minimal friction drag. Your mousepad must be feeling like ice!",
+        "Epic crosshair snaps! Your target clearance times are looking extremely clean."
       );
     } else {
       choices.push(
-        "Absolute aim bot! Are you sure you aren't running an aim script? Legendary mouse precision!",
-        "Your hand-eye coordination is practically digital. Superb crosshair snaps and perfect trigger pull!",
-        "You've popped so many targets, our server registers you as a serious hardware hazard. Phenomenal!"
+        "⚡ Godlike Aim PC Tier! Absolute aim bot! Are you sure you aren't running an aim script? Legendary mouse precision!",
+        "⚡ Godlike Aim PC Tier! Your hand-eye coordination is practically digital. Superb crosshair snaps and perfect trigger pull!",
+        "⚡ Godlike Aim PC Tier! You've popped so many targets, our server registers you as a serious hardware hazard. Phenomenal!",
+        "⚡ Godlike Aim PC Tier! Shroud and TenZ are calling for your setup details. Your flicks look like instant teleports!"
       );
     }
   }
@@ -834,31 +1242,36 @@ function getScrollHumorousLine(stepsSec: number, isTouchDevice: boolean = false)
       choices.push(
         "No swiping registered. Are you waiting for the page to scroll itself?",
         "0 scrolling. Your thumb is stationary on the screen. Give it a good swipe!",
-        "Zero steps. Swipe up or down vigorously to start the scroll engine!"
+        "Zero steps. Swipe up or down vigorously to start the scroll engine!",
+        "Perfect 0. The touch digitizer is wondering if your screen is just a poster."
       );
     } else if (stepsSec < 15) {
       choices.push(
         "Lazy swipe! Are you trying to scroll past an ad, or did your thumb fall asleep?",
         "Very leisurely swiping. You look like you're reading a boring terms and conditions page.",
-        "Slow, steady swiping. Good for reading recipes, bad for high-speed scrolling!"
+        "Slow, steady swiping. Good for reading recipes, bad for high-speed scrolling!",
+        "Your swiping has the velocity of dry cement. Step on the scroll throttle!"
       );
     } else if (stepsSec >= 15 && stepsSec < 40) {
       choices.push(
         "Good casual scrolling speed. Perfect for scrolling through endless social media feeds.",
         "Nice, comfortable scroll swipes. Your thumb has a great, consistent travel distance.",
-        "Solid scroll feedback! You are navigating through pages with excellent tactile rhythm."
+        "Solid scroll feedback! You are navigating through pages with excellent tactile rhythm.",
+        "Good, steady thumb action. Ideal for finding a specific post in a dense timeline."
       );
     } else if (stepsSec >= 40 && stepsSec < 80) {
       choices.push(
         "Vigorous swiping! You're sliding down pages faster than a speedreader on caffeine.",
         "Amazing touchscreen swiping! Your thumb is practically sliding off the bezel.",
-        "Super fast scrolling speed! You are looking for that specific meme with extreme velocity!"
+        "Super fast scrolling speed! You are looking for that specific meme with extreme velocity!",
+        "Your thumb is generating actual aerodynamic drag. Solid swiping!"
       );
     } else {
       choices.push(
-        "Absolute thumb fire! You're scrolling so fast you might warp into the next article!",
-        "Whoa! Are you using multiple hands or did you lubricate your screen with Teflon? Legend!",
-        "The mobile browser is completely overwhelmed by your hyper-speed swipe rate. Phenomenal!"
+        "⚡ Godlike Scroll Touch Tier! Absolute thumb fire! You're scrolling so fast you might warp into the next article!",
+        "⚡ Godlike Scroll Touch Tier! Whoa! Are you using multiple hands or did you lubricate your screen with Teflon? Legend!",
+        "⚡ Godlike Scroll Touch Tier! The mobile browser is completely overwhelmed by your hyper-speed swipe rate. Phenomenal!",
+        "⚡ Godlike Scroll Touch Tier! Your phone's screen has entered a state of anti-gravity fluid scroll. Magnificent!"
       );
     }
   } else {
@@ -866,31 +1279,36 @@ function getScrollHumorousLine(stepsSec: number, isTouchDevice: boolean = false)
       choices.push(
         "0 scroll steps. Did your mouse wheel get stuck with pocket lint?",
         "Zero scrolling detected. Did you buy a mouse without a scroll wheel, or are you just staring at it?",
-        "The wheel hasn't turned a single notch. Give it a spin!"
+        "The wheel hasn't turned a single notch. Give it a spin!",
+        "Your scroll wheel has registered absolute silence. Is it a vintage mouse from 1990?"
       );
     } else if (stepsSec < 15) {
       choices.push(
         "Slow scrolling. Perfect for browsing light articles, but too slow for Minecraft hotbar toggling.",
         "Are you scrolling with a heavy stone wheel? Spin it with some passion!",
-        "Slow, cautious index finger. Are you afraid of scrolling past something important?"
+        "Slow, cautious index finger. Are you afraid of scrolling past something important?",
+        "Your scroll rate is perfect for reading boring privacy policies. Speed it up!"
       );
     } else if (stepsSec >= 15 && stepsSec < 40) {
       choices.push(
         "Good, consistent scroll control. Solid scroll feedback rate.",
         "Nice steady wheel scrolling. Perfect for casual gaming and quick hotbar weapon swaps.",
-        "Your index finger has a nice, healthy tempo. Steady scrolling keeps the scroll wheel happy!"
+        "Your index finger has a nice, healthy tempo. Steady scrolling keeps the scroll wheel happy!",
+        "Decent rate. Perfect for standard map zooms and weapon selections."
       );
     } else if (stepsSec >= 40 && stepsSec < 80) {
       choices.push(
         "Fast index finger! Excellent scroll-wheel speed.",
         "Awesome! You are spinning that wheel like a game show host. Great velocity!",
-        "Excellent scroll rate! Your finger-flick technique is highly optimized."
+        "Excellent scroll rate! Your finger-flick technique is highly optimized.",
+        "Brilliant scroll wheel spin. You are flying through documents at a highly competitive rate!"
       );
     } else {
       choices.push(
-        "God-like Scrolling! You must be using an unlocked free-spin mouse scroll wheel or an infinite-scroll mouse.",
-        "The scroll wheel has turned into an alternator! You're producing enough energy to power our servers.",
-        "Phenomenal! That wheel is spinning fast enough to generate lift and fly off your desk!"
+        "⚡ Godlike Scroll PC Tier! God-like Scrolling! You must be using an unlocked free-spin mouse scroll wheel or an infinite-scroll mouse.",
+        "⚡ Godlike Scroll PC Tier! The scroll wheel has turned into an alternator! You're producing enough energy to power our servers.",
+        "⚡ Godlike Scroll PC Tier! Phenomenal! That wheel is spinning fast enough to generate lift and fly off your desk!",
+        "⚡ Godlike Scroll PC Tier! Your index finger is a blur of kinetic energy. Simply outstanding scroll velocity!"
       );
     }
   }
