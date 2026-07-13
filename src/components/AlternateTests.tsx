@@ -2714,10 +2714,12 @@ function KohiDurationSelector({
             onClick={() => onSelect(d)}
             className={`px-2 py-1 border transition-colors ${
               isSelected
-                ? "theme-active-key text-white border-transparent"
+                ? isDarkMode
+                  ? "bg-emerald-500 text-black border-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.5)]"
+                  : "bg-emerald-600 text-white border-emerald-500 shadow-xs"
                 : isDarkMode
-                  ? "bg-black text-slate-400 border-white/10 hover:border-white/30 hover:text-white"
-                  : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50 hover:text-slate-900"
+                  ? "bg-black text-emerald-500 border-emerald-500/30 hover:border-emerald-500"
+                  : "bg-white text-emerald-800 border-emerald-500/50 hover:border-emerald-600 hover:bg-emerald-50/50"
             } ${disabled && !isSelected ? "opacity-35 cursor-not-allowed" : ""} ${
               disabled && isSelected ? "cursor-not-allowed" : "cursor-pointer"
             }`}
