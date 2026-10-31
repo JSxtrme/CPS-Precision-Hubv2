@@ -1,0 +1,126 @@
+/* Premium navy theme overlay for CPS Precision Hub.
+   Loaded after index.css. It is deliberately scoped OFF on the hidden legacy
+   view: html.legacy-old (set by App.tsx when the URL is /old) disables the
+   dot-grid/grain/vignette, the serif accent and the root background override,
+   so /old keeps the pre-redesign look. No test logic lives in this file. */
+
+/* --- BoardAi-style background, tinted navy: fine dot-grid, grain, vignette,
+       gentle radial light from the top. Fixed so content scrolls over it. --- */
+html:not(.legacy-old) body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(1200px 600px at 50% -10%, rgba(59, 130, 246, 0.20), transparent 60%),
+    radial-gradient(closest-side at 50% 50%, transparent 58%, rgba(2, 6, 23, 0.42)),
+    radial-gradient(circle, rgba(148, 163, 184, 0.20) 1px, transparent 1.2px);
+  background-size: auto, auto, 24px 24px;
+}
+html:not(.legacy-old):not(.dark) body::before {
+  background-image:
+    radial-gradient(1200px 600px at 50% -10%, rgba(37, 99, 235, 0.10), transparent 60%),
+    radial-gradient(closest-side at 50% 50%, transparent 58%, rgba(15, 23, 42, 0.06)),
+    radial-gradient(circle, rgba(30, 64, 175, 0.16) 1px, transparent 1.2px);
+  background-size: auto, auto, 24px 24px;
+}
+html:not(.legacy-old) body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.022;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+}
+html.legacy-old body::before,
+html.legacy-old body::after {
+  display: none;
+}
+#root {
+  position: relative;
+  z-index: 1;
+}
+/* Let the body background show through the app root (except Kohi's black stage). */
+html:not(.legacy-old) #root > div {
+  background-color: transparent !important;
+}
+html:not(.legacy-old) #root > div.bg-black {
+  background-color: #000000 !important;
+}
+/* --- Serif-italic accent word in hero titles (replaces the gradient word) --- */
+html:not(.legacy-old) .theme-text-gradient {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  background-clip: initial !important;
+  -webkit-text-fill-color: currentColor !important;
+  color: var(--theme-to-600, #1e40af) !important;
+  font-family: "Instrument Serif", Georgia, serif !important;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+html:not(.legacy-old).dark .theme-text-gradient {
+  color: var(--theme-to-400, #60a5fa) !important;
+}
+/* --- Soft layered shadows on cards (premium, not flat) --- */
+html:not(.legacy-old) .shadow-xs,
+html:not(.legacy-old) .shadow-sm {
+  box-shadow: 0 1px 2px rgba(8, 18, 38, 0.06), 0 10px 28px rgba(8, 18, 38, 0.07);
+}
+/* --- Reading-progress hairline (created by scroll-effects.ts) --- */
+#premium-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 2px;
+  width: 0;
+  z-index: 60;
+  background: linear-gradient(to right, #60a5fa, #1d4ed8);
+  pointer-events: none;
+}
+html.legacy-old #premium-progress {
+  display: none;
+}
+/* --- Scroll reveals: sections start hidden ONLY once the script is ready,
+       and only when the page is not legacy and motion is not reduced. --- */
+html:not(.legacy-old) body.premium-js section {
+  opacity: 0;
+  transform: translateY(16px);
+  filter: blur(6px);
+  transition: opacity 0.7s ease, transform 0.7s ease, filter 0.7s ease;
+}
+html:not(.legacy-old) body.premium-js section.premium-inview {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+/* --- Scroll-scrubbed manifesto (the About section on the home page).
+       View-timeline animation: unsupported browsers simply show it normally. --- */
+html:not(.legacy-old) .premium-manifesto {
+  animation: premium-manifesto-scrub linear both;
+  animation-timeline: view();
+  animation-range: entry 10% cover 55%;
+}
+@keyframes premium-manifesto-scrub {
+  from { opacity: 0.4; filter: blur(3px); transform: translateY(10px); }
+  to { opacity: 1; filter: blur(0); transform: none; }
+}
+@media (max-width: 640px) {
+  html:not(.legacy-old) body.premium-js section {
+    transition-duration: 0.4s;
+    filter: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  html:not(.legacy-old) body.premium-js section,
+  html:not(.legacy-old) .premium-manifesto {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+  #premium-progress { display: none; }
+}

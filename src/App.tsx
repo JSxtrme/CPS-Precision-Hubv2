@@ -64,6 +64,31 @@ interface ThemePreset {
 
 const THEMES: ThemePreset[] = [
   {
+    id: "navy",
+    name: "Navy Blue",
+    colors: {
+      from: "#93c5fd",
+      to: "#2563eb",
+      from300: "#bfdbfe",
+      to400: "#60a5fa",
+      from500: "#3b82f6",
+      to500: "#1d4ed8",
+      to600: "#1e40af",
+      from600: "#1d4ed8",
+      from500_60: "rgba(59, 130, 246, 0.6)",
+      from600_20: "rgba(30, 64, 175, 0.2)",
+      to600_20: "rgba(37, 99, 235, 0.2)",
+      center_10: "rgba(30, 64, 175, 0.1)",
+      shadow_pad: "rgba(37, 99, 235, 0.5)",
+      shadow_btn: "rgba(37, 99, 235, 0.5)",
+      from400_50: "rgba(96, 165, 250, 0.5)",
+      to500_20: "rgba(37, 99, 235, 0.2)",
+      to500_5: "rgba(37, 99, 235, 0.05)",
+      to500_35: "rgba(37, 99, 235, 0.35)",
+    },
+    previewBg: "linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%)",
+  },
+  {
     id: "cosmic",
     name: "Cosmic Purple",
     colors: {
@@ -1108,6 +1133,12 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
   const animFrameIdRef = useRef<number | null>(null);
   const rippleIdCounter = useRef(0);
   const lastRightClickRef = useRef<number>(0);
+  // Scroll-vs-tap discrimination (mobile): a swipe must scroll, a tap must count.
+  // touchStartRef records where a touch began; touchMovedRef flips once the finger
+  // moves more than ~12px; suppressClickRef makes the following click a no-op.
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const touchMovedRef = useRef(false);
+  const suppressClickRef = useRef(false);
 
   useDisableScrollZoomOnTouch(status === "running", isTouchDevice);
 
@@ -1187,6 +1218,13 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
   };
 
   const handlePadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    // A touch that moved (a scroll gesture) must not count as a click. The browser
+    // normally suppresses click after a scroll, but this guard covers cases where it
+    // still fires, so scrolling can never start a test or wipe a finished result.
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false;
+      return;
+    }
     // Standard left-click logic
     if (e.button !== 0) return;
     createRipple(e);
@@ -1300,6 +1338,25 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
           onContextMenu={(e) => e.preventDefault()}
           onClick={handlePadClick}
           onMouseDown={handleMouseDown}
+          style={{ touchAction: "pan-y" }}
+          onTouchStart={(e) => {
+            const t = e.touches[0];
+            touchStartRef.current = { x: t.clientX, y: t.clientY };
+            touchMovedRef.current = false;
+          }}
+          onTouchMove={(e) => {
+            const start = touchStartRef.current;
+            if (!start) return;
+            const t = e.touches[0];
+            if (Math.abs(t.clientX - start.x) > 12 || Math.abs(t.clientY - start.y) > 12) {
+              touchMovedRef.current = true;
+            }
+          }}
+          onTouchEnd={() => {
+            if (touchMovedRef.current) suppressClickRef.current = true;
+            touchStartRef.current = null;
+            touchMovedRef.current = false;
+          }}
           className={`relative flex min-h-[20rem] h-auto py-8 sm:py-10 w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 text-center transition-all duration-150 active:scale-[0.98] ${
             status === "running"
               ? "theme-running-pad cursor-pointer"
@@ -1426,6 +1483,7 @@ export function CPSTest({ onAddHistory, isDarkMode, isTouchDevice }: CPSTestProp
    ========================================================================== */
 const PATH_TO_VIEW: Record<string, ViewType> = {
   "/": "cps",
+  "/old": "cps",
   "/cps": "cps",
   "/more-tests": "menu",
   "/more-tests/drag-test": "dragclick",
@@ -1477,6 +1535,10 @@ function getInitialView(): ViewType {
    ========================================================================== */
 export default function App() {
   const [activeView, setActiveView] = useState<ViewType>(getInitialView);
+  // Hidden legacy view: typing /old shows the pre-redesign (Cosmic Purple) theme
+  // with the premium navy styling switched off. There is deliberately NO link to
+  // /old anywhere in the new frontend; it is only reachable by typing the URL.
+  const isLegacyView = typeof window !== "undefined" && window.location.pathname.replace(/\/$/, "") === "/old";
   const [cameFromMenu, setCameFromMenu] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     try {
@@ -1501,9 +1563,9 @@ export default function App() {
   const [activeTheme, setActiveTheme] = useState<string>(() => {
     try {
       const stored = localStorage.getItem("cps-test-colorscheme");
-      return stored && THEMES.some(t => t.id === stored) ? stored : "cosmic";
+      return stored && THEMES.some(t => t.id === stored) ? stored : "navy";
     } catch {
-      return "cosmic";
+      return "navy";
     }
   });
 
@@ -1546,7 +1608,7 @@ export default function App() {
     const root = document.documentElement;
     if (isDarkMode) {
       root.classList.add("dark");
-      document.body.style.backgroundColor = "#0b0b16";
+      document.body.style.backgroundColor = "#081226";
       document.body.style.color = "#ffffff";
     } else {
       root.classList.remove("dark");
@@ -1555,9 +1617,19 @@ export default function App() {
     }
   }, [isDarkMode]);
 
+  // Keep the legacy marker on <html> in sync so premium.css can switch itself off.
+  useEffect(() => {
+    document.documentElement.classList.toggle("legacy-old", isLegacyView);
+    return () => {
+      document.documentElement.classList.remove("legacy-old");
+    };
+  }, [isLegacyView]);
+
   // Pre-populate history on mount if we're not on the home page
   useEffect(() => {
     const initialView = getInitialView();
+    // Preserve /old in the address bar so the hidden legacy URL stays shareable/typed.
+    if (window.location.pathname.replace(/\/$/, "") === "/old") return;
     if (initialView === "menu") {
       window.history.replaceState({ view: "cps", cameFromMenu: false }, "", "/");
       window.history.pushState({ view: "menu", cameFromMenu: false }, "", "/more-tests");
@@ -1684,7 +1756,9 @@ export default function App() {
     }
   };
 
-  const currentTheme = THEMES.find(t => t.id === selectedThemeId) || THEMES[0];
+  const currentTheme = isLegacyView
+    ? THEMES.find(t => t.id === "cosmic") || THEMES[0]
+    : THEMES.find(t => t.id === selectedThemeId) || THEMES[0];
 
   const themeStyles = {
     '--theme-from': currentTheme.colors.from,
@@ -1710,7 +1784,7 @@ export default function App() {
   return (
     <div 
       style={themeStyles}
-      className={`relative min-h-screen overflow-hidden ${activeView === "kohi" && isDarkMode ? "bg-black" : isDarkMode ? "bg-[#0b0b16] text-white" : "bg-slate-50 text-slate-900"}`}
+      className={`relative min-h-screen overflow-hidden ${isLegacyView ? "legacy-old" : "premium-navy"} ${activeView === "kohi" && isDarkMode ? "bg-black" : isDarkMode ? "bg-[#0b0b16] text-white" : "bg-slate-50 text-slate-900"}`}
     >
       
       {/* Decorative ambient blurred layout */}
@@ -1727,6 +1801,10 @@ export default function App() {
         {/* Top Control Header */}
         <div className="flex w-full max-w-7xl items-center justify-between border-b pb-4 mb-6 border-slate-200/50 dark:border-white/10">
           <div className="flex items-center gap-2">
+            <img src="/favicon.svg" alt="CPS Precision Hub logo" className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
+            {isLegacyView && (
+              <span className="rounded-full border border-slate-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:border-white/20 dark:text-slate-400">Legacy view</span>
+            )}
             {activeView !== "cps" && (
               <button
                 onClick={() => {
@@ -1758,8 +1836,11 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Device Detection Badge */}
-            <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider border sm:px-4 sm:py-2.5 sm:text-xs ${
+            {/* Device Detection Badge — hidden on mobile only so the top header
+                fits on a single row (see mobile-nav note below). It is informational
+                only, not a control: device detection itself is unchanged, and the badge
+                returns at sm: and wider, where all header options stay visible. */}
+            <div className={`hidden sm:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider border sm:px-4 sm:py-2.5 sm:text-xs ${
               isDarkMode 
                 ? "bg-white/5 border-white/5 text-slate-300" 
                 : "bg-white border-slate-200 text-slate-600 shadow-sm"
@@ -2193,7 +2274,7 @@ export default function App() {
           {/* Full-width About & Frequently Asked Questions Section below the main layout grid */}
           {activeView === "cps" && (
             <section
-              className="w-full mt-8 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-xs space-y-6"
+              className="premium-manifesto w-full mt-8 rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-6 shadow-xs space-y-6"
               style={{ overflowAnchor: "none" }}
             >
               <div className="space-y-3">
@@ -2235,7 +2316,7 @@ export default function App() {
                   <li className="flex items-start gap-2">
                     <span className="mt-1.5 flex-shrink-0 h-1.5 w-1.5 rounded-full theme-bg-to-dot" />
                     <span>
-                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">Scroll lock during testing</strong> — on touch devices, the page automatically becomes non-scrollable while a test is running, since rapid tapping on a scrollable page causes accidental scrolls and ruins your score. It's a small detail most competitor sites completely ignore.
+                      <strong className="text-slate-700 dark:text-slate-300 font-semibold">Scroll lock during testing</strong> — on touch devices, a swipe on the click area still scrolls the page, while a genuine tap counts as a click — so scrolling can no longer accidentally start a test or wipe a result. It's a small detail most competitor sites completely ignore.
                     </span>
                   </li>
                   <li className="flex items-start gap-2">
