@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Keyboard, RefreshCw, AlertCircle } from 'lucide-react';
+import { handleGlowMove } from './glow';
 
 interface KeyGhostingProps {
   isDarkMode: boolean;
@@ -236,9 +237,9 @@ export default function KeyGhostingTest({ isDarkMode, addHistory }: KeyGhostingP
       </div>
 
       {/* Keyboard Canvas Container */}
-      <div className={`w-full overflow-x-auto rounded-3xl border p-4 sm:p-6 ${
+      <div className={`pv-glow w-full overflow-x-auto rounded-3xl border p-4 sm:p-6 ${
         isDarkMode ? "border-white/10 bg-[#0d0d1a]" : "border-slate-200 bg-white shadow-sm"
-      }`}>
+      }` } onPointerMove={handleGlowMove}>
         <div className="min-w-[580px] space-y-1.5 font-sans">
           {KEY_ROWS.map((row, rIdx) => (
             <div key={rIdx} className="flex justify-center gap-1">

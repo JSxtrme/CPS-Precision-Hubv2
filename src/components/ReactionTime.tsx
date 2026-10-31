@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Play, AlertTriangle } from 'lucide-react';
+import { handleGlowMove } from './glow';
 
 interface ReactionTimeProps {
   addHistory: (testType: string, duration: number, score: number, rating: string) => void;
@@ -325,7 +326,7 @@ export function ReactionTimeTest({ addHistory, isDarkMode }: ReactionTimeProps) 
         onPointerDown={(e) => {
           if (e.button === 0) handleTrigger(e);
         }}
-        className={`relative flex h-72 w-full flex-col items-center justify-center rounded-3xl border-2 transition-all duration-150 cursor-pointer text-center p-6 select-none ${
+        className={`pv-glow relative flex h-72 w-full flex-col items-center justify-center rounded-3xl border-2 transition-all duration-150 cursor-pointer text-center p-6 select-none ${
           status === "idle"
             ? isDarkMode
               ? "border-white/10 bg-white/5 text-white hover:border-slate-500/50"
@@ -340,7 +341,7 @@ export function ReactionTimeTest({ addHistory, isDarkMode }: ReactionTimeProps) 
                   ? "border-amber-500 bg-amber-500/10 text-amber-500"
                   : "border-emerald-500 bg-slate-500/5 text-slate-800 dark:text-white"
         }`}
-      >
+      onPointerMove={handleGlowMove} >
         {status === "idle" && (
           <div className="space-y-4">
             {/* Visual Traffic Light */}
