@@ -38,12 +38,16 @@
       }
 .pv-scope *{ box-sizing:border-box; }
 .pv-scope{ scroll-behavior:smooth; }
-.pv-scope{ overflow:hidden; }
+/* NOTE: do NOT put overflow:hidden on .pv-scope. The preview's body rule
+   was scoped here in PR #3, and any non-visible overflow on a sticky
+   element's ancestor traps it: the header then scrolls away with the page
+   instead of sticking. overflow-x:clip below clips sideways overflow
+   without creating a scroll container, so sticky keeps working. */
 .pv-scope{
         margin:0; background:var(--bg); color:var(--text);
         font-family:"Manrope", system-ui, -apple-system, sans-serif;
         -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
-        overflow-x:hidden; line-height:1.5;
+        line-height:1.5;
       }
 ::selection{ background:var(--accent); color:var(--accent-ink); }
 .pv-scope button{ font-family:inherit; cursor:pointer; }
@@ -416,7 +420,7 @@
 .pv-scope .scrub .w{ opacity:1; }
 .pv-scope{ scroll-behavior:auto; }}
 
-.pv-scope{ background:var(--bg); color:var(--text); font-family:"Manrope",system-ui,-apple-system,sans-serif; min-height:100vh; overflow-x:hidden; line-height:1.5; position:relative; }
+.pv-scope{ background:var(--bg); color:var(--text); font-family:"Manrope",system-ui,-apple-system,sans-serif; min-height:100vh; overflow-x:clip; overflow-y:visible; line-height:1.5; position:relative; }
 .pv-scope .pv-main{ position:relative; z-index:1; max-width:1120px; margin:0 auto; padding:0 22px 80px; }
 .pv-scope .pv-view{ position:relative; }
 .pv-scope .pv-pad-btn{ background:none; border:none; padding:0; width:100%; text-align:inherit; color:inherit; }
