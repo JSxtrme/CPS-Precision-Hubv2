@@ -301,7 +301,7 @@ export default function App() {
       <header ref={headerRef}>
         <div className="header-in">
           <a className="wordmark" href="/" onClick={(e) => { e.preventDefault(); navigate('cps'); }} aria-label="CPS Precision Hub — home">
-            <span className="mark" aria-hidden="true"><img src="/favicon.svg" alt="" style={{ width: 19, height: 19 }} /></span>
+            <span className="mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true"><path d="M9 9V5.5a1.5 1.5 0 0 1 3 0V9m0-4.5v-1a1.5 1.5 0 0 1 3 0V9m0-3.5a1.5 1.5 0 0 1 3 0V13a7 7 0 0 1-7 7h-.8a7 7 0 0 1-5.9-3.3L2.6 13a1.6 1.6 0 0 1 2.6-1.8L7 13V6.5a1.5 1.5 0 0 1 2 0" /></svg></span>
             <span><b>CPS Precision Hub</b><small>Precision Input Lab</small></span>
           </a>
           <nav className="mainnav" aria-label="Tests">
