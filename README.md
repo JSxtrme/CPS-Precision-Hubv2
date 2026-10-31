@@ -1,3 +1,5 @@
+<img width="2340" height="746" alt="Image" src="https://github.com/user-attachments/assets/ac6fac6c-9d2a-4ab2-843e-2238f3268da5" />
+
 # CPS Precision Hub
 
 A click-speed and input-performance testing suite for gamers, Minecraft PvP players, and PC enthusiasts. Measure how fast you can click, how quickly you react, and how your actual hardware responds — all in one place, with no account and nothing sent to a server.
