@@ -22,6 +22,11 @@ import { REACTION_TIERS } from './ReactionTime';
  *    (Hz / Keys / ms / Hits / Steps, otherwise 2 decimals).
  * If a test has no old best key, its leaderboard is derived from
  * history entries instead, and the panel says so.
+ * Aim exception: Aim's ladder is duration-scaled (see AIM_BASE_BANDS)
+ * and its Best is per-duration. The effective duration arrives via the
+ * `duration` prop from App: the selected pill before a test, the
+ * just-finished test's duration while its result screen is up, and back
+ * to the pill once the test is restarted/abandoned or a new one starts.
  */
 
 const PREVIEW_RANKS = [
@@ -34,6 +39,54 @@ const PREVIEW_RANKS = [
   { name: 'Master', min: 13, max: 16, color: '#b9cdf5' },
   { name: 'Legendary', min: 16, max: Infinity, color: '#e3c078' },
 ];
+
+/**
+ * Aim baseline bands — the 15s bands the old site used (and the ones
+ * this panel showed for every duration before this fix):
+ * Beginner 0–3, Average 4–6, Good 7–10, Great 11–14, Pro 15–19,
+ * Legendary 20+ hits. Aim is the ONLY count-based module with a timer,
+ * so it is the only ladder that scales: a 5s run cannot reasonably be
+ * judged against 15s hit counts, and a 60s run should not earn
+ * Legendary at just 20 hits.
+ *
+ * Scaling: scaledMin = ceil(baselineMin × duration / 15), clamped so
+ * bands stay strictly increasing (each covers at least one hit count).
+ * Ceil (not round) keeps the tier honest by rate: e.g. Average needs
+ * 4 hits in 15s, so in 5s it needs ceil(4/3) = 2 hits — 1 hit in 5s is
+ * only 3 hits at 15s pace, still Beginner. Resulting bands:
+ *   5s:  0–1, 2, 3, 4, 5–6, 7+
+ *   10s: 0–2, 3–4, 5–7, 8–9, 10–13, 14+
+ *   15s: 0–3, 4–6, 7–10, 11–14, 15–19, 20+ (baseline, unchanged)
+ *   30s: 0–7, 8–13, 14–21, 22–29, 30–39, 40+
+ *   60s: 0–15, 16–27, 28–43, 44–59, 60–79, 80+
+ * The per-run rating stored in history (hits × accuracy) is NOT
+ * rescaled here — only this leaderboard is; see the aim note below.
+ */
+const AIM_BASE_BANDS = [
+  { name: 'Beginner', min: 0, color: '#8494b0' },
+  { name: 'Average', min: 4, color: '#a3bce4' },
+  { name: 'Good', min: 7, color: '#7db1f5' },
+  { name: 'Great', min: 11, color: '#6ea8ff' },
+  { name: 'Pro', min: 15, color: '#517dff' },
+  { name: 'Legendary', min: 20, color: '#e3c078' },
+];
+const AIM_BASELINE_SECONDS = 15;
+const AIM_DURATIONS = [5, 10, 15, 30, 60];
+
+function aimBandsFor(duration: number): { rows: LadderRow[]; mins: number[]; duration: number } {
+  const eff = AIM_DURATIONS.includes(duration) ? duration : AIM_BASELINE_SECONDS;
+  const mins: number[] = [];
+  AIM_BASE_BANDS.forEach((b, i) => {
+    const raw = Math.ceil((b.min * eff) / AIM_BASELINE_SECONDS);
+    mins.push(i === 0 ? 0 : Math.max(raw, mins[i - 1] + 1));
+  });
+  const rows: LadderRow[] = AIM_BASE_BANDS.map((b, i) => {
+    if (i === AIM_BASE_BANDS.length - 1) return { name: b.name, range: `${mins[i]}+ hits`, color: b.color };
+    const hi = mins[i + 1] - 1;
+    return { name: b.name, range: hi === mins[i] ? `${mins[i]} hits` : `${mins[i]}–${hi} hits`, color: b.color };
+  });
+  return { rows, mins, duration: eff };
+}
 
 type LadderRow = { name: string; range: string; color: string };
 type LadderKind = 'cps' | 'reaction' | 'polling' | 'double' | 'ghosting' | 'scroll' | 'aim';
@@ -216,7 +269,7 @@ const META: Record<string, ModuleMeta> = {
       'Click randomly-appearing targets to test raw mechanical hand-eye reflex time and precision tracking, simulating competitive FPS target-switching routines. It tracks accuracy %, average time-to-hit, and misses — not just how many targets you hit.',
     aboutBullets: [
       ['It measures', 'hits in the chosen window, plus accuracy and average reaction per target.'],
-      ['Duration is now selectable', '5s, 10s, 15s, 30s or 60s (was fixed at 15s). Each run lands in history with its duration, so runs of different lengths stay comparable.'],
+      ['Duration is now selectable', '5s, 10s, 15s, 30s or 60s (was fixed at 15s). Each run lands in history with its duration. The leaderboard scales its bands with the selected (or just-finished) duration, and Best is the best run at that same duration — so a 5s run is never judged against 15s hit counts.'],
       ['Rating in history', 'combines hits and accuracy (for example “Pro (92% Acc)”) — the ladder below ranks by hits alone, and says so.'],
     ],
   },
@@ -258,8 +311,13 @@ function formatScore(view: string, item: HistoryItem): string {
   return `${item.score.toFixed(2)}`;
 }
 
-function ladderFor(meta: ModuleMeta, items: HistoryItem[]): { rows: LadderRow[]; best: number | null; current: string | null; next: string | null; progress: number; note: string } {
+function ladderFor(meta: ModuleMeta, items: HistoryItem[], aimDuration?: number): { rows: LadderRow[]; best: number | null; current: string | null; next: string | null; progress: number; note: string; aimDuration: number | null } {
   const lowerBetter = meta.ladderKind === 'reaction' || meta.ladderKind === 'double';
+  // Aim only: the duration the ladder applies to. The caller (App) passes
+  // the selected pill duration, or the just-finished test's duration while
+  // its result screen is up — see App's handleAimState. Anything else
+  // falls back to the 15s baseline inside aimBandsFor.
+  const aim = meta.ladderKind === 'aim' ? aimBandsFor(aimDuration ?? AIM_BASELINE_SECONDS) : null;
   let best: number | null = null;
   let note = '';
   if (meta.ladderKind === 'reaction') {
@@ -277,9 +335,16 @@ function ladderFor(meta: ModuleMeta, items: HistoryItem[]): { rows: LadderRow[];
   } else if (meta.ladderKind === 'double') {
     best = items.length ? Math.min(...items.map((i) => i.score)) : null;
     note = 'Fastest = lowest recorded double interval in history.';
-  } else if (meta.ladderKind === 'ghosting' || meta.ladderKind === 'aim') {
+  } else if (meta.ladderKind === 'ghosting') {
     best = items.length ? Math.max(...items.map((i) => i.score)) : null;
     note = 'Best = highest value in history (no stored best key for this module).';
+  } else if (meta.ladderKind === 'aim' && aim) {
+    // Per-duration best only: a 60s best (e.g. 40 hits) must never sit as
+    // "Best" under a 5s-scaled ladder. Runs at other durations stay
+    // visible in Recent activity, each labelled with its own duration.
+    const same = items.filter((i) => i.duration === aim.duration);
+    best = same.length ? Math.max(...same.map((i) => i.score)) : null;
+    note = `Best = best ${aim.duration}s run in history (no stored best key for this module). Bands scaled from the 15s baseline by ×${aim.duration}/15; the ladder ranks by hits alone, while the rating stored in history still combines hits × accuracy, as before.`;
   }
   if (meta.ladderKind === 'scroll' && best === null) {
     // Fallback: derive steps/s from history (score = total steps, duration in seconds).
@@ -318,15 +383,8 @@ function ladderFor(meta: ModuleMeta, items: HistoryItem[]): { rows: LadderRow[];
       { name: 'Fast', range: '50–99 steps/s', color: '#6ea8ff' },
       { name: 'Blazing', range: '100+ steps/s', color: '#e3c078' },
     ];
-  } else {
-    rows = [
-      { name: 'Beginner', range: '0–3 hits', color: '#8494b0' },
-      { name: 'Average', range: '4–6 hits', color: '#a3bce4' },
-      { name: 'Good', range: '7–10 hits', color: '#7db1f5' },
-      { name: 'Great', range: '11–14 hits', color: '#6ea8ff' },
-      { name: 'Pro', range: '15–19 hits', color: '#517dff' },
-      { name: 'Legendary', range: '20+ hits', color: '#e3c078' },
-    ];
+  } else if (aim) {
+    rows = aim.rows;
   }
 
   // Current tier: index into rows, using each kind's ordering.
@@ -344,8 +402,9 @@ function ladderFor(meta: ModuleMeta, items: HistoryItem[]): { rows: LadderRow[];
       currentIdx = best! >= 10 ? 2 : best! >= 6 ? 1 : 0;
     } else if (meta.ladderKind === 'scroll') {
       currentIdx = best! >= 100 ? 3 : best! >= 50 ? 2 : best! >= 20 ? 1 : 0;
-    } else {
-      currentIdx = best! >= 20 ? 5 : best! >= 15 ? 4 : best! >= 11 ? 3 : best! >= 7 ? 2 : best! >= 4 ? 1 : 0;
+    } else if (aim) {
+      // Scaled bands: tier = highest band whose scaled minimum is met.
+      currentIdx = aim.mins.reduce((acc, m, i) => (best! >= m ? i : acc), 0);
     }
   }
   const current = currentIdx >= 0 ? rows[currentIdx].name : null;
@@ -361,10 +420,10 @@ function ladderFor(meta: ModuleMeta, items: HistoryItem[]): { rows: LadderRow[];
       progress = currentIdx === rows.length - 1 ? 1 : 0.5;
     }
   }
-  return { rows, best, current, next, progress, note };
+  return { rows, best, current, next, progress, note, aimDuration: aim ? aim.duration : null };
 }
 
-export default function ModuleExtras({ view, history, onClear }: { view: string; history: HistoryItem[]; onClear?: () => void }) {
+export default function ModuleExtras({ view, history, onClear, duration }: { view: string; history: HistoryItem[]; onClear?: () => void; /** Aim only: selected pill duration, or the just-finished test's duration (App supplies the effective one). Ignored by every other module. */ duration?: number }) {
   const meta = META[view];
   const items = useMemo(() => {
     if (!meta) return [];
@@ -373,8 +432,8 @@ export default function ModuleExtras({ view, history, onClear }: { view: string;
   const ladder = useMemo(() => {
     if (!meta) return null;
     const all = history.filter((h) => meta.testTypes.includes(h.testType));
-    return ladderFor(meta, all);
-  }, [meta, history]);
+    return ladderFor(meta, all, duration);
+  }, [meta, history, duration]);
   if (!meta || !ladder) return null;
 
   const fmtTime = (ts: number) => {
@@ -421,7 +480,7 @@ export default function ModuleExtras({ view, history, onClear }: { view: string;
         <div className="panel">
           <div className="panel-head">
             <h3>Leaderboard</h3>
-            <span className="tag">PERSONAL BEST</span>
+            <span className="tag">{meta.ladderKind === 'aim' && ladder.aimDuration !== null ? `${ladder.aimDuration}s test` : 'PERSONAL BEST'}</span>
           </div>
           <div className="rank-list">
             {ladder.rows.map((row) => (
@@ -441,7 +500,7 @@ export default function ModuleExtras({ view, history, onClear }: { view: string;
             <div style={{ marginTop: 10, fontSize: 12, color: 'var(--muted)', fontWeight: 500 }}>
               {ladder.best === null
                 ? 'No personal best yet.'
-                : <>Best: <b style={{ color: 'var(--text)' }}>{meta.ladderKind === 'reaction' || meta.ladderKind === 'double' ? ladder.best.toFixed(1) : ladder.best.toFixed(2)} {meta.unit}</b></>}
+                : <>Best: <b style={{ color: 'var(--text)' }}>{meta.ladderKind === 'aim' ? ladder.best.toFixed(0) : meta.ladderKind === 'reaction' || meta.ladderKind === 'double' ? ladder.best.toFixed(1) : ladder.best.toFixed(2)} {meta.unit}</b></>}
               <div style={{ marginTop: 4, fontSize: 11 }}>{ladder.note}</div>
             </div>
           </div>

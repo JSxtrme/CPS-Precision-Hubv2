@@ -1490,6 +1490,10 @@ interface AltTestProps {
   addHistory: (testType: string, duration: number, score: number, rating: string) => void;
   isDarkMode: boolean;
   isTouchDevice?: boolean;
+  /** Aim Trainer only: reports the selected pill duration + test status so
+   * App can scale the leaderboard (pill before a test, finished test's
+   * duration while its result screen is up). Ignored by other modules. */
+  onAimState?: (duration: number, status: 'idle' | 'running' | 'finished') => void;
 }
 
 export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: AltTestProps) {
@@ -3611,7 +3615,7 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
 /* ==========================================================================
    AIM TRAINER
    ========================================================================== */
-export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false }: AltTestProps) {
+export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false, onAimState }: AltTestProps) {
   const [status, setStatus] = useState<"idle" | "running" | "finished">("idle");
   const [duration, setDuration] = useState(15);
   const [timeLeft, setTimeLeft] = useState(15);
@@ -3724,6 +3728,14 @@ export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false }: Al
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
+
+  // Report pill + status so App's leaderboard can follow the pill before
+  // a test and pin to the finished test's duration while its result is
+  // on screen. Fires on mount too (idle/15), which resets any stale
+  // finished duration left over from a previous visit to this module.
+  useEffect(() => {
+    onAimState?.(duration, status);
+  }, [duration, status, onAimState]);
 
   const totalClicks = hits + misses;
   const accuracy = totalClicks > 0 ? (hits / totalClicks) * 100 : 100;

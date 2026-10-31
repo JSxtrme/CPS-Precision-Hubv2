@@ -134,6 +134,18 @@ export default function App() {
   const [history, setHistory] = useState<HistoryItem[]>(() => {
     try { const s = localStorage.getItem('cps-test-history'); return s ? JSON.parse(s) : []; } catch { return []; }
   });
+  // Aim leaderboard duration: the selected pill (default 15s, mirrors
+  // AimTrainer's own state via handleAimState) — except while a finished
+  // test's result screen is up, when the leaderboard pins to that test's
+  // duration instead of a pill changed afterwards. Restart/abandon/start
+  // clears the pin, so the pill rules again before the next test.
+  const [aimDuration, setAimDuration] = useState(15);
+  const [aimFinishedDuration, setAimFinishedDuration] = useState<number | null>(null);
+  const handleAimState = useCallback((d: number, status: 'idle' | 'running' | 'finished') => {
+    setAimDuration(d);
+    setAimFinishedDuration(status === 'finished' ? d : null);
+  }, []);
+  const aimLeaderboardDuration = aimFinishedDuration ?? aimDuration;
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [scrollToToolkit, setScrollToToolkit] = useState(() => { try { return window.location.pathname.replace(/\/$/, '') === '/more-tests'; } catch { return false; } });
   const scopeRef = useRef<HTMLDivElement | null>(null);
@@ -401,7 +413,7 @@ export default function App() {
         {activeView === 'jitter' && (<section className="view">{moduleHead('Module 10 — Jitter', <>Jitter <span className="acc">Click</span></>, 'Vibrate your whole arm, not just the finger. A PvP classic, timed properly.')}{engineWrap(<JitterTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="jitter" history={history} onClear={handleClearHistory} /></section>)}
         {activeView === 'butterfly' && (<section className="view">{moduleHead('Module 11 — Butterfly', <>Butterfly <span className="acc">Click</span></>, 'Two fingers alternating on one button. Double the fingers, double the rate.')}{engineWrap(<ButterflyTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="butterfly" history={history} onClear={handleClearHistory} /></section>)}
         {activeView === 'kohi' && (<section className="view">{moduleHead('Module 12 — Kohi', <>Kohi <span className="acc">Click</span></>, 'The classic 10-second measure from the old Kohi days. Pure, nostalgic CPS.')}{engineWrap(<KohiTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="kohi" history={history} onClear={handleClearHistory} /></section>)}
-        {activeView === 'aim' && (<section className="view">{moduleHead('Extra — Aim', <>Aim <span className="acc">Trainer</span></>, 'Click randomly-appearing targets as fast and accurately as possible.')}{engineWrap(<AimTrainer addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="aim" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'aim' && (<section className="view">{moduleHead('Extra — Aim', <>Aim <span className="acc">Trainer</span></>, 'Click randomly-appearing targets as fast and accurately as possible.')}{engineWrap(<AimTrainer addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} onAimState={handleAimState} />)}<ModuleExtras view="aim" history={history} onClear={handleClearHistory} duration={aimLeaderboardDuration} /></section>)}
         {activeView === 'settings' && (
           <section className="view" id="view-settings">
             <div className="view-head">
