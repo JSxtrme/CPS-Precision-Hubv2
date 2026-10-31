@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { ViewType, HistoryItem } from './types';
 import './preview.css';
 import FAQs from './components/FAQs';
+import ModuleExtras from './components/ModuleExtras';
 import PreviewCps, { PreviewSettings } from './components/PreviewCps';
 import KeyGhostingTest from './components/KeyGhosting';
 import {
@@ -264,6 +265,12 @@ export default function App() {
       return updated;
     });
   }, []);
+  // Old site's per-page Clear: clears the history array only, bests stay.
+  // (Settings' Wipe data is separate — it clears bests too.)
+  const handleClearHistory = useCallback(() => {
+    setHistory([]);
+    try { localStorage.removeItem('cps-test-history'); } catch {}
+  }, []);
   const wipeData = () => {
     setHistory([]);
     try {
@@ -331,7 +338,7 @@ export default function App() {
                 <span>Click faster <i>◆</i></span><span>Butterfly <i>◆</i></span><span>Jitter <i>◆</i></span><span>Drag click <i>◆</i></span><span>16+ CPS = Legendary <i>◆</i></span><span>Measured, not guessed <i>◆</i></span>
               </div>
             </div>
-            <PreviewCps onAddHistory={handleAddHistory} isTouchDevice={isTouchDevice} history={history} settings={pvSettings} />
+            <PreviewCps onAddHistory={handleAddHistory} isTouchDevice={isTouchDevice} history={history} settings={pvSettings} onClear={handleClearHistory} />
             <div className="manifesto">
               <div className="k">Why CPS Precision Hub</div>
               <ScrubText motionOK={motionOK} />
@@ -383,18 +390,18 @@ export default function App() {
             <footer><span>CPS Precision Hub — <span className="acc">Input Lab</span></span><span>Designed for precision</span><span>Timed with performance.now()</span></footer>
           </section>
         )}
-        {activeView === 'reaction' && (<section className="view">{moduleHead('Module 02 — Reflex Latency', <>Reaction <span className="acc">Time</span></>, 'Wait for the panel to flash, then strike. Five rounds expose your true average reflex latency.')}{engineWrap(<ReactionTimeTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />)}</section>)}
-        {activeView === 'spacebar' && (<section className="view">{moduleHead('Module 03 — Key Velocity', <>Spacebar <span className="acc">Counter</span></>, 'The biggest key on the board gets the CPS treatment.')}{engineWrap(<SpacebarTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'polling' && (<section className="view">{moduleHead('Module 04 — Sensor Report Rate', <>Polling <span className="acc">Rate</span></>, 'How often your mouse actually reports in. Sweep the pad and read the Hz.')}{engineWrap(<PollingRateTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />)}</section>)}
-        {activeView === 'doubleclick' && (<section className="view">{moduleHead('Module 05 — Switch Diagnostics', <>Double <span className="acc">Click</span></>, 'Catches switch chatter — when one honest press registers twice.')}{engineWrap(<DoubleClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'ghosting' && (<section className="view">{moduleHead('Module 06 — Matrix Rollover', <>Key <span className="acc">Ghosting</span></>, "Hold a chord and see which keys your keyboard's matrix quietly drops.")}{engineWrap(<KeyGhostingTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />)}</section>)}
-        {activeView === 'scroll' && (<section className="view">{moduleHead('Module 07 — Wheel Velocity', <>Scroll <span className="acc">Speed</span></>, 'Five seconds of pure wheel velocity, measured in raw pixels of travel.')}{engineWrap(<ScrollTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'dragclick' && (<section className="view">{moduleHead('Module 08 — Friction Technique', <>Drag <span className="acc">Click</span></>, 'Friction is a feature. Drag across the button and let the switch bounce.')}{engineWrap(<DragClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'rightclick' && (<section className="view">{moduleHead('Module 09 — Right Click', <>Right <span className="acc">Click</span></>, 'The bridging button gets its own CPS test. Off-hand speed counts too.')}{engineWrap(<RightClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'jitter' && (<section className="view">{moduleHead('Module 10 — Jitter', <>Jitter <span className="acc">Click</span></>, 'Vibrate your whole arm, not just the finger. A PvP classic, timed properly.')}{engineWrap(<JitterTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'butterfly' && (<section className="view">{moduleHead('Module 11 — Butterfly', <>Butterfly <span className="acc">Click</span></>, 'Two fingers alternating on one button. Double the fingers, double the rate.')}{engineWrap(<ButterflyTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'kohi' && (<section className="view">{moduleHead('Module 12 — Kohi', <>Kohi <span className="acc">Click</span></>, 'The classic 10-second measure from the old Kohi days. Pure, nostalgic CPS.')}{engineWrap(<KohiTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
-        {activeView === 'aim' && (<section className="view">{moduleHead('Extra — Aim', <>Aim <span className="acc">Trainer</span></>, 'Click randomly-appearing targets as fast and accurately as possible.')}{engineWrap(<AimTrainer addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}</section>)}
+        {activeView === 'reaction' && (<section className="view">{moduleHead('Module 02 — Reflex Latency', <>Reaction <span className="acc">Time</span></>, 'Wait for the panel to flash, then strike. Five rounds expose your true average reflex latency.')}{engineWrap(<ReactionTimeTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />)}<ModuleExtras view="reaction" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'spacebar' && (<section className="view">{moduleHead('Module 03 — Key Velocity', <>Spacebar <span className="acc">Counter</span></>, 'The biggest key on the board gets the CPS treatment.')}{engineWrap(<SpacebarTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="spacebar" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'polling' && (<section className="view">{moduleHead('Module 04 — Sensor Report Rate', <>Polling <span className="acc">Rate</span></>, 'How often your mouse actually reports in. Sweep the pad and read the Hz.')}{engineWrap(<PollingRateTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />)}<ModuleExtras view="polling" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'doubleclick' && (<section className="view">{moduleHead('Module 05 — Switch Diagnostics', <>Double <span className="acc">Click</span></>, 'Catches switch chatter — when one honest press registers twice.')}{engineWrap(<DoubleClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="doubleclick" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'ghosting' && (<section className="view">{moduleHead('Module 06 — Matrix Rollover', <>Key <span className="acc">Ghosting</span></>, "Hold a chord and see which keys your keyboard's matrix quietly drops.")}{engineWrap(<KeyGhostingTest addHistory={handleAddHistory} isDarkMode={isDarkMode} />)}<ModuleExtras view="ghosting" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'scroll' && (<section className="view">{moduleHead('Module 07 — Wheel Velocity', <>Scroll <span className="acc">Speed</span></>, 'Five seconds of pure wheel velocity, measured in raw pixels of travel.')}{engineWrap(<ScrollTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="scroll" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'dragclick' && (<section className="view">{moduleHead('Module 08 — Friction Technique', <>Drag <span className="acc">Click</span></>, 'Friction is a feature. Drag across the button and let the switch bounce.')}{engineWrap(<DragClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="dragclick" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'rightclick' && (<section className="view">{moduleHead('Module 09 — Right Click', <>Right <span className="acc">Click</span></>, 'The bridging button gets its own CPS test. Off-hand speed counts too.')}{engineWrap(<RightClickTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="rightclick" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'jitter' && (<section className="view">{moduleHead('Module 10 — Jitter', <>Jitter <span className="acc">Click</span></>, 'Vibrate your whole arm, not just the finger. A PvP classic, timed properly.')}{engineWrap(<JitterTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="jitter" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'butterfly' && (<section className="view">{moduleHead('Module 11 — Butterfly', <>Butterfly <span className="acc">Click</span></>, 'Two fingers alternating on one button. Double the fingers, double the rate.')}{engineWrap(<ButterflyTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="butterfly" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'kohi' && (<section className="view">{moduleHead('Module 12 — Kohi', <>Kohi <span className="acc">Click</span></>, 'The classic 10-second measure from the old Kohi days. Pure, nostalgic CPS.')}{engineWrap(<KohiTest addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="kohi" history={history} onClear={handleClearHistory} /></section>)}
+        {activeView === 'aim' && (<section className="view">{moduleHead('Extra — Aim', <>Aim <span className="acc">Trainer</span></>, 'Click randomly-appearing targets as fast and accurately as possible.')}{engineWrap(<AimTrainer addHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />)}<ModuleExtras view="aim" history={history} onClear={handleClearHistory} /></section>)}
         {activeView === 'settings' && (
           <section className="view" id="view-settings">
             <div className="view-head">

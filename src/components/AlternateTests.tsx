@@ -15,6 +15,7 @@ import {
   Mouse
 } from 'lucide-react';
 import { Ripple, ViewType, getRating } from '../types';
+import { handleGlowMove } from './glow';
 
 // Custom hook to disable page scrolling and zooming on touch devices when a test is active
 export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean) {
@@ -1324,14 +1325,15 @@ function AltDurationSelector({
   selected,
   disabled,
   onSelect,
-  isDarkMode
+  isDarkMode,
+  durations = [1, 2, 3, 5, 10, 15, 30, 60, -1]
 }: {
   selected: number;
   disabled: boolean;
   onSelect: (duration: number) => void;
   isDarkMode: boolean;
+  durations?: number[];
 }) {
-  const durations = [1, 2, 3, 5, 10, 15, 30, 60, -1];
   return (
     <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2 mb-4">
       {durations.map(d => {
@@ -1685,12 +1687,12 @@ export function SpacebarTest({ addHistory, isDarkMode, isTouchDevice = false }: 
             handleReset();
           }
         }}
-        className={`relative flex min-h-64 h-auto w-full flex-col items-center justify-center rounded-3xl border-2 p-6 text-center select-none transition-all ${
-          status === "finished" && !isTouchDevice ? "cursor-pointer hover:border-fuchsia-500/40" : ""
+        className={`pv-glow relative flex min-h-64 h-auto w-full flex-col items-center justify-center rounded-3xl border-2 p-6 text-center select-none transition-all ${
+          status === "finished" && !isTouchDevice ? "cursor-pointer hover:border-blue-400/40" : ""
         } ${
-          isSpacePressed ? "scale-98 border-fuchsia-500" : isDarkMode ? "border-white/15" : "border-slate-200"
+          isSpacePressed ? "scale-98 border-blue-400" : isDarkMode ? "border-white/15" : "border-slate-200"
         } ${isDarkMode ? "bg-[#0b0b1a]" : "bg-white shadow-sm text-slate-800"}`}
-      >
+      onPointerMove={handleGlowMove} >
         {isTouchDevice && status === "finished" && (
           <div
             onClick={(e) => {
@@ -1961,10 +1963,10 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
       <div
         onContextMenu={(e) => e.preventDefault()}
         onMouseDown={handleMouseDown}
-        className={`relative flex min-h-64 h-auto py-6 px-6 w-full overflow-hidden select-none flex-col items-center justify-center rounded-3xl border-2 text-center cursor-pointer transition-all ${
+        className={`pv-glow relative flex min-h-64 h-auto py-6 px-6 w-full overflow-hidden select-none flex-col items-center justify-center rounded-3xl border-2 text-center cursor-pointer transition-all ${
           status === "running" ? "theme-border-to shadow-md" : isDarkMode ? "border-white/15" : "border-slate-200"
         } ${isDarkMode ? "bg-[#0b0b1a]" : "bg-white shadow-sm text-slate-800"}`}
-      >
+      onPointerMove={handleGlowMove} >
         {ripples.map(r => (
           <span
             key={r.id}
@@ -2095,6 +2097,7 @@ export function PollingRateTest({ addHistory, isDarkMode }: { addHistory: (testT
   };
 
   const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    handleGlowMove(e);
     if (!active) return;
     const fallbackNow = performance.now();
 
@@ -2167,7 +2170,7 @@ export function PollingRateTest({ addHistory, isDarkMode }: { addHistory: (testT
 
       <div
         onPointerMove={handlePointerMove}
-        className={`relative flex h-64 w-full flex-col items-center justify-center rounded-3xl border-2 border-dashed p-6 text-center transition-all ${
+        className={`pv-glow relative flex h-64 w-full flex-col items-center justify-center rounded-3xl border-2 border-dashed p-6 text-center transition-all ${
           active ? "border-emerald-500 bg-emerald-500/5 cursor-crosshair" : isDarkMode ? "border-white/15" : "border-slate-300"
         } ${isDarkMode ? "bg-[#0b0b1a]" : "bg-white shadow-sm text-slate-800"}`}
       >
@@ -2397,10 +2400,10 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
       <button
         onContextMenu={(e) => e.preventDefault()}
         onMouseDown={handleMouseDown}
-        className={`relative flex min-h-64 h-auto w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 p-6 text-center cursor-pointer ${
+        className={`pv-glow relative flex min-h-64 h-auto w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 p-6 text-center cursor-pointer ${
           status === "running" ? "border-pink-500" : isDarkMode ? "border-white/15" : "border-slate-200"
         } ${isDarkMode ? "bg-[#0c0c1c]" : "bg-white shadow-sm text-slate-800"}`}
-      >
+      onPointerMove={handleGlowMove} >
         {ripples.map(r => (
           <span
             key={r.id}
@@ -2700,14 +2703,14 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
       <button
         onContextMenu={(e) => e.preventDefault()}
         onMouseDown={handleMouseDown}
-        className={`relative flex min-h-64 h-auto w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 p-6 text-center cursor-pointer ${
-          status === "running" ? "border-violet-500" : isDarkMode ? "border-white/15" : "border-slate-200"
+        className={`pv-glow relative flex min-h-64 h-auto w-full select-none flex-col items-center justify-center overflow-hidden rounded-3xl border-2 p-6 text-center cursor-pointer ${
+          status === "running" ? "border-blue-400" : isDarkMode ? "border-white/15" : "border-slate-200"
         } ${isDarkMode ? "bg-[#0b0c1c]" : "bg-white shadow-sm text-slate-800"}`}
-      >
+      onPointerMove={handleGlowMove} >
         {ripples.map(r => (
           <span
             key={r.id}
-            className="pointer-events-none absolute h-4 w-4 animate-[ripple_0.6s_ease-out_forwards] rounded-full bg-violet-500/40"
+            className="pointer-events-none absolute h-4 w-4 animate-[ripple_0.6s_ease-out_forwards] rounded-full bg-blue-400/40"
             style={{ left: r.x, top: r.y }}
           />
         ))}
@@ -2734,7 +2737,7 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
 
         {status === "idle" && (
           <div className="space-y-1">
-            <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">PRACTICE BUTTERFLY CLICKING</p>
+            <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">PRACTICE BUTTERFLY CLICKING</p>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Drum your index and middle fingers alternately on the mouse button</p>
           </div>
         )}
@@ -2743,14 +2746,14 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
             <p className="text-5xl font-black">{clicks.length}</p>
             <div className="flex gap-1 justify-center">
               {Array.from({ length: Math.min(12, clicks.length) }).map((_, i) => (
-                <div key={i} className="h-4 w-1.5 bg-violet-500 rounded-full animate-pulse" />
+                <div key={i} className="h-4 w-1.5 bg-blue-500 rounded-full animate-pulse" />
               ))}
             </div>
           </div>
         )}
         {status === "finished" && (
           <div className="space-y-2">
-            <p className="text-xs text-violet-600 dark:text-violet-400 font-bold uppercase">Butterfly Results</p>
+            <p className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase">Butterfly Results</p>
             <p className="text-4xl font-black">{calculatedCps.toFixed(2)} CPS</p>
             <p className={`text-lg font-bold ${getRating(calculatedCps).color}`}>{getRating(calculatedCps).label}</p>
             <p className="text-sm font-semibold">
@@ -3036,7 +3039,7 @@ export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { ad
       <button
         onContextMenu={(e) => e.preventDefault()}
         onMouseDown={handleMouseDown}
-        className={`relative w-full min-h-60 md:min-h-64 py-6 px-4 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all ${
+        className={`pv-glow relative w-full min-h-60 md:min-h-64 py-6 px-4 rounded-xl border flex flex-col items-center justify-center cursor-pointer transition-all ${
           status === "running"
             ? isDarkMode
               ? "bg-emerald-500/10 border-emerald-400 animate-pulse"
@@ -3045,7 +3048,7 @@ export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { ad
               ? "bg-[#050505] border-emerald-500/40 hover:border-emerald-400"
               : "bg-slate-50 border-emerald-500/30 hover:border-emerald-600 hover:bg-emerald-50/20"
         }`}
-      >
+      onPointerMove={handleGlowMove} >
         {isTouchDevice && status === "finished" && (
           <div
             onClick={(e) => {
@@ -3343,14 +3346,14 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
       <button
         onMouseDown={triggerClick}
         onContextMenu={(e) => e.preventDefault()}
-        className={`w-full h-64 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300 select-none outline-none cursor-pointer ${
+        className={`pv-glow w-full h-64 rounded-3xl border-2 border-dashed flex flex-col items-center justify-center relative overflow-hidden transition-all duration-300 select-none outline-none cursor-pointer ${
           status === "running"
             ? "bg-emerald-500/5 border-emerald-500/50 scale-[0.99] shadow-[0_0_20px_rgba(16,185,129,0.1)]"
             : status === "finished"
             ? "bg-slate-500/5 border-slate-300 dark:border-white/10"
             : "bg-transparent border-slate-200 dark:border-white/10 hover:border-emerald-500/30 hover:bg-emerald-500/[0.01]"
         }`}
-      >
+      onPointerMove={handleGlowMove} >
         {status === "idle" && (
           <div className="space-y-1 text-center px-4">
             <p className="text-2xl font-bold text-emerald-500 dark:text-emerald-400 uppercase">
@@ -3558,8 +3561,8 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
 
       <button
         onMouseDown={handleZoneClick}
-        className="w-full h-40 rounded-3xl border-2 border-dashed border-amber-500/20 bg-amber-500/[0.01] hover:border-amber-500/40 hover:bg-amber-500/[0.03] active:scale-[0.99] transition-all flex flex-col items-center justify-center relative select-none outline-none cursor-pointer"
-      >
+        className="pv-glow w-full h-40 rounded-3xl border-2 border-dashed border-amber-500/20 bg-amber-500/[0.01] hover:border-amber-500/40 hover:bg-amber-500/[0.03] active:scale-[0.99] transition-all flex flex-col items-center justify-center relative select-none outline-none cursor-pointer"
+      onPointerMove={handleGlowMove} >
         <p className="text-xl font-bold text-amber-500">CLICK TEST AREA</p>
         <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">Click here continuously at normal or high speed</p>
       </button>
@@ -3610,7 +3613,7 @@ export function DoubleClickTest({ addHistory, isDarkMode, isTouchDevice = false 
    ========================================================================== */
 export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false }: AltTestProps) {
   const [status, setStatus] = useState<"idle" | "running" | "finished">("idle");
-  const [duration] = useState(15);
+  const [duration, setDuration] = useState(15);
   const [timeLeft, setTimeLeft] = useState(15);
   const [hits, setHits] = useState(0);
   const [misses, setMisses] = useState(0);
@@ -3753,15 +3756,22 @@ export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false }: Al
         </div>
       </div>
 
+      <AltDurationSelector
+        selected={duration}
+        disabled={status !== "idle"}
+        durations={[5, 10, 15, 30, 60]}
+        onSelect={(d) => { setDuration(d); setTimeLeft(d); }}
+        isDarkMode={isDarkMode}
+      />
       <div
         ref={arenaRef}
         onClick={handleArenaClick}
-        className={`w-full h-80 rounded-3xl relative border overflow-hidden transition-all duration-300 ${
+        className={`pv-glow w-full h-80 rounded-3xl relative border overflow-hidden transition-all duration-300 ${
           status === "running"
             ? "bg-slate-950 border-rose-500/20 cursor-crosshair"
             : "bg-slate-900/5 border-slate-200 dark:border-white/10"
         }`}
-      >
+      onPointerMove={handleGlowMove} >
         {status === "idle" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center space-y-4">
             <div className="bg-rose-500/10 p-4 rounded-full border border-rose-500/20">
@@ -3769,7 +3779,7 @@ export function AimTrainer({ addHistory, isDarkMode, isTouchDevice = false }: Al
             </div>
             <div className="space-y-1">
               <p className="text-lg font-bold text-slate-700 dark:text-slate-200">Are you ready to test your precision?</p>
-              <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm">The 15-second counter begins instantly when you hit START.</p>
+              <p className="text-xs text-slate-400 dark:text-slate-500 max-w-sm">The {duration}-second counter begins instantly when you hit START.</p>
             </div>
             <button
               onClick={handleStart}
@@ -3860,7 +3870,7 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
   const recentStepsRef = useRef<{ time: number }[]>([]);
   const peakSpeedRef = useRef(0);
 
-  const duration = 5;
+  const [duration, setDuration] = useState(5);
 
   useEffect(() => {
     if (isTouchDevice) {
@@ -3876,7 +3886,7 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
     setHumorousMessage(getScrollHumorousLine(stepsSec, isTouchDevice));
     addHistory("Scroll Speed Test", duration, stepsRef.current, `${stepsSec.toFixed(0)} steps/s`);
     try {
-      const key = "cps-test-best-scroll-5";
+      const key = `cps-test-best-scroll-${duration}`;
       const saved = localStorage.getItem(key);
       const prevHigh = saved ? parseFloat(saved) : 0;
       if (stepsSec > prevHigh) {
@@ -3886,7 +3896,16 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
     } catch (e) {
       console.error(e);
     }
-  }, [addHistory, isTouchDevice]);
+  }, [addHistory, isTouchDevice, duration]);
+
+  useEffect(() => {
+    if (status !== "idle") return;
+    setTimeLeft(duration);
+    try {
+      const saved = localStorage.getItem(`cps-test-best-scroll-${duration}`);
+      if (saved) setHighScore(parseFloat(saved));
+    } catch { /* ignore */ }
+  }, [duration, status]);
 
   const handleReset = () => {
     if (timerRef.current) clearInterval(timerRef.current);
@@ -3991,14 +4010,21 @@ export function ScrollTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
         </div>
       </div>
 
+      <AltDurationSelector
+        selected={duration}
+        disabled={status === "running"}
+        durations={[3, 5, 10, 15, 30]}
+        onSelect={(d) => { setDuration(d); setTimeLeft(d); }}
+        isDarkMode={isDarkMode}
+      />
       <div
         ref={scrollZoneRef}
-        className={`w-full h-56 rounded-3xl relative border flex flex-col items-center justify-center transition-all duration-300 select-none overflow-hidden ${
+        className={`pv-glow w-full h-56 rounded-3xl relative border flex flex-col items-center justify-center transition-all duration-300 select-none overflow-hidden ${
           status === "running"
             ? "bg-sky-500/[0.02] border-sky-500/50 scale-[0.99] shadow-[0_0_20px_rgba(56,189,248,0.1)] cursor-ns-resize"
             : "bg-transparent border-slate-200 dark:border-white/10 hover:border-sky-500/30 hover:bg-sky-500/[0.01]"
         }`}
-      >
+      onPointerMove={handleGlowMove} >
         {status === "idle" && (
           <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center space-y-4">
             <p className="text-slate-700 dark:text-slate-200 font-bold text-sm">Scroll Zone ready</p>

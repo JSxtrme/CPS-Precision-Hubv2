@@ -50,9 +50,10 @@ interface Props {
   isTouchDevice: boolean;
   history: HistoryItem[];
   settings: PreviewSettings;
+  onClear?: () => void;
 }
 
-export default function PreviewCps({ onAddHistory, isTouchDevice, history, settings }: Props) {
+export default function PreviewCps({ onAddHistory, isTouchDevice, history, settings, onClear }: Props) {
   const [duration, setDuration] = useState(1);
   const [status, setStatus] = useState<'idle' | 'running' | 'finished'>('idle');
   const [clickCount, setClickCount] = useState(0);
@@ -341,7 +342,7 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
       </div>
       <aside className="side">
         <div className="panel">
-          <div className="panel-head"><h3>Recent activity</h3><span className="tag">THIS SESSION</span></div>
+          <div className="panel-head"><h3>Recent activity</h3><span className="tag">THIS SESSION</span>{onClear && history.length > 0 && (<button type="button" onClick={onClear} title="Clear all recent test scores" style={{ marginLeft: 'auto', background: 'none', border: 'none', color: 'var(--accent)', fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', cursor: 'pointer' }}>Clear</button>)}</div>
           <div className="activity-list">
             {history.length === 0 ? (
               <div className="act-empty">“Crickets chirping… your clicks are so silent we can hear dust landing. Give it a tap.”</div>

@@ -439,3 +439,28 @@
 .pv-scope .pv-module-head h2 .acc{ font-family:"Instrument Serif",serif; font-style:italic; font-weight:400; color:var(--accent); }
 .pv-scope .pv-module-head p{ color:var(--muted); max-width:560px; line-height:1.65; margin:12px auto 0; font-size:16px; font-weight:500; }
 @media (max-width:640px){ .pv-scope .mainnav button.pv-toolkit-pill{ display:none; } }
+
+/* --- ModuleExtras (PR #3 follow-up): preview-philosophy sections for non-CPS modules --- */
+/* Duration pills: the old theme-active-key defaults to a fuchsia->indigo
+   gradient (index.css fallbacks, because the preview app never sets the
+   old --theme-* vars). Inside the preview scope, a selected pill must
+   look exactly like the CPS rig's selected .dur pill: --primary-bg /
+   --primary-ink (white in dark, navy in light). This kills the purple
+   gradient on Spacebar/Right/Jitter/Butterfly/Drag pills and on
+   ghosting active keys, without touching /old (LegacyApp is outside
+   .pv-scope). */
+.pv-scope .theme-active-key{ background:var(--primary-bg) !important; color:var(--primary-ink) !important; box-shadow:0 4px 14px -6px rgba(1,4,12,.5) !important; }
+.pv-scope .theme-text-to-dynamic, .pv-scope .theme-text-from-dynamic{ color:var(--accent) !important; }
+.pv-scope .theme-running-pad{ border-color:var(--accent) !important; background:linear-gradient(180deg, var(--accent-dim), transparent 70%) !important; box-shadow:0 0 60px -15px var(--accent) !important; }
+.pv-scope .theme-hover-pad:hover{ border-color:var(--accent) !important; }
+/* Cursor-reactive glow for every test stage (same radial-gradient as the
+   CPS pad, at --px/--py set by handleGlowMove). ::after is
+   pointer-events:none, so it can never eat clicks — the CPS pad bug
+   from the last fix was an element eating clicks, and this layer does
+   not. Faint accent-dim wash only, so stage text stays readable. */
+.pv-scope .pv-glow{ position:relative; }
+.pv-scope .pv-glow::after{ content:""; position:absolute; inset:0; border-radius:inherit; pointer-events:none; opacity:0; transition:opacity .25s ease; z-index:1;
+  background:radial-gradient(560px 240px at var(--px,50%) var(--py,50%), var(--accent-dim), transparent 65%); }
+.pv-scope .pv-glow:hover::after{ opacity:1; }
+@media (prefers-reduced-motion: reduce){ .pv-scope .pv-glow::after{ display:none; } }
+@media (max-width:860px){ .pv-scope .pv-extras-grid{ grid-template-columns:1fr !important; } }
