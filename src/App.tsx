@@ -1836,8 +1836,11 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Device Detection Badge */}
-            <div className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider border sm:px-4 sm:py-2.5 sm:text-xs ${
+            {/* Device Detection Badge — hidden on mobile only so the top header
+                fits on a single row (see mobile-nav note below). It is informational
+                only, not a control: device detection itself is unchanged, and the badge
+                returns at sm: and wider, where all header options stay visible. */}
+            <div className={`hidden sm:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider border sm:px-4 sm:py-2.5 sm:text-xs ${
               isDarkMode 
                 ? "bg-white/5 border-white/5 text-slate-300" 
                 : "bg-white border-slate-200 text-slate-600 shadow-sm"
