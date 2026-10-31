@@ -26,10 +26,11 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
     const originalTouchAction = document.body.style.touchAction;
     const originalOverscrollBehavior = document.body.style.overscrollBehavior;
 
-    // Prevent scrolling and double-tap zoom/pinch-to-zoom
-    document.body.style.overflow = "hidden";
-    document.body.style.touchAction = "none";
-    document.body.style.overscrollBehavior = "none";
+    // Scroll-vs-tap: do NOT lock body scroll while a test runs. Locking the body
+    // is what turned a scroll gesture into a stuck, test-starting tap. A swipe must
+    // still scroll; only multi-touch pinch/zoom is prevented below. The main CPS
+    // pad additionally uses touch-action: pan-y plus a ~12px movement threshold
+    // (see CPSTest in App.tsx) so a moved touch never counts as a click.
 
     // Extra touch listener to prevent default zoom/pinch behaviors on iOS and some Android devices
     const preventZoomAndScroll = (e: TouchEvent) => {
