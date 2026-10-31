@@ -38,7 +38,7 @@ function MagneticButton({ children, onClick, className = '' }: { children: React
     btn.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * 0.18}px,${(e.clientY - r.top - r.height / 2) * 0.3}px)`;
   };
   return (
-    <button type="button" ref={ref} className={className} onClick={onClick}
+    <button type="button" ref={ref} className={className} onClick={(e) => { e.stopPropagation(); onClick(); }}
       onPointerMove={onMove} onPointerLeave={() => { if (ref.current) ref.current.style.transform = ''; }}>
       {children}
     </button>
@@ -74,7 +74,8 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const touchMovedRef = useRef(false);
   const suppressClickRef = useRef(false);
-  const padRef = useRef<HTMLButtonElement | null>(null);
+  const padRef = useRef<HTMLDivElement | null>(null);
+  const countedViaPointerAtRef = useRef(0);
   const graphRef = useRef<HTMLCanvasElement | null>(null);
   const audioRef = useRef<AudioContext | null>(null);
   const motionOK = () => !settings.motion && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -158,10 +159,10 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
     } catch { /* audio unavailable: test continues silently */ }
   };
 
-  const padFX = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const padFX = (clientX: number, clientY: number) => {
     const pad = padRef.current; if (!pad) return;
     const rect = pad.getBoundingClientRect();
-    const x = e.clientX - rect.left, y = e.clientY - rect.top;
+    const x = clientX - rect.left, y = clientY - rect.top;
     if (settings.particles && motionOK()) {
       for (let i = 0; i < 4; i++) {
         const p = document.createElement('span'); p.className = 'particle';
@@ -178,14 +179,15 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
     pad.classList.add('flash'); window.setTimeout(() => pad.classList.remove('flash'), 90);
   };
 
-  const handlePadClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (suppressClickRef.current) { suppressClickRef.current = false; return; }
-    if (e.button !== 0) return;
-    const rect = e.currentTarget.getBoundingClientRect();
+  // Single counting path, shared by pointerdown (mouse/pen), click (touch /
+  // keyboard fallback) and keydown. A tap is counted exactly once.
+  const doPadTap = (clientX: number, clientY: number) => {
+    const pad = padRef.current; if (!pad) return;
+    const rect = pad.getBoundingClientRect();
     const id = rippleIdCounter.current++;
-    setRipples((prev) => [...prev, { id, x: e.clientX - rect.left, y: e.clientY - rect.top }]);
+    setRipples((prev) => [...prev, { id, x: clientX - rect.left, y: clientY - rect.top }]);
     window.setTimeout(() => setRipples((prev) => prev.filter((r) => r.id !== id)), 600);
-    padFX(e); clickSound();
+    padFX(clientX, clientY); clickSound();
     if (status === 'idle') {
       clicksRef.current = 1; clickTimesRef.current = [0]; setClickCount(1); setLiveCps(0); setPeak(0);
       startTimeRef.current = performance.now(); setStatus('running');
@@ -194,6 +196,50 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
       clicksRef.current += 1; setClickCount(clicksRef.current);
       if (startTimeRef.current !== null) clickTimesRef.current.push((performance.now() - startTimeRef.current) / 1000);
     }
+    // status === 'finished': deliberately no count / restart here — the
+    // finished result is reset only via Run it back, Reset, or the
+    // opposite-button double-click, so fast extra clicks cannot wipe it.
+  };
+
+  // Cursor-reactive pad glow, ported from the preview's spotlightMove():
+  // --px/--py drive the pad's radial-gradient background in preview.css.
+  const handlePadPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === 'touch') return;
+    const pad = padRef.current; if (!pad) return;
+    const rect = pad.getBoundingClientRect();
+    pad.style.setProperty('--px', `${((e.clientX - rect.left) / rect.width) * 100}%`);
+    pad.style.setProperty('--py', `${((e.clientY - rect.top) / rect.height) * 100}%`);
+  };
+
+  const handlePadPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Touch is handled by the click path below, after the swipe check in
+    // onTouchEnd — counting here would count a swipe before its movement
+    // is known. Mouse/pen count on pointerdown, like the preview.
+    if (e.pointerType === 'touch') return;
+    if (e.button !== 0) return;
+    const target = e.target as HTMLElement | null;
+    if (status === 'finished' && target && target.closest && target.closest('.result')) return; // result buttons handle their own clicks
+    if (status === 'finished') return;
+    countedViaPointerAtRef.current = Date.now();
+    doPadTap(e.clientX, e.clientY);
+  };
+
+  const handlePadClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (suppressClickRef.current) { suppressClickRef.current = false; return; }
+    if (e.button !== 0) return;
+    // A mouse/pen tap already counted in pointerdown; its click must not
+    // count twice. The timestamp guard means a stale flag (dragged off
+    // the pad, so no click followed) cannot swallow a later real tap.
+    if (Date.now() - countedViaPointerAtRef.current < 1000) { countedViaPointerAtRef.current = 0; return; }
+    doPadTap(e.clientX, e.clientY);
+  };
+
+  const handlePadKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.code !== 'Space' && e.code !== 'Enter') return;
+    e.preventDefault();
+    if (e.repeat || status === 'finished') return;
+    const rect = padRef.current?.getBoundingClientRect();
+    doPadTap(rect ? rect.left + rect.width / 2 : 0, rect ? rect.top + rect.height / 2 : 0);
   };
 
   const handleReset = () => {
@@ -201,7 +247,7 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
     setClickCount(0); setLiveCps(0); setPeak(0); setFinalCps(0); setIsNewHighScore(false);
     setTimeLeft(duration === -1 ? 0 : duration); setStatus('idle'); setHumorousMessage(''); lastRightClickRef.current = 0;
   };
-  const handleMouseDown = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     if (status === 'finished' && e.button === 2) {
       e.preventDefault();
       const now = Date.now();
@@ -247,8 +293,15 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
         </div>
         <div className="hairline"><i style={{ width: `${progressRatio * 100}%` }} /></div>
         <div className="pad-wrap">
-          <button type="button" ref={padRef} className={`pad${status === 'running' ? ' running' : ''}`}
+          {/* NOTE: this was a <button> in PR #3. Its children are all
+              absolutely positioned, so as a button it collapsed to ~0 width
+              and taps landed outside it (selecting the "Best for" text
+              below). As a block <div> — exactly like the preview's
+              <div class="pad"> — it fills the rig and is the click target.
+              Nested result buttons are also only valid inside a div. */}
+          <div ref={padRef} className={`pad${status === 'running' ? ' running' : ''}`} role="button" tabIndex={0}
             onContextMenu={(e) => e.preventDefault()} onClick={handlePadClick} onMouseDown={handleMouseDown}
+            onPointerDown={handlePadPointerDown} onPointerMove={handlePadPointerMove} onKeyDown={handlePadKeyDown}
             style={{ touchAction: 'pan-y' }}
             onTouchStart={(e) => { const t = e.touches[0]; touchStartRef.current = { x: t.clientX, y: t.clientY }; touchMovedRef.current = false; }}
             onTouchMove={(e) => { const s = touchStartRef.current; if (!s) return; const t = e.touches[0]; if (Math.abs(t.clientX - s.x) > 12 || Math.abs(t.clientY - s.y) > 12) touchMovedRef.current = true; }}
@@ -275,7 +328,7 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
               </div>
               <p className="r-roast">{isTouchDevice ? 'Tap Reset below to try again!' : 'Double right-click the pad to reset'}</p>
             </div>
-          </button>
+          </div>
         </div>
         <canvas className="graph" ref={graphRef} width={900} height={128} aria-label="Live click velocity graph" />
         <div className="pad-foot">
