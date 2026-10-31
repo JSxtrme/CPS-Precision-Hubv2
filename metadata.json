@@ -1,6 +1,6 @@
 {
-  "name": "CPS Test",
+  "name": "CPS Precision Hub",
   "description": "An accurate and beautifully designed clicks per second speed test tool with real-time statistics, custom durations, and ranking tiers.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": []
 }
