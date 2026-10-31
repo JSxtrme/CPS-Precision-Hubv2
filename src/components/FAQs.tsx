@@ -43,42 +43,6 @@ const FAQ_LIST = [
     q: "Does my mouse affect my CPS score?",
     a: "Yes significantly. Mouse switch type (mechanical vs optical), debounce time, and button responsiveness all affect max achievable CPS, especially for jitter/drag clicking."
   },
-  {
-    q: "How does the reset shortcut work, and why is it different for left and right clicks?",
-    a: "After a test finishes, double right-click resets a left-click test, and double left-click resets a right-click test. Drag Click follows the same opposite rule (right-drag resets with a double left-click and vice versa). Using the opposite button means two fast extra clicks on the test button itself cannot wipe your result. On touch devices, use the on-screen Reset button instead."
-  },
-  {
-    q: "On mobile, why does swiping on the click area scroll instead of clicking?",
-    a: "A swipe — your finger moves more than about 12px — is treated as a scroll, and only a genuine tap counts as a click. Scroll is not locked just because a test is running; only pinch-zoom is blocked. If you meant to click, tap without moving your finger."
-  },
-  {
-    q: "Which duration should I use?",
-    a: "1s is for peak burst, 5s is the most comparable score, 10s tests stamina, and Manual is open-ended. Bests are stored separately per duration, so changing duration never erases another duration's best."
-  },
-  {
-    q: "What does polling rate (Hz) actually mean?",
-    a: "How many times per second your mouse reports its position to the computer. 1000 Hz means every 1ms and 8000 Hz means every 0.125ms. Higher polling feels smoother, but it does not by itself raise your CPS."
-  },
-  {
-    q: "Is jitter, butterfly or drag clicking safe for my mouse?",
-    a: "They stress switches more than normal clicking, drag clicking especially on sensitive switches. Take breaks, stop if a button feels mushy or starts double-registering, and check your game's rules before using drag or butterfly clicking in competition."
-  },
-  {
-    q: "How can I improve my CPS without cheating?",
-    a: "Practise in short bursts, keep a relaxed grip, use a lighter and more responsive mouse, and stick to one technique at a time. Autoclickers do not measure your skill and will get flagged in games, so they are not a shortcut here."
-  },
-  {
-    q: "Where are my bests and history stored?",
-    a: "Only in your browser's local storage, per duration and per test. There is no account and nothing is sent to a server. Clearing site data, or switching browsers or devices, resets your bests and history."
-  },
-  {
-    q: "Why does my CPS look different on another site?",
-    a: "Sites differ in timer resolution, whether the timer starts on the first click or on a countdown, and whether clicks after the timer ends are counted. Compare the same duration and the same technique here, not across different sites."
-  },
-  {
-    q: "Does a higher CPS guarantee better Minecraft PvP?",
-    a: "No. Aim, timing, movement and ping matter more than raw CPS. CPS helps only up to the point where you can still control it — wild, uncontrolled clicking usually loses fights."
-  }
 ];
 
 interface FAQsProps {
@@ -157,7 +121,7 @@ export default function FAQs({ isDarkMode }: FAQsProps) {
         className={`w-full flex items-center justify-between py-4 px-5 rounded-2xl cursor-pointer transition-all duration-200 border text-left ${
           isMainOpen
             ? isDarkMode
-              ? "bg-white/[0.04] border-blue-500/30 shadow-[0_0_12px_rgba(217,70,239,0.1)]"
+              ? "bg-white/[0.04] border-blue-500/30 shadow-[0_0_12px_rgba(59,130,246,0.15)]"
               : "bg-blue-50/40 border-blue-200 shadow-xs"
             : isDarkMode
               ? "bg-white/[0.01] border-white/5 hover:bg-white/[0.03]"

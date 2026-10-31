@@ -1693,6 +1693,15 @@ export default function App() {
     setActiveView(view);
   };
 
+  // Preview pill nav: Settings is not a route in the repo — it goes to the
+  // CPS home and scrolls to the Settings section below the rig.
+  const goToSettings = () => {
+    if (activeView !== "cps") navigateToView("cps");
+    window.setTimeout(() => {
+      document.getElementById("preview-settings")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 400);
+  };
+
   const handleAddHistory = (testType: string, duration: number, score: number, rating: string) => {
     const newItem: HistoryItem = {
       id: Math.random().toString(36).substring(2, 9),
@@ -1802,6 +1811,12 @@ export default function App() {
         <div className="flex w-full max-w-7xl items-center justify-between border-b pb-4 mb-6 border-slate-200/50 dark:border-white/10">
           <div className="flex items-center gap-2">
             <img src="/favicon.svg" alt="CPS Precision Hub logo" className="h-8 w-8 shrink-0 sm:h-9 sm:w-9" />
+            {!isLegacyView && (
+              <div className="flex flex-col leading-none text-left">
+                <span className="text-base font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-lg">CPS Precision Hub</span>
+                <span className="text-[9px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Precision Input Lab</span>
+              </div>
+            )}
             {isLegacyView && (
               <span className="rounded-full border border-slate-300 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:border-white/20 dark:text-slate-400">Legacy view</span>
             )}
@@ -1970,7 +1985,20 @@ export default function App() {
           </div>
         </div>
 
-        {/* Content Header */}
+        {/* Preview pill navigation — Toolkit is dropped on mobile only;
+            PC and wider screens keep all five pills. Settings scrolls to the
+            Settings section on the CPS home (it is not a separate route). */}
+        {!isLegacyView && (
+          <nav aria-label="Quick access" className="mb-8 flex w-full max-w-3xl items-center gap-1.5 rounded-full border border-slate-200/60 bg-white/70 p-1.5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:gap-2">
+            <button onClick={() => navigateToView("cps")} className={`shrink-0 rounded-full px-3 py-2 text-xs font-bold cursor-pointer transition-colors sm:px-4 sm:text-sm ${activeView === "cps" ? "bg-slate-900 text-white shadow dark:bg-white dark:text-slate-900" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}>CPS Test</button>
+            <button onClick={() => navigateToView("reaction")} className={`shrink-0 rounded-full px-3 py-2 text-xs font-bold cursor-pointer transition-colors sm:px-4 sm:text-sm ${activeView === "reaction" ? "bg-slate-900 text-white shadow dark:bg-white dark:text-slate-900" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}>Reaction</button>
+            <button onClick={() => navigateToView("spacebar")} className={`shrink-0 rounded-full px-3 py-2 text-xs font-bold cursor-pointer transition-colors sm:px-4 sm:text-sm ${activeView === "spacebar" ? "bg-slate-900 text-white shadow dark:bg-white dark:text-slate-900" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}>Spacebar</button>
+            <button onClick={() => navigateToView("menu")} className={`hidden shrink-0 rounded-full px-3 py-2 text-xs font-bold cursor-pointer transition-colors sm:inline-flex sm:px-4 sm:text-sm ${activeView === "menu" ? "bg-slate-900 text-white shadow dark:bg-white dark:text-slate-900" : "text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"}`}>Toolkit</button>
+            <button onClick={goToSettings} className="shrink-0 rounded-full px-3 py-2 text-xs font-bold cursor-pointer transition-colors text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white sm:px-4 sm:text-sm">Settings</button>
+          </nav>
+        )}
+
+        {isLegacyView || activeView !== "cps" ? (
         <header className="mb-8 flex flex-col items-center gap-2.5 text-center sm:mb-10 max-w-2xl">
           <div 
             className={`inline-flex items-center gap-2 rounded-full border px-4 py-1 text-xs font-semibold uppercase tracking-widest transition-all duration-200 ${
@@ -1996,10 +2024,93 @@ export default function App() {
             {getActiveDesc()}
           </p>
         </header>
+        ) : (
+          <header className="preview-hero mb-10 flex w-full max-w-3xl flex-col items-center gap-5 text-center">
+            <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/60 bg-white/70 px-4 py-1.5 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:border-white/10 dark:bg-white/5 dark:text-slate-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+              CPS Test · Module 01
+            </div>
+            <h1 className="text-5xl font-extrabold leading-[1.02] tracking-tight text-slate-900 dark:text-white sm:text-6xl md:text-7xl">
+              How fast can<br />you <span className="preview-serif text-blue-600 dark:text-blue-400">click?</span>
+            </h1>
+            <p className="max-w-xl text-sm leading-relaxed text-slate-500 dark:text-slate-400 sm:text-base">
+              A precision click-speed test with sub-millisecond timing, live velocity analysis and a clear, honest ranking. <strong className="font-bold text-slate-800 dark:text-white">The first click starts the clock.</strong>
+            </p>
+            <div className="grid w-full grid-cols-2 gap-px overflow-hidden rounded-2xl border border-slate-200/60 bg-slate-200/60 dark:border-white/10 dark:bg-white/10 sm:grid-cols-4">
+              <div className="bg-white px-3 py-4 dark:bg-[#0d1a30]"><p className="text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl">12</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Test Modules</p></div>
+              <div className="bg-white px-3 py-4 dark:bg-[#0d1a30]"><p className="text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl">8</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Rank Tiers</p></div>
+              <div className="bg-white px-3 py-4 dark:bg-[#0d1a30]"><p className="text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl">0.1<span className="text-blue-500 dark:text-blue-400">ms</span></p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Timer Resolution</p></div>
+              <div className="bg-white px-3 py-4 dark:bg-[#0d1a30]"><p className="text-2xl font-extrabold text-slate-900 dark:text-white sm:text-3xl">0</p><p className="mt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Excuses Accepted</p></div>
+            </div>
+          </header>
+        )}
 
         {/* Responsive Grid Layout Container */}
         <div className="w-full max-w-7xl">
-          {activeView === "menu" ? (
+          {activeView === "cps" && !isLegacyView ? (
+            <div className="mx-auto flex w-full max-w-3xl flex-col gap-8">
+              <section className="preview-rig w-full rounded-[2rem] border border-slate-200/60 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-8">
+                <CPSTest onAddHistory={handleAddHistory} isDarkMode={isDarkMode} isTouchDevice={isTouchDevice} />
+              </section>
+              <div className="grid w-full gap-6 md:grid-cols-2">
+                <HistoryList history={history} onClear={handleClearHistory} isDarkMode={isDarkMode} activeView={activeView} isTouchDevice={isTouchDevice} />
+<section className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 p-5 shadow-xs">
+                    <div className="flex items-center gap-1.5 mb-4">
+                      <Trophy className="h-4 w-4 text-amber-500" />
+                      <h2 className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                        CPS Ranking Levels
+                      </h2>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                      {RATING_TIERS.map(tier => (
+                        <div
+                          key={tier.label}
+                          className={`flex flex-col items-center gap-1 rounded-xl border px-2 py-3 text-center transition-all ${
+                            isDarkMode 
+                              ? "border-white/5 bg-white/[0.02]" 
+                              : "border-slate-100 bg-slate-50/50 hover:bg-slate-50"
+                          }`}
+                        >
+                          <span className={`text-xs font-bold ${tier.color}`}>{tier.label}</span>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            {tier.max !== undefined ? `${tier.min}-${tier.max}` : `${tier.min}+`} CPS
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+              </div>
+              <section id="preview-toolkit" className="w-full">
+                <h2 className="mb-4 text-lg font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-xl">Toolkit</h2>
+                <p className="mb-4 text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm">Every module from the Speed Trials menu, in one place — tap a card to open that real test.</p>
+                <div className="grid w-full gap-3 sm:grid-cols-2">
+{[{ view: "spacebar", title: "Spacebar Counter", desc: "Measure spacebar hits and switch rebound latency." }, { view: "rightclick", title: "Right Click Test", desc: "Test right-clicking speed and bridge-fight setup." }, { view: "polling", title: "Mouse Polling Rate", desc: "Cursor update reports per second, in real time." }, { view: "ghosting", title: "Key Ghosting Test", desc: "Check your rollover limits with simultaneous keys." }, { view: "jitter", title: "Jitter Click Coach", desc: "Refine wrist tremor and muscle tension intervals." }, { view: "butterfly", title: "Butterfly Click Coach", desc: "Alternate index-and-middle click timing." }, { view: "reaction", title: "Reaction Time Test", desc: "Traffic-light neural reflex benchmark." }, { view: "kohi", title: "Kohi Click Test", desc: "Retro CRT terminal clickpad speed drill." }, { view: "dragclick", title: "Drag Click Test", desc: "How many clicks your mouse switch can generate by dragging." }, { view: "doubleclick", title: "Double Click Test", desc: "Check for unwanted double-click registration." }, { view: "aim", title: "Aim Trainer", desc: "Click randomly-appearing targets, fast and accurately." }, { view: "scroll", title: "Scroll Speed Test", desc: "Scroll wheel speed and consistency." }].map((card) => (
+              <button key={card.view} onClick={() => navigateToView(card.view as ViewType)} className="rounded-2xl border border-slate-200/60 bg-white p-5 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer dark:border-white/10 dark:bg-white/5">
+                <p className="text-sm font-bold text-slate-900 dark:text-white">{card.title}</p>
+                <p className="mt-1.5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{card.desc}</p>
+                <p className="mt-3 text-[11px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">Open test →</p>
+              </button>
+            ))}
+                </div>
+              </section>
+              <section id="preview-settings" className="w-full rounded-2xl border border-slate-200/60 bg-white p-5 shadow-sm dark:border-white/10 dark:bg-white/5 sm:p-6">
+                <h2 className="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white">Settings</h2>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400 sm:text-sm">Appearance, theme and colour scheme — the same controls as the header, here on the page.</p>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  <button onClick={() => setIsDarkMode(!isDarkMode)} className="rounded-full border border-slate-200 px-4 py-2 text-xs font-bold cursor-pointer dark:border-white/10 dark:text-slate-200">{isDarkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}</button>
+                  <span className="text-xs text-slate-500 dark:text-slate-400">Current scheme: {THEMES.find(t => t.id === activeTheme)?.name || activeTheme}</span>
+                </div>
+                <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                  {THEMES.map((theme) => (
+                    <button key={theme.id} onClick={() => { setActiveTheme(theme.id); setSelectedThemeId(theme.id); try { localStorage.setItem("cps-test-colorscheme", theme.id); } catch {} }} className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-left text-xs font-bold cursor-pointer ${activeTheme === theme.id ? "border-blue-500 bg-blue-50 dark:bg-blue-500/10 dark:text-white" : "border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300"}`}>
+                      <span className="flex items-center gap-2"><span className="h-3 w-3 rounded-full border border-white/10" style={{ background: theme.previewBg }} />{theme.name}</span>
+                      {activeTheme === theme.id && <span className="text-[10px] uppercase">Selected</span>}
+                    </button>
+                  ))}
+                </div>
+              </section>
+            </div>
+          ) : activeView === "menu" ? (
             <div className="mx-auto flex flex-col items-center">
               <main className="flex w-full flex-1 flex-col items-center">
                 <MoreTestsMenu onSelect={navigateToView} isDarkMode={isDarkMode} />

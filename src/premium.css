@@ -124,3 +124,18 @@ html:not(.legacy-old) .premium-manifesto {
   }
   #premium-progress { display: none; }
 }
+
+/* --- Exact-preview home additions (presentation only) --- */
+html:not(.legacy-old) .preview-serif {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: normal;
+}
+html:not(.legacy-old) .preview-rig {
+  box-shadow: 0 1px 2px rgba(8, 18, 38, 0.06), 0 24px 48px rgba(8, 18, 38, 0.10);
+}
+html.legacy-old .preview-hero,
+html.legacy-old .preview-rig {
+  box-shadow: none;
+}
