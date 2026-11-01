@@ -95,7 +95,12 @@ function ScrubText({ motionOK }: { motionOK: boolean }) {
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
     const measure = () => {
       const r = p.getBoundingClientRect(), vh = window.innerHeight;
-      target = clamp((vh * 0.85 - r.top) / (r.height + vh * 0.32), 0, 1);
+      // Scrub range ends when the paragraph's bottom reaches 85% of the
+      // viewport (top = 0.85*vh - height), so highlighting is complete while
+      // the whole paragraph is still fully in view on every width — the
+      // old range (height + 0.32*vh) only finished once the paragraph's top
+      // had already scrolled out of view on PC/mobile.
+      target = clamp((vh * 0.85 - r.top) / r.height, 0, 1);
       if (!rafId && Math.abs(target - cur) > 0.0005) rafId = requestAnimationFrame(step);
     };
     const step = () => {
@@ -555,6 +560,14 @@ export default function App() {
                 <h3>What is CPS Precision Hub?</h3>
                 <p>An all-in-one testing suite for gamers, Minecraft PvP players and PC enthusiasts who want to measure — and improve — clicking speed, reaction time and overall input performance.</p>
                 <p>Beyond the core CPS test, the toolkit covers <b>Spacebar Counter, Reaction Time, Key Ghosting, Polling Rate, Double Click, Scroll Speed, Drag Click, Right Click, Jitter, Butterfly and Kohi</b>, so you can benchmark everything from raw finger speed to the responsiveness of your actual hardware. In one place.</p>
+                <div className="built-for">
+                  <span className="bf-label">Built for</span>
+                  <div className="bf-grid">
+                    <div className="bf-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="20" rx="2" /><path d="M11 18.5h2" /></svg><span>Phones</span></div>
+                    <div className="bf-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg><span>PCs</span></div>
+                    <div className="bf-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="2" width="18" height="20" rx="2" /><path d="M11 18.5h2" /></svg><span>Tablets</span></div>
+                  </div>
+                </div>
               </div>
               <div className="panel reveal">
                 <h3>Why it's better</h3>
