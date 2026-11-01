@@ -330,6 +330,7 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
               <div className="r-num">{finalCps.toFixed(2)}</div>
               <div className="r-unit">CLICKS PER SECOND</div>
               <div className="r-rank">{getRating(finalCps).label}</div>
+              {finalCps >= 20 && <div className="r-unlock">hidden tier unlocked</div>}
               <p className="r-roast">{humorousMessage ? `“${humorousMessage}”` : ''}</p>
               {isNewHighScore && <div className="r-roast">▲ NEW BEST</div>}
               <div className="btn-row">

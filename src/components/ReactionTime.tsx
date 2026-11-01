@@ -425,6 +425,9 @@ export function ReactionTimeTest({ addHistory, isDarkMode }: ReactionTimeProps) 
                   {resultTier.label}
                 </span>
               </div>
+              {resultTier.label === 'Godlike' && (
+                <p className="text-xs font-semibold tracking-wide text-amber-500 dark:text-amber-400">hidden tier unlocked</p>
+              )}
               
               <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto italic px-4 leading-relaxed mt-2">
                 "{resultQuote}"
