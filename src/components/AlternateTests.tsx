@@ -17,21 +17,26 @@ import {
 import { Ripple, ViewType, getRating } from '../types';
 import { handleGlowMove } from './glow';
 
-// Custom hook to disable page scrolling and zooming on touch devices when a test is active
-export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean) {
+// Custom hook to disable page scrolling and zooming on touch devices when a test is active.
+// REAL scroll lock (new, mobile only): while a test runs, body/html overflow is
+// hidden and touchmove is prevented (except inside a genuinely scrollable inner
+// element, e.g. a log with overflow-y-auto), so fast tapping cannot scroll the
+// page away. It always releases: the effect cleanup below runs when the test
+// finishes/stops, when the component unmounts (route change), and on deps change.
+// The old behaviour is preserved when lockEnabled is false: only pinch/zoom is
+// blocked, and the CPS pad keeps touch-action: pan-y + its ~12px swipe threshold
+// so a swipe never counts as a click. The CPS rig passes the Settings
+// "scroll lock while testing" toggle as lockEnabled; other modules, which do not
+// receive prefs, lock by default during a run (lockEnabled defaults to true).
+export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean, lockEnabled: boolean = true) {
   useEffect(() => {
     if (!isTouchDevice || !isRunning) return;
 
     // Save previous styles
     const originalOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
     const originalTouchAction = document.body.style.touchAction;
     const originalOverscrollBehavior = document.body.style.overscrollBehavior;
-
-    // Scroll-vs-tap: do NOT lock body scroll while a test runs. Locking the body
-    // is what turned a scroll gesture into a stuck, test-starting tap. A swipe must
-    // still scroll; only multi-touch pinch/zoom is prevented below. The main CPS
-    // pad additionally uses touch-action: pan-y plus a ~12px movement threshold
-    // (see CPSTest in App.tsx) so a moved touch never counts as a click.
 
     // Extra touch listener to prevent default zoom/pinch behaviors on iOS and some Android devices
     const preventZoomAndScroll = (e: TouchEvent) => {
@@ -46,6 +51,22 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
       e.preventDefault();
     };
 
+    // Real scroll lock: block page scroll for the whole gesture, not just pinch.
+    // Touches inside a scrollable inner element are left alone so logs/lists
+    // inside a test can still scroll.
+    const lockTouchMove = (e: TouchEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && t.closest && (t.closest('[data-allow-scroll]') || t.closest('.overflow-y-auto'))) return;
+      e.preventDefault();
+    };
+
+    if (lockEnabled) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.overscrollBehavior = 'none';
+      document.addEventListener('touchmove', lockTouchMove, { passive: false });
+    }
+
     document.addEventListener("touchstart", preventZoomAndScroll, { passive: false });
     document.addEventListener("touchmove", preventZoomAndScroll, { passive: false });
     document.addEventListener("gesturestart", preventGesture, { passive: false });
@@ -53,14 +74,16 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
 
     return () => {
       document.body.style.overflow = originalOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
       document.body.style.touchAction = originalTouchAction;
       document.body.style.overscrollBehavior = originalOverscrollBehavior;
       document.removeEventListener("touchstart", preventZoomAndScroll);
       document.removeEventListener("touchmove", preventZoomAndScroll);
+      document.removeEventListener("touchmove", lockTouchMove);
       document.removeEventListener("gesturestart", preventGesture);
       document.removeEventListener("gesturechange", preventGesture);
     };
-  }, [isRunning, isTouchDevice]);
+  }, [isRunning, isTouchDevice, lockEnabled]);
 }
 
 // Standard 10 Humorous responses

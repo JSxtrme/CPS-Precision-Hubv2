@@ -4,6 +4,7 @@ import './preview.css';
 import FAQs from './components/FAQs';
 import ModuleExtras from './components/ModuleExtras';
 import PreviewCps, { PreviewSettings } from './components/PreviewCps';
+import TiltCard from './components/TiltCard';
 import KeyGhostingTest from './components/KeyGhosting';
 import {
   SpacebarTest, RightClickTest, PollingRateTest, JitterTest, ButterflyTest, KohiTest,
@@ -128,7 +129,7 @@ export default function App() {
     try { return localStorage.getItem('cps-preview-accent') || 'navy'; } catch { return 'navy'; }
   });
   const [prefs, setPrefs] = useState(() => {
-    const base = { sound: true, particles: true, shake: true, cursor: true, grain: true, scrolllock: true, motion: false };
+    const base = { sound: true, particles: true, shake: true, cursor: true, trail: false, grain: true, scrolllock: true, motion: false };
     try { const s = localStorage.getItem('cps-preview-prefs'); return s ? { ...base, ...JSON.parse(s) } : base; } catch { return base; }
   });
   const [history, setHistory] = useState<HistoryItem[]>(() => {
@@ -158,6 +159,13 @@ export default function App() {
   const systemReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const motionOK = !prefs.motion && !systemReduced;
   const cursorOn = prefs.cursor && !isTouchDevice && motionOK && typeof window !== 'undefined' && window.matchMedia('(hover:hover)').matches;
+  // Cursor trail: independent of the dot+ring cursor — all four combinations
+  // (cursor on/off × trail on/off) work. Fine-pointer desktop only, off on
+  // touch and under reduced motion, same as the cursor. Stored in the same
+  // cps-preview-prefs blob as the other toggles; hidden on mobile in Settings
+  // (see .desktop-only-set in preview.css) but its stored value is never deleted.
+  const trailOn = prefs.trail && !isTouchDevice && motionOK && typeof window !== 'undefined' && window.matchMedia('(hover:hover)').matches;
+  const trailRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
@@ -217,6 +225,45 @@ export default function App() {
     const t = window.setTimeout(() => els.forEach((el) => el.classList.add('in')), 2500);
     return () => { io.disconnect(); window.clearTimeout(t); };
   }, [activeView, motionOK, isLegacyView]);
+
+  // Cursor trail: a small pool of fading dots that chase the pointer. The
+  // dots are created imperatively and moved in one rAF loop (no React state
+  // per mousemove, no layout thrash) — each dot lerps toward the previous
+  // one, so the trail snakes behind the cursor and shrinks as it fades.
+  useEffect(() => {
+    if (!trailOn) return;
+    const container = trailRef.current; if (!container) return;
+    const N = 10;
+    const dots: HTMLSpanElement[] = [];
+    const pos: { x: number; y: number }[] = [];
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    for (let i = 0; i < N; i++) {
+      const s = document.createElement('span');
+      s.className = 'cursor-trail-dot';
+      s.style.width = `${(10 - i * 0.7).toFixed(1)}px`;
+      s.style.height = s.style.width;
+      s.style.opacity = (0.85 - i * 0.07).toFixed(2);
+      container.appendChild(s); dots.push(s); pos.push({ x: mx, y: my });
+    }
+    const onMove = (e: PointerEvent) => { mx = e.clientX; my = e.clientY; };
+    let raf = 0;
+    const loop = () => {
+      let px = mx, py = my;
+      pos.forEach((p, i) => {
+        p.x += (px - p.x) * 0.35; p.y += (py - p.y) * 0.35;
+        dots[i].style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px) translate(-50%,-50%)`;
+        px = p.x; py = p.y;
+      });
+      raf = requestAnimationFrame(loop);
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    raf = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      cancelAnimationFrame(raf);
+      container.innerHTML = '';
+    };
+  }, [trailOn]);
 
   // Custom cursor (preview cursor()): 5px accent dot follows instantly, ring
   // lerps at 0.16; is-pad on .pad/.stage, is-hover on interactive elements,
@@ -291,7 +338,7 @@ export default function App() {
     } catch {}
   };
   const togglePref = (key: keyof typeof prefs) => setPrefs((p) => ({ ...p, [key]: !p[key] }));
-  const pvSettings: PreviewSettings = { sound: prefs.sound, particles: prefs.particles, shake: prefs.shake, motion: prefs.motion };
+  const pvSettings: PreviewSettings = { sound: prefs.sound, particles: prefs.particles, shake: prefs.shake, motion: prefs.motion, scrolllock: prefs.scrolllock };
 
   if (isLegacyView) return <LegacyApp />;
 
@@ -310,6 +357,7 @@ export default function App() {
       {prefs.grain && <div className="grain" aria-hidden="true" />}
       <div className="scroll-progress" ref={progressRef} aria-hidden="true" />
       {cursorOn && <><div className="cursor-dot" ref={cursorDotRef} aria-hidden="true" /><div className="cursor-ring" ref={cursorRingRef} aria-hidden="true" /></>}
+      {trailOn && <div className="cursor-trail" ref={trailRef} aria-hidden="true" />}
       <header ref={headerRef}>
         <div className="header-in">
           <a className="wordmark" href="/" onClick={(e) => { e.preventDefault(); navigate('cps'); }} aria-label="CPS Precision Hub — home">
@@ -367,18 +415,18 @@ export default function App() {
             </div>
             <div className="toolkit" id="toolkitGrid">
               {TOOLS.map((t, i) => (
-                <button key={t.id} type="button" className="tool-card reveal" style={{ ['--rd' as string]: `${(i % 4) * 70}ms` }} onClick={() => (t.id === 'cps' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate(t.id))}>
+                <TiltCard key={t.id} className="tool-card reveal" style={{ ['--rd' as string]: `${(i % 4) * 70}ms` }} onClick={() => (t.id === 'cps' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate(t.id))}>
                   <span className="idx">{t.tag} / 12</span>
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{t.icon}</svg>
                   <h4>{t.name}</h4><p>{t.desc}</p><span className="go">Open module →</span>
-                </button>
+                </TiltCard>
               ))}
             </div>
             <div className="section-head reveal"><div><h2>Also in the <span className="acc">lab</span></h2><p>One extra repo module beyond the preview's twelve — kept functional, not counted in the twelve.</p></div></div>
             <div className="toolkit">
-              <button type="button" className="tool-card reveal" onClick={() => navigate('aim')}>
+              <TiltCard className="tool-card reveal" onClick={() => navigate('aim')}>
                 <span className="idx">EXTRA / 12</span><h4>Aim Trainer</h4><p>Click randomly-appearing targets as fast and accurately as possible.</p><span className="go">Open module →</span>
-              </button>
+              </TiltCard>
             </div>
             <div className="section-head reveal"><div><h2>Built to a <span className="acc">higher standard</span></h2><p>Careful engineering behind a calm surface — timing, feedback and hardware insight, without the clutter.</p></div></div>
             <div className="about">
@@ -434,8 +482,10 @@ export default function App() {
                         <button key={id} type="button" className={`swatch${accent === id ? ' active' : ''}`} style={{ background: bg }} aria-label={`${id} blue accent`} onClick={() => setAccent(id)} />
                       ))}
                     </div></div>
-                  <div className="set-row"><div className="s-txt"><b>Custom cursor</b><span>A quiet ring that follows your pointer across the page.</span></div>
+                  <div className="set-row desktop-only-set"><div className="s-txt"><b>Custom cursor</b><span>A quiet ring that follows your pointer across the page.</span></div>
                     <button type="button" className="switch" data-setting="cursor" aria-pressed={prefs.cursor} aria-label="Toggle custom cursor" onClick={() => togglePref('cursor')} /></div>
+                  <div className="set-row desktop-only-set"><div className="s-txt"><b>Cursor trail</b><span>Fading dots that follow your pointer, alongside or instead of the custom cursor.</span></div>
+                    <button type="button" className="switch" data-setting="trail" aria-pressed={prefs.trail} aria-label="Toggle cursor trail" onClick={() => togglePref('trail')} /></div>
                   <div className="set-row"><div className="s-txt"><b>Surface texture</b><span>An extremely subtle texture over the page finish.</span></div>
                     <button type="button" className="switch" data-setting="grain" aria-pressed={prefs.grain} aria-label="Toggle film grain" onClick={() => togglePref('grain')} /></div>
                 </div>

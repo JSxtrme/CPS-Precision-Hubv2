@@ -469,3 +469,40 @@
 .pv-scope .pv-glow:hover::after{ opacity:1; }
 @media (prefers-reduced-motion: reduce){ .pv-scope .pv-glow::after{ display:none; } }
 @media (max-width:860px){ .pv-scope .pv-extras-grid{ grid-template-columns:1fr !important; } }
+
+/* --- Mobile fixes + cursor trail + tilt support (follow-up PR) --- */
+/* Cursor trail dots: created imperatively by App.tsx, fixed to the viewport,
+   pointer-events none so they can never eat a click, below the cursor (200). */
+.pv-scope .cursor-trail-dot{ position:fixed; top:0; left:0; z-index:199; pointer-events:none;
+  border-radius:50%; background:var(--accent); }
+@media (hover:none), (pointer:coarse){ .pv-scope .cursor-trail-dot{ display:none; } }
+/* Settings rows that are useless on mobile (pointer-only toggles): hidden on
+   coarse-pointer / no-hover devices. The toggles stay in the DOM and their
+   stored cps-preview-prefs values are never deleted — they simply reappear
+   on a fine-pointer device. Only Custom cursor + Cursor trail are hidden;
+   theme, accent, grain, sounds, particles, shake, scroll lock, reduced
+   motion and session-data wipe all stay visible on mobile. */
+@media (hover:none), (pointer:coarse){ .pv-scope .desktop-only-set{ display:none; } }
+/* Toolkit tilt: TiltCard sets an inline perspective transform; the card's
+   existing transition already animates it, and preserve-3d keeps the tilt
+   from flattening the card's inner content. */
+.pv-scope .tool-card{ transform-style:preserve-3d; }
+/* Mobile result unclip (max-width:640px only, desktop pixel-unchanged):
+   HARD RULE — nothing spills over the pad border. The finished pad used to
+   keep its fixed 320px height with overflow:hidden, so a tall result (score
+   + rank + roast + buttons) was cut by the border. Instead of letting the
+   result expand below the pad, the finished pad is made slightly taller
+   (440px vs 320px) and the result is scaled down to fit neatly INSIDE it:
+   smaller score, tighter spacing, smaller roast and buttons. The result
+   stays absolutely positioned inside the pad, with its blur background,
+   exactly like desktop — just compacted to fit. */
+@media (max-width:640px){
+  .pv-scope .pad.finished{ height:440px; }
+  .pv-scope .pad.finished .result{ padding:20px 16px; }
+  .pv-scope .pad.finished .result .r-num{ font-size:clamp(48px,12vw,64px); margin-top:4px; }
+  .pv-scope .pad.finished .result .r-unit{ margin-top:6px; }
+  .pv-scope .pad.finished .result .r-rank{ margin-top:10px; font-size:clamp(19px,3vw,24px); }
+  .pv-scope .pad.finished .result .r-roast{ font-size:13.5px; line-height:1.5; margin-top:6px; }
+  .pv-scope .pad.finished .result .btn-row{ margin-top:14px; }
+  .pv-scope .pad.finished .result .btn{ padding:9px 18px; font-size:13px; }
+}
