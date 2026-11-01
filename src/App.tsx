@@ -172,6 +172,7 @@ export default function App() {
   const tlUpdateRef = useRef<(() => void) | null>(null);
   const scopeRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
+  const backTopRef = useRef<HTMLButtonElement | null>(null);
   const bgRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
   const cursorDotRef = useRef<HTMLDivElement | null>(null);
@@ -222,6 +223,10 @@ export default function App() {
       const prog = Math.max(0, Math.min(1, window.scrollY / max));
       if (progressRef.current) progressRef.current.style.transform = `scaleX(${prog.toFixed(4)})`;
       if (headerRef.current) headerRef.current.classList.toggle('scrolled', window.scrollY > 12);
+      // Back-to-top button: same ticking rAF update as the progress hairline,
+      // so no second scroll listener and no re-render per frame. Visibility is
+      // a class toggle on the button itself (see .pv-back-top in preview.css).
+      if (backTopRef.current) backTopRef.current.classList.toggle('is-visible', window.scrollY > 500);
       if (bgRef.current && motionOK) {
         const y = Math.round(window.scrollY * factor);
         if (y !== py) { py = y; bgRef.current.style.setProperty('--py', `${y}px`); }
@@ -638,6 +643,14 @@ export default function App() {
           </section>
         )}
       </main>
+      {/* Back to top: App level, so it works on every view (home, toolkit,
+          individual tests, Settings). It is NOT rendered on /old — that path
+          returns <LegacyApp /> before this JSX. Visibility is driven by the
+          scroll choreography effect (class toggle, no re-render); hidden
+          state uses visibility:hidden so it is not in the tab order. */}
+      <button type="button" ref={backTopRef} className="pv-back-top" aria-label="Back to top" onClick={() => window.scrollTo({ top: 0, behavior: motionOK ? 'smooth' : 'auto' })}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+      </button>
     </div>
   );
 }
