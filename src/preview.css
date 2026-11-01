@@ -408,6 +408,17 @@
 .pv-scope .about p{ color:var(--muted); line-height:1.7; margin:0 0 12px; font-size:15px; font-weight:500; }
 .pv-scope .about p b{ color:var(--text); }
 .pv-scope .feat-list{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px; }
+/* Right ("Why it's better") panel only: the home .about whose first panel carries .built-for.
+   In the side-by-side layout the grid stretches both panels to the left panel's height, leaving a
+   blank footer in the right panel. Stretch its list to fill the panel (flex:1, the panel is already
+   a flex column) and spread the 5 items with space-between: truly equal inter-item gaps and the
+   last item flush with the panel's bottom padding, not one big bottom margin. The list's 14px
+   margin-top stacks on the heading's 14px margin-bottom, so the heading-to-first-item gap is a
+   bit larger than the equal inter-item gaps. Scoped to min-width:861px (the complement of the
+   existing max-width:860px single-column breakpoint): in the stacked layout each panel is only
+   as tall as its content, so there is no footer space to distribute and the base 14px gap stays.
+   ModuleExtras "How to read it" lists are untouched: their .about has no .built-for panel. */
+@media (min-width:861px){ .pv-scope .about:has(> .panel > .built-for) > .panel:has(> .feat-list) .feat-list{ flex:1; justify-content:space-between; gap:0; margin-top:14px; } }
 .pv-scope .feat-list li{ display:flex; gap:12px; color:var(--muted); font-size:14.5px; line-height:1.6; font-weight:500; }
 .pv-scope .feat-list li svg{ width:17px; height:17px; color:var(--accent); flex:none; margin-top:3px; }
 .pv-scope .feat-list li b{ color:var(--text); }
