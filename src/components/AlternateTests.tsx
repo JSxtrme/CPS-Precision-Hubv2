@@ -18,25 +18,40 @@ import { Ripple, ViewType, getRating } from '../types';
 import { handleGlowMove } from './glow';
 
 // Custom hook to disable page scrolling and zooming on touch devices when a test is active.
-// REAL scroll lock (new, mobile only): while a test runs, body/html overflow is
-// hidden and touchmove is prevented (except inside a genuinely scrollable inner
-// element, e.g. a log with overflow-y-auto), so fast tapping cannot scroll the
-// page away. It always releases: the effect cleanup below runs when the test
-// finishes/stops, when the component unmounts (route change), and on deps change.
+// REAL scroll lock (new, mobile only): while a test runs, touchmove is prevented
+// (except inside a genuinely scrollable inner element, e.g. a log with
+// overflow-y-auto), so fast tapping cannot scroll the page away. It always
+// releases: the effect cleanup below runs when the test finishes/stops, when the
+// component unmounts (route change), and on deps change.
 // The old behaviour is preserved when lockEnabled is false: only pinch/zoom is
 // blocked, and the CPS pad keeps touch-action: pan-y + its ~12px swipe threshold
 // so a swipe never counts as a click. The CPS rig passes the Settings
 // "scroll lock while testing" toggle as lockEnabled; other modules, which do not
 // receive prefs, lock by default during a run (lockEnabled defaults to true).
+//
+// SCROLL-POSITION FIX (2026-11-01): the previous lock set body/html
+// overflow:hidden, which on mobile browsers clamps the document scroll to the
+// top — the page jerked to the top and, locked, the user could no longer reach
+// the pad. Now the lock pins the body instead: window.scrollY is recorded and
+// the body is position:fixed with top:-scrollY, so the page visually stays
+// exactly where it was (pad fully reachable) and on unlock the saved styles
+// are restored and window.scrollTo returns to the exact same scrollY, with
+// behaviour:'auto' (no smooth-scroll animation, no jump).
+// Module-level lock state is shared by every test using this hook: the first
+// lock records the position, nested locks only count, and only the last unlock
+// restores — so two hooks can never fight over the scroll position.
+let scrollLockCount = 0;
+let scrollLockSavedY = 0;
+let scrollLockSavedBody: { position: string; top: string; width: string; overflow: string; overscrollBehavior: string } | null = null;
+let scrollLockSavedHtmlOverflow = '';
 export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean, lockEnabled: boolean = true) {
   useEffect(() => {
     if (!isTouchDevice || !isRunning) return;
 
-    // Save previous styles
-    const originalOverflow = document.body.style.overflow;
-    const originalHtmlOverflow = document.documentElement.style.overflow;
+    // Save previous styles (used only by the non-lock pinch/zoom path's cleanup
+    // for touchAction, which this hook never changes; the lock path restores
+    // from scrollLockSavedBody instead, so nested locks cannot corrupt it).
     const originalTouchAction = document.body.style.touchAction;
-    const originalOverscrollBehavior = document.body.style.overscrollBehavior;
 
     // Extra touch listener to prevent default zoom/pinch behaviors on iOS and some Android devices
     const preventZoomAndScroll = (e: TouchEvent) => {
@@ -61,9 +76,25 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
     };
 
     if (lockEnabled) {
-      document.body.style.overflow = 'hidden';
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overscrollBehavior = 'none';
+      // First lock only: pin the body at the current scroll position.
+      if (scrollLockCount === 0) {
+        scrollLockSavedY = window.scrollY || document.documentElement.scrollTop || 0;
+        scrollLockSavedBody = {
+          position: document.body.style.position,
+          top: document.body.style.top,
+          width: document.body.style.width,
+          overflow: document.body.style.overflow,
+          overscrollBehavior: document.body.style.overscrollBehavior,
+        };
+        scrollLockSavedHtmlOverflow = document.documentElement.style.overflow;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollLockSavedY}px`;
+        document.body.style.width = '100%';
+        document.body.style.overflow = 'hidden';
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overscrollBehavior = 'none';
+      }
+      scrollLockCount += 1;
       document.addEventListener('touchmove', lockTouchMove, { passive: false });
     }
 
@@ -73,13 +104,27 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
     document.addEventListener("gesturechange", preventGesture, { passive: false });
 
     return () => {
-      document.body.style.overflow = originalOverflow;
-      document.documentElement.style.overflow = originalHtmlOverflow;
+      if (lockEnabled) {
+        scrollLockCount = Math.max(0, scrollLockCount - 1);
+        // Last unlock only: restore the pre-lock styles, then return to the
+        // exact saved scroll position (styles first, or the browser clamps it).
+        if (scrollLockCount === 0 && scrollLockSavedBody) {
+          const savedY = scrollLockSavedY;
+          const savedBody = scrollLockSavedBody;
+          document.body.style.position = savedBody.position;
+          document.body.style.top = savedBody.top;
+          document.body.style.width = savedBody.width;
+          document.body.style.overflow = savedBody.overflow;
+          document.body.style.overscrollBehavior = savedBody.overscrollBehavior;
+          document.documentElement.style.overflow = scrollLockSavedHtmlOverflow;
+          scrollLockSavedBody = null;
+          window.scrollTo({ top: savedY, left: 0, behavior: 'auto' });
+        }
+        document.removeEventListener("touchmove", lockTouchMove);
+      }
       document.body.style.touchAction = originalTouchAction;
-      document.body.style.overscrollBehavior = originalOverscrollBehavior;
       document.removeEventListener("touchstart", preventZoomAndScroll);
       document.removeEventListener("touchmove", preventZoomAndScroll);
-      document.removeEventListener("touchmove", lockTouchMove);
       document.removeEventListener("gesturestart", preventGesture);
       document.removeEventListener("gesturechange", preventGesture);
     };
