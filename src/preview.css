@@ -152,9 +152,30 @@
 .pv-scope .device-badge i{ width:6px; height:6px; border-radius:50%; background:var(--accent); display:block; }
 .pv-scope .icon-btn{ width:38px; height:38px; display:grid; place-items:center; background:color-mix(in srgb, var(--panel) 60%, transparent);
         border:1px solid var(--line); border-radius:50%; color:var(--muted); transition:color .2s, border-color .2s; }
-.pv-scope .icon-btn:hover{ color:var(--accent); border-color:var(--line2); }
+/* Header icon buttons (sound toggle + theme toggle): the on/off colour
+   must come ONLY from aria-pressed, never from hover. Previously :hover
+   used the exact same accent blue as aria-pressed="true", and on touch
+   devices :hover STICKS after a tap until the next tap elsewhere — so
+   tapping sound ON→OFF left the stale hover blue masking the new grey
+   off-state, which only appeared after tapping elsewhere. Fix: hover
+   styling applies only where a real hover exists (hover:hover), and on
+   coarse/no-hover devices hover/active are forced back to the base
+   muted style, with aria-pressed="true" re-asserted after that reset so
+   the ON state still shows blue on touch. An explicit
+   aria-pressed="false" rule makes the OFF state win over hover
+   everywhere, so hovering an OFF button no longer paints it blue either
+   (hovering an ON button stays blue, as before); the theme button has
+   no pressed state, so its desktop hover is unchanged. */
+@media (hover:hover){
+  .pv-scope .icon-btn:hover{ color:var(--accent); border-color:var(--line2); }
+}
+@media (hover:none), (pointer:coarse){
+  .pv-scope .icon-btn:hover, .pv-scope .icon-btn:active{ color:var(--muted); border-color:var(--line); }
+  .pv-scope .icon-btn[aria-pressed="true"]{ color:var(--accent); border-color:var(--line2); }
+}
 .pv-scope .icon-btn svg{ width:17px; height:17px; }
 .pv-scope .icon-btn[aria-pressed="true"]{ color:var(--accent); border-color:var(--line2); }
+.pv-scope .icon-btn[aria-pressed="false"]{ color:var(--muted); border-color:var(--line); }
 .pv-scope main{ position:relative; z-index:1; max-width:1160px; margin:0 auto; padding:0 24px 48px; }
 .pv-scope .view[hidden]{ display:none; }
 .pv-scope .hero{ padding:88px 0 10px; position:relative; text-align:center; }
@@ -535,30 +556,26 @@
   .pv-scope .pad.finished .result .btn{ padding:9px 18px; font-size:13px; }
 }
 
-/* --- Mobile toolkit timeline (single-column only, max-width:520px) ---
-   The 12-module grid becomes 1 column at this breakpoint (see .toolkit
-   rule above); only there does a vertical line appear, on the RIGHT side
-   of the list (never the middle of the screen), running from the first
-   card's centre to the last, with a white dot on each card's centre.
-   The line lights up white with a glow as the user scrolls (fill height
-   is driven by App.tsx scroll progress); when the fill reaches a dot,
-   the dot lights and its outer ring ripples once. Desktop / grid layouts
-   show NO timeline at all (display:none outside this media query), and
-   the separate "Also in the lab" Aim grid is not wrapped, so it has none.
-   pointer-events:none so dots can never eat a card tap, and TiltCard
-   press/tilt is untouched. */
-.pv-scope .pv-toolkit-wrap{ position:relative; }
-.pv-scope .pv-toolkit-timeline{ display:none; }
-@media (max-width:520px){
-  .pv-scope .pv-toolkit-wrap{ padding-right:36px; }
-  .pv-scope .pv-toolkit-timeline{ display:block; position:absolute; top:0; bottom:0; right:12px; width:2px; pointer-events:none; z-index:2; }
-  .pv-scope .pv-tl-track{ position:absolute; left:0; width:2px; background:rgba(255,255,255,.14); border-radius:2px; }
-  .pv-scope .pv-tl-fill{ width:100%; background:#fff; border-radius:2px; box-shadow:0 0 8px rgba(255,255,255,.9), 0 0 18px rgba(110,168,255,.7); transition:height .15s linear; }
-  .pv-scope .pv-tl-dot{ position:absolute; left:50%; transform:translate(-50%,-50%); width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.25); border:2px solid rgba(255,255,255,.35); transition:background .3s, border-color .3s, box-shadow .3s; }
-  .pv-scope .pv-tl-dot.lit{ background:#fff; border-color:#fff; box-shadow:0 0 10px rgba(255,255,255,.95), 0 0 20px rgba(110,168,255,.6); }
-  .pv-scope .pv-tl-dot.lit::after{ content:""; position:absolute; inset:-2px; border-radius:50%; border:2px solid rgba(255,255,255,.8); animation:pvTlRipple .8s ease-out forwards; }
-  @keyframes pvTlRipple{ from{ transform:scale(1); opacity:.9; } to{ transform:scale(2.8); opacity:0; } }
-}
+/* --- Toolkit timeline (ALL widths, incl. desktop) ---
+   A vertical line on the RIGHT side of the 12-module list (never the
+   middle of the screen), running from the first row's centre to the
+   last, with one white dot per ROW — dots are grouped by live row in
+   App.tsx, so this is 12 dots at 1 column, 6 at 2 columns, and 3 on the
+   desktop 4x3 grid. The line lights up white with a glow as the user
+   scrolls (fill height is driven by App.tsx scroll progress); when the
+   fill reaches a dot, the dot lights and its outer ring ripples once.
+   The separate "Also in the lab" Aim grid is not wrapped, so it has
+   none. pointer-events:none so dots can never eat a card tap, and
+   TiltCard press/tilt is untouched. The line lives in the wrapper's
+   right-side padding, so grid columns and card layout are unchanged. */
+.pv-scope .pv-toolkit-wrap{ position:relative; padding-right:36px; }
+.pv-scope .pv-toolkit-timeline{ display:block; position:absolute; top:0; bottom:0; right:12px; width:2px; pointer-events:none; z-index:2; }
+.pv-scope .pv-tl-track{ position:absolute; left:0; width:2px; background:rgba(255,255,255,.14); border-radius:2px; }
+.pv-scope .pv-tl-fill{ width:100%; background:#fff; border-radius:2px; box-shadow:0 0 8px rgba(255,255,255,.9), 0 0 18px rgba(110,168,255,.7); transition:height .15s linear; }
+.pv-scope .pv-tl-dot{ position:absolute; left:50%; transform:translate(-50%,-50%); width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.25); border:2px solid rgba(255,255,255,.35); transition:background .3s, border-color .3s, box-shadow .3s; }
+.pv-scope .pv-tl-dot.lit{ background:#fff; border-color:#fff; box-shadow:0 0 10px rgba(255,255,255,.95), 0 0 20px rgba(110,168,255,.6); }
+.pv-scope .pv-tl-dot.lit::after{ content:""; position:absolute; inset:-2px; border-radius:50%; border:2px solid rgba(255,255,255,.8); animation:pvTlRipple .8s ease-out forwards; }
+@keyframes pvTlRipple{ from{ transform:scale(1); opacity:.9; } to{ transform:scale(2.8); opacity:0; } }
 @media (prefers-reduced-motion: reduce){
   .pv-scope .pv-tl-fill{ transition:none; }
   .pv-scope .pv-tl-dot.lit::after{ animation:none; display:none; }

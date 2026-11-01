@@ -149,12 +149,14 @@ export default function App() {
   const aimLeaderboardDuration = aimFinishedDuration ?? aimDuration;
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [scrollToToolkit, setScrollToToolkit] = useState(() => { try { return window.location.pathname.replace(/\/$/, '') === '/more-tests'; } catch { return false; } });
-  // Mobile toolkit timeline (single-column only, see preview.css): vertical
-  // centres of the 12 toolkit cards, relative to the first card's centre,
-  // plus scroll progress (0..1) through the track. Measured from the live
-  // DOM (not assumed from card heights) so dots sit on each card's centre
-  // whatever its content height is. The "Also in the lab" Aim grid is a
-  // separate .toolkit element and is deliberately NOT measured here.
+  // Toolkit timeline (all widths, see preview.css): one dot per ROW of the
+  // 12-module grid, relative to the first row's centre, plus scroll
+  // progress (0..1) through the track. Rows are grouped from the live DOM
+  // (cards sharing an offsetTop), not assumed from the column count — so
+  // this is 12 dots at 1 column, 6 at 2 columns, and 3 at 4 columns
+  // (desktop 4x3 grid). Dots sit on each row's centre whatever the card
+  // heights are. The "Also in the lab" Aim grid is a separate .toolkit
+  // element and is deliberately NOT measured here.
   const [tlOffsets, setTlOffsets] = useState<number[]>([]);
   const tlOffsetsRef = useRef<number[]>([]);
   const [tlProgress, setTlProgress] = useState(0);
@@ -306,10 +308,12 @@ export default function App() {
     }
   }, [scrollToToolkit, activeView, motionOK]);
 
-  // Mobile toolkit timeline measurements + scroll progress. Only the
-  // 12-module grid (#toolkitGrid) is measured; CSS hides the timeline
-  // entirely above the 1-column breakpoint, so desktop is untouched.
-  // Fill point: 70% down the viewport — when that point passes a card's
+  // Toolkit timeline measurements + scroll progress, all widths. Only the
+  // 12-module grid (#toolkitGrid) is measured. Cards are grouped into rows
+  // by their live top position (same row = tops within 10px), and each
+  // row contributes ONE dot at its centre — so the dot count follows the
+  // live column count (12 at 1 column, 6 at 2, 3 at 4 on desktop).
+  // Fill point: 70% down the viewport — when that point passes a row's
   // centre, the line has lit up to it and its dot ripples (CSS .lit).
   useEffect(() => {
     if (activeView !== 'cps') return;
@@ -320,9 +324,19 @@ export default function App() {
       const cards = Array.from(grid.querySelectorAll<HTMLElement>('.tool-card'));
       if (cards.length < 2) return;
       const gridTop = grid.getBoundingClientRect().top + window.scrollY;
-      // Centres relative to the grid top (= wrapper top: the grid is the
-      // wrapper's first child). The track spans first→last centre.
-      const centres = cards.map((c) => c.getBoundingClientRect().top + window.scrollY + c.offsetHeight / 2 - gridTop);
+      // Group cards into rows by live top position, then one centre per
+      // row (mean of that row's card centres). Centres are relative to
+      // the grid top (= wrapper top: the grid is the wrapper's first
+      // child). The track spans first→last row centre.
+      const rows: { top: number; centres: number[] }[] = [];
+      cards.forEach((c) => {
+        const top = c.getBoundingClientRect().top + window.scrollY;
+        const centre = top + c.offsetHeight / 2 - gridTop;
+        const row = rows.find((r) => Math.abs(r.top - top) <= 10);
+        if (row) row.centres.push(centre);
+        else rows.push({ top, centres: [centre] });
+      });
+      const centres = rows.map((r) => r.centres.reduce((a, b) => a + b, 0) / r.centres.length);
       tlOffsetsRef.current = centres;
       setTlOffsets(centres);
       update();
