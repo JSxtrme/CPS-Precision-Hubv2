@@ -470,7 +470,8 @@
 .pv-scope .readout{ padding:13px 12px 11px; border-radius:14px; }
 .pv-scope .readout .lbl{ letter-spacing:.1em; font-size:9px; }
 .pv-scope .hero{ padding-top:52px; }
-.pv-scope .hero-meta .hm{ padding:0 14px; }
+.pv-scope .hero-meta{ display:grid; grid-template-columns:1fr 1fr; width:100%; max-width:440px; margin-left:auto; margin-right:auto; }
+.pv-scope .hero-meta .hm{ padding:10px 8px; border-right:none; text-align:center; font-size:10px; letter-spacing:.12em; }
 .pv-scope .device-badge{ display:none; }
 .pv-scope nav.mainnav{ order:3; margin:0 auto 10px; }
 .pv-scope .reveal{ filter:none; transform:translateY(22px); }
