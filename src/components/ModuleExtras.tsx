@@ -356,7 +356,10 @@ function ladderFor(meta: ModuleMeta, items: HistoryItem[], aimDuration?: number)
   if (meta.ladderKind === 'cps') {
     rows = PREVIEW_RANKS.map((r) => ({ name: r.name, range: r.max === Infinity ? `${r.min}+` : `${r.min}–${r.max}`, color: r.color }));
   } else if (meta.ladderKind === 'reaction') {
-    rows = REACTION_TIERS.map((t) => ({ name: t.label, range: t.max === Infinity ? `${t.min}ms+` : `${t.min}–${t.max}ms`, color: '#6ea8ff' }));
+    // Godlike is a HIDDEN tier: it must never appear in a browsable
+    // leaderboard. Filter it out of the rows (the tier itself stays in
+    // REACTION_TIERS for result calculation in ReactionTime.tsx).
+    rows = REACTION_TIERS.filter((t) => t.label !== 'Godlike').map((t) => ({ name: t.label, range: t.max === Infinity ? `${t.min}ms+` : `${t.min}–${t.max}ms`, color: '#6ea8ff' }));
   } else if (meta.ladderKind === 'polling') {
     rows = [
       { name: 'Standard', range: '0–249 Hz', color: '#8494b0' },
@@ -393,7 +396,10 @@ function ladderFor(meta: ModuleMeta, items: HistoryItem[], aimDuration?: number)
     if (meta.ladderKind === 'cps') {
       currentIdx = PREVIEW_RANKS.findIndex((r) => best! >= r.min && best! < r.max);
     } else if (meta.ladderKind === 'reaction') {
-      currentIdx = REACTION_TIERS.findIndex((t) => best! >= t.min && best! <= t.max);
+      // Index into the FILTERED rows: subtract 1 so Superhuman (original
+      // index 1) becomes row 0, and a hidden Godlike best (original
+      // index 0) becomes -1 = no highlighted row, not a mislabel.
+      currentIdx = REACTION_TIERS.findIndex((t) => best! >= t.min && best! <= t.max) - 1;
     } else if (meta.ladderKind === 'polling') {
       currentIdx = best! >= 500 ? 2 : best! >= 250 ? 1 : 0;
     } else if (meta.ladderKind === 'double') {
@@ -420,6 +426,9 @@ function ladderFor(meta: ModuleMeta, items: HistoryItem[], aimDuration?: number)
       progress = currentIdx === rows.length - 1 ? 1 : 0.5;
     }
   }
+  // Hidden Godlike reaction best (<150ms): no highlighted row, no
+  // "Next" tier name (that would reveal the hidden tier), progress full.
+  if (meta.ladderKind === 'reaction' && best !== null && best < 150) { progress = 1; next = null; }
   return { rows, best, current, next, progress, note, aimDuration: aim ? aim.duration : null };
 }
 

@@ -2051,6 +2051,7 @@ export function RightClickTest({ addHistory, isDarkMode, isTouchDevice = false }
             <p className="text-xs text-emerald-600 dark:text-emerald-400 uppercase font-bold">Finished!</p>
             <p className="text-5xl font-black">{calculatedCps.toFixed(2)} Right-Click CPS</p>
             <p className={`text-lg font-bold ${getRating(calculatedCps).color}`}>{getRating(calculatedCps).label}</p>
+            {calculatedCps >= 20 && <p className="text-xs font-semibold tracking-wide text-amber-500">hidden tier unlocked</p>}
             <p className="text-xs italic py-1.5 px-3 rounded-xl max-w-sm mx-auto text-amber-800 dark:text-amber-200 bg-amber-500/5 dark:bg-amber-400/10 border border-amber-500/15 dark:border-amber-400/20 font-medium leading-relaxed">"{humorousMessage}"</p>
             <div className="pt-2">
               <span className="text-xs font-bold theme-pulse-badge px-3 py-1.5 rounded-full inline-block animate-pulse">
@@ -2492,6 +2493,7 @@ export function JitterTest({ addHistory, isDarkMode, isTouchDevice = false }: Al
             <p className="text-xs text-pink-600 dark:text-pink-400 font-bold uppercase">Jitter Results</p>
             <p className="text-4xl font-black">{calculatedCps.toFixed(2)} CPS</p>
             <p className={`text-lg font-bold ${getRating(calculatedCps).color}`}>{getRating(calculatedCps).label}</p>
+            {calculatedCps >= 20 && <p className="text-xs font-semibold tracking-wide text-amber-500">hidden tier unlocked</p>}
             <p className="text-sm font-semibold">
               Stability Score: <span className="text-emerald-600 dark:text-emerald-400 font-bold">{stability}%</span>
             </p>
@@ -2795,6 +2797,7 @@ export function ButterflyTest({ addHistory, isDarkMode, isTouchDevice = false }:
             <p className="text-xs text-blue-600 dark:text-blue-400 font-bold uppercase">Butterfly Results</p>
             <p className="text-4xl font-black">{calculatedCps.toFixed(2)} CPS</p>
             <p className={`text-lg font-bold ${getRating(calculatedCps).color}`}>{getRating(calculatedCps).label}</p>
+            {calculatedCps >= 20 && <p className="text-xs font-semibold tracking-wide text-amber-500">hidden tier unlocked</p>}
             <p className="text-sm font-semibold">
               Stability Score: <span className="text-emerald-600 dark:text-emerald-400 font-bold">{stability}%</span>
             </p>
@@ -3129,6 +3132,7 @@ export function KohiTest({ addHistory, isDarkMode, isTouchDevice = false }: { ad
             <p className={`text-xs font-bold tracking-widest ${
               isDarkMode ? "text-emerald-300" : "text-emerald-600"
             }`}>[RANK: {getRating(finalCps).label.toUpperCase()}]</p>
+            {finalCps >= 20 && <p className="text-[10px] font-bold tracking-widest text-emerald-600 dark:text-emerald-300">hidden tier unlocked</p>}
             {humorousMessage && (
               <p className={`text-[10px] italic py-1.5 px-2 rounded max-w-[280px] mx-auto font-medium leading-relaxed my-1 ${
                 isDarkMode 
@@ -3421,6 +3425,7 @@ export function DragClickTest({ addHistory, isDarkMode, isTouchDevice = false }:
             <p className="text-xs text-emerald-500 font-bold uppercase">Test Completed!</p>
             <p className="text-5xl font-black">{finalCps.toFixed(2)} Drag CPS</p>
             <p className={`text-lg font-bold ${getRating(finalCps).color}`}>{getRating(finalCps).label}</p>
+            {finalCps >= 20 && <p className="text-xs font-semibold tracking-wide text-amber-500">hidden tier unlocked</p>}
             <p className="text-xs italic py-1.5 px-3 rounded-xl max-w-sm mx-auto text-emerald-800 dark:text-emerald-200 bg-emerald-500/5 border border-emerald-500/15 font-medium leading-relaxed">
               "{humorousMessage}"
             </p>

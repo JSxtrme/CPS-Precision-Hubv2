@@ -303,6 +303,22 @@
 .pv-scope .result .r-num{ font-weight:800; letter-spacing:-.03em; font-size:clamp(60px,10vw,108px); line-height:1; margin:8px 0 0; font-variant-numeric:tabular-nums; }
 .pv-scope .result .r-unit{ letter-spacing:.3em; font-size:11px; font-weight:700; color:var(--muted); margin-top:8px; }
 .pv-scope .result .r-rank{ font-weight:800; letter-spacing:-.01em; font-size:clamp(21px,3vw,28px); margin-top:16px; color:var(--accent); }
+.pv-scope .result .r-unlock{ margin-top:6px; font-size:12px; font-weight:600; letter-spacing:.06em; color:var(--muted); }
+/* Finished-result contained fit (desktop AND mobile): the result is
+   centred inside a fixed-height pad with overflow hidden, so content
+   taller than the pad clipped at BOTH ends (top header + bottom reset
+   hint) — the bug in the 18.00 CPS screenshot. Fix by growing the
+   finished pad and compacting the result, never by spilling over the
+   border: finished pad 380px -> 480px, score 108px -> 88px max, tighter
+   rank/roast/button spacing. Total result height now fits inside 480px
+   even with a 3-line roast + NEW BEST + buttons + reset hint. */
+.pv-scope .pad.finished{ height:480px; }
+.pv-scope .pad.finished .result{ padding:24px 20px; }
+.pv-scope .pad.finished .result .r-num{ font-size:clamp(56px,9vw,88px); margin-top:6px; }
+.pv-scope .pad.finished .result .r-unit{ margin-top:6px; }
+.pv-scope .pad.finished .result .r-rank{ margin-top:12px; }
+.pv-scope .pad.finished .result .r-roast{ font-size:14px; line-height:1.5; margin-top:6px; }
+.pv-scope .pad.finished .result .btn-row{ margin-top:16px; }
 .pv-scope .result .r-roast{ color:var(--muted); max-width:440px; margin-top:8px; font-size:15px; line-height:1.6; font-weight:500; }
 .pv-scope .result .btn-row{ margin-top:22px; justify-content:center; }
 .pv-scope .side{ display:flex; flex-direction:column; gap:18px; }
