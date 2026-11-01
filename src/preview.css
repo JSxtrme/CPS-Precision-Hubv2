@@ -106,6 +106,18 @@
 .pv-scope .scroll-progress{ position:fixed; top:0; left:0; right:0; height:2px; z-index:120; pointer-events:none;
         background:linear-gradient(90deg, var(--accent-deep), var(--accent));
         transform-origin:0 50%; transform:scaleX(0); }
+/* Back to top: fixed lower-right on desktop AND mobile (no device gating).
+   z-index 40 sits above page content (z-index 1) but below the sticky header
+   (50), grain (60), progress hairline (120) and cursor (200). Hidden state
+   uses visibility:hidden (not just opacity) so the button is not tabbable
+   when hidden; show/hide animates opacity + transform only, no layout shift.
+   Bottom offset includes the safe-area inset so it clears mobile browser chrome. */
+.pv-scope .pv-back-top{ position:fixed; right:20px; bottom:calc(20px + env(safe-area-inset-bottom, 0px)); z-index:40; width:46px; height:46px; border-radius:50%; display:grid; place-items:center; background:color-mix(in srgb, var(--panel) 85%, transparent); border:1px solid var(--line2); color:var(--muted); box-shadow:var(--card-shadow); opacity:0; visibility:hidden; transform:translateY(8px) scale(.92); transition:opacity .25s ease, transform .25s ease, visibility .25s, color .2s, border-color .2s; pointer-events:none; }
+.pv-scope .pv-back-top.is-visible{ opacity:1; visibility:visible; transform:none; pointer-events:auto; }
+.pv-scope .pv-back-top svg{ width:20px; height:20px; }
+@media (hover:hover){ .pv-scope .pv-back-top:hover{ color:var(--accent); border-color:var(--line2); } }
+@media (max-width:640px){ .pv-scope .pv-back-top{ right:16px; bottom:calc(16px + env(safe-area-inset-bottom, 0px)); width:44px; height:44px; } }
+@media (prefers-reduced-motion: reduce){ .pv-scope .pv-back-top{ transition:none; } }
 .pv-scope .cursor-dot, .pv-scope .cursor-ring{ position:fixed; top:0; left:0; z-index:200; pointer-events:none; border-radius:50%; }
 .pv-scope .cursor-dot{ width:5px; height:5px; background:var(--accent); transform:translate(-50%,-50%); }
 .pv-scope .cursor-ring{ width:30px; height:30px; border:1px solid var(--accent); opacity:.45;
