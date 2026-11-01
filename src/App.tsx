@@ -4,6 +4,7 @@ import './preview.css';
 import FAQs from './components/FAQs';
 import ModuleExtras from './components/ModuleExtras';
 import PreviewCps, { PreviewSettings } from './components/PreviewCps';
+import TiltCard from './components/TiltCard';
 import KeyGhostingTest from './components/KeyGhosting';
 import {
   SpacebarTest, RightClickTest, PollingRateTest, JitterTest, ButterflyTest, KohiTest,
@@ -128,7 +129,7 @@ export default function App() {
     try { return localStorage.getItem('cps-preview-accent') || 'navy'; } catch { return 'navy'; }
   });
   const [prefs, setPrefs] = useState(() => {
-    const base = { sound: true, particles: true, shake: true, cursor: true, grain: true, scrolllock: true, motion: false };
+    const base = { sound: true, particles: true, shake: true, cursor: true, trail: false, grain: true, scrolllock: true, motion: false };
     try { const s = localStorage.getItem('cps-preview-prefs'); return s ? { ...base, ...JSON.parse(s) } : base; } catch { return base; }
   });
   const [history, setHistory] = useState<HistoryItem[]>(() => {
@@ -148,6 +149,27 @@ export default function App() {
   const aimLeaderboardDuration = aimFinishedDuration ?? aimDuration;
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [scrollToToolkit, setScrollToToolkit] = useState(() => { try { return window.location.pathname.replace(/\/$/, '') === '/more-tests'; } catch { return false; } });
+  // Toolkit timeline (all widths, see preview.css): one dot per ROW of the
+  // 12-module grid, relative to the first row's centre, plus scroll
+  // progress (0..1) through the track. Rows are grouped from the live DOM
+  // (cards sharing an offsetTop), not assumed from the column count — so
+  // this is 12 dots at 1 column, 6 at 2 columns, and 3 at 4 columns
+  // (desktop 4x3 grid). Dots sit on each row's centre whatever the card
+  // heights are. The "Also in the lab" Aim grid is a separate .toolkit
+  // element and is deliberately NOT measured here.
+  const [tlOffsets, setTlOffsets] = useState<number[]>([]);
+  const tlOffsetsRef = useRef<number[]>([]);
+  // Timeline scroll progress is deliberately NOT React state (perf, 2026-11-01):
+  // the old code called setTlProgress on every scroll frame, re-rendering the
+  // whole App (CPS rig, TiltCards, everything) per frame — that is what made
+  // phones lag when the toolkit scrolled into view. The fill and dot classes
+  // below are now driven straight through refs, with no re-render at all.
+  const tlFillRef = useRef<HTMLDivElement | null>(null);
+  const tlDotRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const tlLitRef = useRef<boolean[]>([]);
+  const tlGridRef = useRef<HTMLElement | null>(null);
+  const tlRafRef = useRef(0);
+  const tlUpdateRef = useRef<(() => void) | null>(null);
   const scopeRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
   const bgRef = useRef<HTMLDivElement | null>(null);
@@ -158,6 +180,13 @@ export default function App() {
   const systemReduced = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const motionOK = !prefs.motion && !systemReduced;
   const cursorOn = prefs.cursor && !isTouchDevice && motionOK && typeof window !== 'undefined' && window.matchMedia('(hover:hover)').matches;
+  // Cursor trail: independent of the dot+ring cursor — all four combinations
+  // (cursor on/off × trail on/off) work. Fine-pointer desktop only, off on
+  // touch and under reduced motion, same as the cursor. Stored in the same
+  // cps-preview-prefs blob as the other toggles; hidden on mobile in Settings
+  // (see .desktop-only-set in preview.css) but its stored value is never deleted.
+  const trailOn = prefs.trail && !isTouchDevice && motionOK && typeof window !== 'undefined' && window.matchMedia('(hover:hover)').matches;
+  const trailRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const hasTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (window.matchMedia && window.matchMedia('(pointer: coarse)').matches);
@@ -218,6 +247,45 @@ export default function App() {
     return () => { io.disconnect(); window.clearTimeout(t); };
   }, [activeView, motionOK, isLegacyView]);
 
+  // Cursor trail: a small pool of fading dots that chase the pointer. The
+  // dots are created imperatively and moved in one rAF loop (no React state
+  // per mousemove, no layout thrash) — each dot lerps toward the previous
+  // one, so the trail snakes behind the cursor and shrinks as it fades.
+  useEffect(() => {
+    if (!trailOn) return;
+    const container = trailRef.current; if (!container) return;
+    const N = 10;
+    const dots: HTMLSpanElement[] = [];
+    const pos: { x: number; y: number }[] = [];
+    let mx = window.innerWidth / 2, my = window.innerHeight / 2;
+    for (let i = 0; i < N; i++) {
+      const s = document.createElement('span');
+      s.className = 'cursor-trail-dot';
+      s.style.width = `${(10 - i * 0.7).toFixed(1)}px`;
+      s.style.height = s.style.width;
+      s.style.opacity = (0.85 - i * 0.07).toFixed(2);
+      container.appendChild(s); dots.push(s); pos.push({ x: mx, y: my });
+    }
+    const onMove = (e: PointerEvent) => { mx = e.clientX; my = e.clientY; };
+    let raf = 0;
+    const loop = () => {
+      let px = mx, py = my;
+      pos.forEach((p, i) => {
+        p.x += (px - p.x) * 0.35; p.y += (py - p.y) * 0.35;
+        dots[i].style.transform = `translate(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px) translate(-50%,-50%)`;
+        px = p.x; py = p.y;
+      });
+      raf = requestAnimationFrame(loop);
+    };
+    window.addEventListener('pointermove', onMove, { passive: true });
+    raf = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      cancelAnimationFrame(raf);
+      container.innerHTML = '';
+    };
+  }, [trailOn]);
+
   // Custom cursor (preview cursor()): 5px accent dot follows instantly, ring
   // lerps at 0.16; is-pad on .pad/.stage, is-hover on interactive elements,
   // is-down while pressed. Hidden on touch / hover:none by preview CSS, and
@@ -249,6 +317,89 @@ export default function App() {
       setScrollToToolkit(false);
     }
   }, [scrollToToolkit, activeView, motionOK]);
+
+  // Toolkit timeline measurements + scroll progress, all widths. Only the
+  // 12-module grid (#toolkitGrid) is measured. Cards are grouped into rows
+  // by their live top position (same row = tops within 10px), and each
+  // row contributes ONE dot at its centre — so the dot count follows the
+  // live column count (12 at 1 column, 6 at 2, 3 at 4 on desktop).
+  // Fill point: 70% down the viewport — when that point passes a row's
+  // centre, the line has lit up to it and its dot ripples (CSS .lit).
+  useEffect(() => {
+    if (activeView !== 'cps') return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const measure = () => {
+      const grid = tlGridRef.current || document.getElementById('toolkitGrid');
+      if (!grid) return;
+      tlGridRef.current = grid as HTMLElement;
+      const cards = Array.from(grid.querySelectorAll<HTMLElement>('.tool-card'));
+      if (cards.length < 2) return;
+      const gridTop = grid.getBoundingClientRect().top + window.scrollY;
+      // Group cards into rows by live top position, then one centre per
+      // row (mean of that row's card centres). Centres are relative to
+      // the grid top (= wrapper top: the grid is the wrapper's first
+      // child). The track spans first→last row centre.
+      const rows: { top: number; centres: number[] }[] = [];
+      cards.forEach((c) => {
+        const top = c.getBoundingClientRect().top + window.scrollY;
+        const centre = top + c.offsetHeight / 2 - gridTop;
+        const row = rows.find((r) => Math.abs(r.top - top) <= 10);
+        if (row) row.centres.push(centre);
+        else rows.push({ top, centres: [centre] });
+      });
+      const centres = rows.map((r) => r.centres.reduce((a, b) => a + b, 0) / r.centres.length);
+      tlOffsetsRef.current = centres;
+      setTlOffsets(centres);
+      update();
+    };
+    // Hot path: one getBoundingClientRect per rAF frame (the grid's top is
+    // the only per-frame measurement — row centres stay cached from
+    // measure()), fill via transform (compositor-only, no layout), and dot
+    // classes toggled only when a dot's lit state actually changes, so the
+    // ripple re-triggers exactly as before without a re-render.
+    const update = () => {
+      tlRafRef.current = 0;
+      const grid = tlGridRef.current;
+      if (!grid || tlOffsetsRef.current.length < 2) return;
+      const offs = tlOffsetsRef.current;
+      const trackH = offs[offs.length - 1] - offs[0];
+      if (reduced) {
+        if (tlFillRef.current) tlFillRef.current.style.transform = 'scaleY(1)';
+        offs.forEach((_, i) => { if (!tlLitRef.current[i]) { tlLitRef.current[i] = true; tlDotRefs.current[i]?.classList.add('lit'); } });
+        return;
+      }
+      const rect = grid.getBoundingClientRect();
+      const trackTop = rect.top + offs[0];
+      // (trackTop/trackH are viewport-relative; fill progress is the
+      // fraction of the track the 70%-viewport point has passed.)
+      const point = window.innerHeight * 0.7;
+      const progress = Math.min(1, Math.max(0, (point - trackTop) / Math.max(1, trackH)));
+      if (tlFillRef.current) tlFillRef.current.style.transform = `scaleY(${progress})`;
+      const filled = progress * trackH;
+      offs.forEach((c, i) => {
+        const lit = filled >= c - offs[0];
+        if (lit !== tlLitRef.current[i]) { tlLitRef.current[i] = lit; tlDotRefs.current[i]?.classList.toggle('lit', lit); }
+      });
+    };
+    tlUpdateRef.current = update;
+    // rAF-throttled like the main scroll choreography: at most one update
+    // per frame, no matter how many scroll events fire.
+    const onScroll = () => { if (!reduced && !tlRafRef.current) tlRafRef.current = requestAnimationFrame(update); };
+    measure();
+    const t = window.setTimeout(measure, 600); // re-measure after reveal animations settle
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    return () => { window.clearTimeout(t); if (tlRafRef.current) cancelAnimationFrame(tlRafRef.current); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', measure); };
+  }, [activeView]);
+
+  // Once the measured dots mount (tlOffsets set by measure above), paint
+  // the initial fill/lit state without waiting for the next scroll event.
+  useEffect(() => {
+    if (tlOffsets.length > 1 && tlUpdateRef.current) {
+      const id = requestAnimationFrame(() => tlUpdateRef.current?.());
+      return () => cancelAnimationFrame(id);
+    }
+  }, [tlOffsets]);
 
   useEffect(() => {
     const onPop = (e: PopStateEvent) => {
@@ -291,7 +442,7 @@ export default function App() {
     } catch {}
   };
   const togglePref = (key: keyof typeof prefs) => setPrefs((p) => ({ ...p, [key]: !p[key] }));
-  const pvSettings: PreviewSettings = { sound: prefs.sound, particles: prefs.particles, shake: prefs.shake, motion: prefs.motion };
+  const pvSettings: PreviewSettings = { sound: prefs.sound, particles: prefs.particles, shake: prefs.shake, motion: prefs.motion, scrolllock: prefs.scrolllock };
 
   if (isLegacyView) return <LegacyApp />;
 
@@ -310,6 +461,7 @@ export default function App() {
       {prefs.grain && <div className="grain" aria-hidden="true" />}
       <div className="scroll-progress" ref={progressRef} aria-hidden="true" />
       {cursorOn && <><div className="cursor-dot" ref={cursorDotRef} aria-hidden="true" /><div className="cursor-ring" ref={cursorRingRef} aria-hidden="true" /></>}
+      {trailOn && <div className="cursor-trail" ref={trailRef} aria-hidden="true" />}
       <header ref={headerRef}>
         <div className="header-in">
           <a className="wordmark" href="/" onClick={(e) => { e.preventDefault(); navigate('cps'); }} aria-label="CPS Precision Hub — home">
@@ -365,20 +517,32 @@ export default function App() {
               <div><h2>The <span className="acc">toolkit</span></h2><p>Twelve calibrated modules — one for raw speed, the rest for everything your peripherals have been hiding.</p></div>
               <span className="tag mono" style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: '.2em' }}>12 MODULES · ALL LIVE</span>
             </div>
-            <div className="toolkit" id="toolkitGrid">
-              {TOOLS.map((t, i) => (
-                <button key={t.id} type="button" className="tool-card reveal" style={{ ['--rd' as string]: `${(i % 4) * 70}ms` }} onClick={() => (t.id === 'cps' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate(t.id))}>
-                  <span className="idx">{t.tag} / 12</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{t.icon}</svg>
-                  <h4>{t.name}</h4><p>{t.desc}</p><span className="go">Open module →</span>
-                </button>
-              ))}
+            <div className="pv-toolkit-wrap">
+              <div className="toolkit" id="toolkitGrid">
+                {TOOLS.map((t, i) => (
+                  <TiltCard key={t.id} className="tool-card reveal" style={{ ['--rd' as string]: `${(i % 4) * 70}ms` }} onClick={() => (t.id === 'cps' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate(t.id))}>
+                    <span className="idx">{t.tag} / 12</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{t.icon}</svg>
+                    <h4>{t.name}</h4><p>{t.desc}</p><span className="go">Open module →</span>
+                  </TiltCard>
+                ))}
+              </div>
+              {tlOffsets.length > 1 && (
+                <div className="pv-toolkit-timeline" aria-hidden="true">
+                  <div className="pv-tl-track" style={{ top: tlOffsets[0], height: tlOffsets[tlOffsets.length - 1] - tlOffsets[0] }}>
+                    <div className="pv-tl-fill" ref={tlFillRef} />
+                    {tlOffsets.map((c, i) => (
+                      <span key={i} ref={(el) => { tlDotRefs.current[i] = el; }} className="pv-tl-dot" style={{ top: c - tlOffsets[0] }} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <div className="section-head reveal"><div><h2>Also in the <span className="acc">lab</span></h2><p>One extra repo module beyond the preview's twelve — kept functional, not counted in the twelve.</p></div></div>
             <div className="toolkit">
-              <button type="button" className="tool-card reveal" onClick={() => navigate('aim')}>
+              <TiltCard className="tool-card reveal" onClick={() => navigate('aim')}>
                 <span className="idx">EXTRA / 12</span><h4>Aim Trainer</h4><p>Click randomly-appearing targets as fast and accurately as possible.</p><span className="go">Open module →</span>
-              </button>
+              </TiltCard>
             </div>
             <div className="section-head reveal"><div><h2>Built to a <span className="acc">higher standard</span></h2><p>Careful engineering behind a calm surface — timing, feedback and hardware insight, without the clutter.</p></div></div>
             <div className="about">
@@ -398,6 +562,7 @@ export default function App() {
                 </ul>
               </div>
             </div>
+            <div className="section-head reveal"><div><h2>Frequently asked <span className="acc">questions</span></h2><p>Everything you need to know before you start clicking.</p></div></div>
             <FAQs />
             <footer><span>CPS Precision Hub — <span className="acc">Input Lab</span></span><span>Designed for precision</span><span>Timed with performance.now()</span></footer>
           </section>
@@ -434,8 +599,10 @@ export default function App() {
                         <button key={id} type="button" className={`swatch${accent === id ? ' active' : ''}`} style={{ background: bg }} aria-label={`${id} blue accent`} onClick={() => setAccent(id)} />
                       ))}
                     </div></div>
-                  <div className="set-row"><div className="s-txt"><b>Custom cursor</b><span>A quiet ring that follows your pointer across the page.</span></div>
+                  <div className="set-row desktop-only-set"><div className="s-txt"><b>Custom cursor</b><span>A quiet ring that follows your pointer across the page.</span></div>
                     <button type="button" className="switch" data-setting="cursor" aria-pressed={prefs.cursor} aria-label="Toggle custom cursor" onClick={() => togglePref('cursor')} /></div>
+                  <div className="set-row desktop-only-set"><div className="s-txt"><b>Cursor trail</b><span>Fading dots that follow your pointer, alongside or instead of the custom cursor.</span></div>
+                    <button type="button" className="switch" data-setting="trail" aria-pressed={prefs.trail} aria-label="Toggle cursor trail" onClick={() => togglePref('trail')} /></div>
                   <div className="set-row"><div className="s-txt"><b>Surface texture</b><span>An extremely subtle texture over the page finish.</span></div>
                     <button type="button" className="switch" data-setting="grain" aria-pressed={prefs.grain} aria-label="Toggle film grain" onClick={() => togglePref('grain')} /></div>
                 </div>

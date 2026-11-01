@@ -17,21 +17,40 @@ import {
 import { Ripple, ViewType, getRating } from '../types';
 import { handleGlowMove } from './glow';
 
-// Custom hook to disable page scrolling and zooming on touch devices when a test is active
-export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean) {
+// Custom hook to disable page scrolling and zooming on touch devices when a test is active.
+//
+// LAYOUT-NEUTRAL scroll lock (2026-11-01, replaces the pin-at-position lock
+// from commit 00760381): while a test runs on touch, a non-passive document
+// touchmove listener preventDefaults every move (except inside a genuinely
+// scrollable inner element, e.g. a log with overflow-y-auto), so the page
+// cannot scroll during the run. NOTHING else is touched: body position,
+// top, width, overflow and scroll position are never written, so there is
+// nothing to jump, repaint or restore — the page cannot jerk to the top and
+// no element can vanish and reappear.
+//
+// Why the pin had to go: on the user's phone the pin (body position:fixed
+// with top:-scrollY + html/body overflow:hidden) made every element vanish
+// the moment a CPS test started, leaving only the fixed blue background,
+// and the result came out at 1 CPS — only the starting tap had counted,
+// because the pad was unreachable for the rest of the run. The pin was
+// removed entirely rather than tweaked: a layout-neutral lock has no
+// layout change that could reproduce that failure mode. (The exact mobile
+// repaint mechanism could not be proven in a local desktop build; removing
+// the suspect code entirely is the safe fix.)
+//
+// The ORIGINAL hook (main / /old) never locked body scroll at all: it only
+// prevented multi-touch pinch/zoom (touchstart/touchmove with touches>1,
+// gesturestart/change) and relied on the pad's touch-action: pan-y + ~12px
+// move threshold to tell a swipe from a tap. That pinch/zoom prevention is
+// kept verbatim below. When lockEnabled is false (CPS with the Settings
+// scroll-lock toggle off) the hook is exactly that original behaviour.
+// The CPS rig passes the Settings toggle as lockEnabled; other modules,
+// which do not receive prefs, lock by default during a run.
+export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean, lockEnabled: boolean = true) {
   useEffect(() => {
     if (!isTouchDevice || !isRunning) return;
 
-    // Save previous styles
-    const originalOverflow = document.body.style.overflow;
     const originalTouchAction = document.body.style.touchAction;
-    const originalOverscrollBehavior = document.body.style.overscrollBehavior;
-
-    // Scroll-vs-tap: do NOT lock body scroll while a test runs. Locking the body
-    // is what turned a scroll gesture into a stuck, test-starting tap. A swipe must
-    // still scroll; only multi-touch pinch/zoom is prevented below. The main CPS
-    // pad additionally uses touch-action: pan-y plus a ~12px movement threshold
-    // (see CPSTest in App.tsx) so a moved touch never counts as a click.
 
     // Extra touch listener to prevent default zoom/pinch behaviors on iOS and some Android devices
     const preventZoomAndScroll = (e: TouchEvent) => {
@@ -46,21 +65,37 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
       e.preventDefault();
     };
 
+    // Layout-neutral scroll lock: block page scroll for the whole gesture,
+    // not just pinch. Touches inside a scrollable inner element are left
+    // alone so logs/lists inside a test can still scroll. This does NOT
+    // cancel taps: touchstart/touchend (and the pad's click path) still
+    // fire, so every tap on the pad counts normally.
+    const lockTouchMove = (e: TouchEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t && t.closest && (t.closest('[data-allow-scroll]') || t.closest('.overflow-y-auto'))) return;
+      e.preventDefault();
+    };
+
+    if (lockEnabled) {
+      document.addEventListener('touchmove', lockTouchMove, { passive: false });
+    }
+
     document.addEventListener("touchstart", preventZoomAndScroll, { passive: false });
     document.addEventListener("touchmove", preventZoomAndScroll, { passive: false });
     document.addEventListener("gesturestart", preventGesture, { passive: false });
     document.addEventListener("gesturechange", preventGesture, { passive: false });
 
     return () => {
-      document.body.style.overflow = originalOverflow;
+      if (lockEnabled) {
+        document.removeEventListener("touchmove", lockTouchMove);
+      }
       document.body.style.touchAction = originalTouchAction;
-      document.body.style.overscrollBehavior = originalOverscrollBehavior;
       document.removeEventListener("touchstart", preventZoomAndScroll);
       document.removeEventListener("touchmove", preventZoomAndScroll);
       document.removeEventListener("gesturestart", preventGesture);
       document.removeEventListener("gesturechange", preventGesture);
     };
-  }, [isRunning, isTouchDevice]);
+  }, [isRunning, isTouchDevice, lockEnabled]);
 }
 
 // Standard 10 Humorous responses

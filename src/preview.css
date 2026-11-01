@@ -61,18 +61,46 @@
 .pv-scope .bg-fx::before{
         content:""; position:absolute; inset:-12% 0 auto 0; height:82vh;
         background:
-          radial-gradient(760px 400px at 50% -6%, var(--sheen), transparent 62%),
-          radial-gradient(900px 460px at 50% -10%, var(--accent-dim), transparent 66%),
-          radial-gradient(560px 380px at 88% 4%, rgba(43,92,230,.08), transparent 60%),
-          radial-gradient(560px 420px at 6% 22%, rgba(43,92,230,.06), transparent 60%);
+          radial-gradient(760px 400px at 50% -6%, var(--sheen), transparent 82%),
+          radial-gradient(900px 460px at 50% -10%, var(--accent-dim), transparent 85%),
+          radial-gradient(560px 380px at 88% 4%, rgba(43,92,230,.08), transparent 80%),
+          radial-gradient(560px 420px at 6% 22%, rgba(43,92,230,.06), transparent 80%);
         transform:translate3d(0, var(--py, 0px), 0); will-change:transform;
+        /* TOP-EDGE FADE (2026-11-01): this layer's top edge IS the "black
+           band" edge users reported. Its radial glows are centred just
+           above this element's top edge, so the element box slices them
+           at near-full strength: above the line there is no glow (pure
+           --bg black), below it the glow lightens the page to navy — a
+           straight horizontal cut. It moves with scroll because the
+           layer parallaxes (translate --py = scrollY x 0.16 desktop /
+           0.05 touch), which is why it showed up over the toolkit in
+           one screenshot and over "Built to a higher standard" in
+           another. Softening the radial stops (commit 00760381) could
+           not fix a box-edge cut. This mask fades the whole layer in
+           over its top 160px, so the glow now blends in gradually
+           instead of starting at full strength. The mask travels with
+           the layer (it is on the element itself), so scrolling cannot
+           create a new seam. The dot grid lives on .bg-fx, not here,
+           so it is untouched; colours and glow strengths are unchanged.
+           The bottom edge needs no fade: by 82vh down, every radial
+           here is already past its transparent stop. */
+        -webkit-mask-image:linear-gradient(to bottom, transparent 0, black 160px);
+                mask-image:linear-gradient(to bottom, transparent 0, black 160px);
       }
 .pv-scope .bg-fx::after{
         content:""; position:absolute; inset:0;
         background:
-          radial-gradient(720px 380px at 50% 112%, var(--accent-dim), transparent 65%),
-          radial-gradient(ellipse 118% 88% at 50% 42%, transparent 56%, var(--vig) 100%);
+          radial-gradient(720px 380px at 50% 112%, var(--accent-dim), transparent 85%),
+          radial-gradient(ellipse 118% 88% at 50% 42%, transparent 24%, var(--vig) 100%);
       }
+/* Toolkit-band fade note (2026-11-01): there is NO toolkit-specific section
+   background — the "black band" below the stats strip is this fixed .bg-fx
+   layer (dot grid + top glow + vignette). The harsh horizontal-looking edge
+   on wide screens was these gradients' short transparent→colour ramps, so
+   the ramps above were lengthened instead of inventing a new section
+   background: vignette transparent 56%→24% (ramp 44%→76% of radius), top
+   glows 60–66%→80–85%, bottom glow 65%→85%. Same colours, same dot grid,
+   same geometry — only the blend is longer, on desktop and mobile. */
 .pv-scope .grain{ position:fixed; inset:0; z-index:60; pointer-events:none; opacity:.022;
         background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.7'/%3E%3C/svg%3E"); }
 .pv-scope .scroll-progress{ position:fixed; top:0; left:0; right:0; height:2px; z-index:120; pointer-events:none;
@@ -124,9 +152,30 @@
 .pv-scope .device-badge i{ width:6px; height:6px; border-radius:50%; background:var(--accent); display:block; }
 .pv-scope .icon-btn{ width:38px; height:38px; display:grid; place-items:center; background:color-mix(in srgb, var(--panel) 60%, transparent);
         border:1px solid var(--line); border-radius:50%; color:var(--muted); transition:color .2s, border-color .2s; }
-.pv-scope .icon-btn:hover{ color:var(--accent); border-color:var(--line2); }
+/* Header icon buttons (sound toggle + theme toggle): the on/off colour
+   must come ONLY from aria-pressed, never from hover. Previously :hover
+   used the exact same accent blue as aria-pressed="true", and on touch
+   devices :hover STICKS after a tap until the next tap elsewhere — so
+   tapping sound ON→OFF left the stale hover blue masking the new grey
+   off-state, which only appeared after tapping elsewhere. Fix: hover
+   styling applies only where a real hover exists (hover:hover), and on
+   coarse/no-hover devices hover/active are forced back to the base
+   muted style, with aria-pressed="true" re-asserted after that reset so
+   the ON state still shows blue on touch. An explicit
+   aria-pressed="false" rule makes the OFF state win over hover
+   everywhere, so hovering an OFF button no longer paints it blue either
+   (hovering an ON button stays blue, as before); the theme button has
+   no pressed state, so its desktop hover is unchanged. */
+@media (hover:hover){
+  .pv-scope .icon-btn:hover{ color:var(--accent); border-color:var(--line2); }
+}
+@media (hover:none), (pointer:coarse){
+  .pv-scope .icon-btn:hover, .pv-scope .icon-btn:active{ color:var(--muted); border-color:var(--line); }
+  .pv-scope .icon-btn[aria-pressed="true"]{ color:var(--accent); border-color:var(--line2); }
+}
 .pv-scope .icon-btn svg{ width:17px; height:17px; }
 .pv-scope .icon-btn[aria-pressed="true"]{ color:var(--accent); border-color:var(--line2); }
+.pv-scope .icon-btn[aria-pressed="false"]{ color:var(--muted); border-color:var(--line); }
 .pv-scope main{ position:relative; z-index:1; max-width:1160px; margin:0 auto; padding:0 24px 48px; }
 .pv-scope .view[hidden]{ display:none; }
 .pv-scope .hero{ padding:88px 0 10px; position:relative; text-align:center; }
@@ -333,10 +382,18 @@
 .pv-scope .faq-item:last-child{ border-bottom:none; }
 .pv-scope .faq-q{ width:100%; display:flex; justify-content:space-between; align-items:center; gap:14px; background:none; border:none;
         color:var(--text); font-size:15.5px; font-weight:600; text-align:left; padding:19px 22px; }
-.pv-scope .faq-q svg{ width:17px; height:17px; color:var(--accent); flex:none; transition:transform .3s cubic-bezier(.16,1,.3,1); }
-.pv-scope .faq-item.open .faq-q svg{ transform:rotate(45deg); }
-.pv-scope .faq-a{ max-height:0; overflow:hidden; transition:max-height .35s cubic-bezier(.16,1,.3,1); }
-.pv-scope .faq-a p{ margin:0; padding:0 22px 19px; color:var(--muted); line-height:1.65; font-size:14.5px; font-weight:500; }
+.pv-scope .faq-q svg{ width:17px; height:17px; color:var(--accent); flex:none; transition:transform .55s cubic-bezier(.34,1.4,.4,1); }
+.pv-scope .faq-item.open .faq-q svg{ transform:rotate(45deg) scale(1.08); }
+/* FAQ expand (2026-11-01): grid-rows 0fr→1fr follows the real content
+   height exactly (the old max-height:0→500px could never bounce, since the
+   content caps below 500px), so the spring easing below gives a subtle
+   overshoot bounce at the end of opening. Closing uses the base (gentle
+   ease-out) timing, so it settles instead of bouncing. Content fades and
+   slides up as it expands; transform/opacity only, no layout jump. */
+.pv-scope .faq-a{ display:grid; grid-template-rows:0fr; overflow:hidden; opacity:0; transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
+.pv-scope .faq-item.open .faq-a{ grid-template-rows:1fr; opacity:1; transition:grid-template-rows .6s cubic-bezier(.34,1.35,.4,1), opacity .45s ease .05s; }
+.pv-scope .faq-a p{ overflow:hidden; min-height:0; margin:0; padding:0 22px 19px; color:var(--muted); line-height:1.65; font-size:14.5px; font-weight:500; opacity:0; transform:translateY(8px); transition:transform .5s cubic-bezier(.34,1.35,.4,1), opacity .4s ease; }
+.pv-scope .faq-item.open .faq-a p{ opacity:1; transform:translateY(0); }
 .pv-scope footer{ margin-top:96px; border-top:1px solid var(--line); padding:28px 0 12px;
         display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
         font-size:11px; font-weight:600; letter-spacing:.12em; color:var(--faint); text-transform:uppercase; }
@@ -413,7 +470,8 @@
 .pv-scope .readout{ padding:13px 12px 11px; border-radius:14px; }
 .pv-scope .readout .lbl{ letter-spacing:.1em; font-size:9px; }
 .pv-scope .hero{ padding-top:52px; }
-.pv-scope .hero-meta .hm{ padding:0 14px; }
+.pv-scope .hero-meta{ display:grid; grid-template-columns:1fr 1fr; width:100%; max-width:440px; margin-left:auto; margin-right:auto; }
+.pv-scope .hero-meta .hm{ padding:10px 8px; border-right:none; text-align:center; font-size:10px; letter-spacing:.12em; }
 .pv-scope .device-badge{ display:none; }
 .pv-scope nav.mainnav{ order:3; margin:0 auto 10px; }
 .pv-scope .reveal{ filter:none; transform:translateY(22px); }
@@ -434,8 +492,8 @@
 .pv-scope .tool-card{ width:100%; cursor:pointer; font-family:inherit; }
 .pv-scope .tool-card .go{ display:block; }
 .pv-scope .faq{ margin-top:18px; }
-.pv-scope .faq-a{ max-height:0; }
-.pv-scope .faq-item.open .faq-a{ max-height:500px; }
+/* (Duplicate max-height FAQ rules removed 2026-11-01 — the grid-rows rules
+   above govern the expand animation; max-height:0 here would cap it shut.) */
 .pv-scope .pv-engine{ margin-top:28px; }
 .pv-scope .pv-engine > *{ max-width:100% !important; }
 .pv-scope .pv-module-head{ text-align:center; padding:48px 0 4px; }
@@ -469,3 +527,74 @@
 .pv-scope .pv-glow:hover::after{ opacity:1; }
 @media (prefers-reduced-motion: reduce){ .pv-scope .pv-glow::after{ display:none; } }
 @media (max-width:860px){ .pv-scope .pv-extras-grid{ grid-template-columns:1fr !important; } }
+
+/* --- Mobile fixes + cursor trail + tilt support (follow-up PR) --- */
+/* Cursor trail dots: created imperatively by App.tsx, fixed to the viewport,
+   pointer-events none so they can never eat a click, below the cursor (200). */
+.pv-scope .cursor-trail-dot{ position:fixed; top:0; left:0; z-index:199; pointer-events:none;
+  border-radius:50%; background:var(--accent); }
+@media (hover:none), (pointer:coarse){ .pv-scope .cursor-trail-dot{ display:none; } }
+/* Settings rows that are useless on mobile (pointer-only toggles): hidden on
+   coarse-pointer / no-hover devices. The toggles stay in the DOM and their
+   stored cps-preview-prefs values are never deleted — they simply reappear
+   on a fine-pointer device. Only Custom cursor + Cursor trail are hidden;
+   theme, accent, grain, sounds, particles, shake, scroll lock, reduced
+   motion and session-data wipe all stay visible on mobile. */
+@media (hover:none), (pointer:coarse){ .pv-scope .desktop-only-set{ display:none; } }
+/* Toolkit tilt: TiltCard sets an inline perspective transform; the card's
+   existing transition already animates it, and preserve-3d keeps the tilt
+   from flattening the card's inner content. */
+.pv-scope .tool-card{ transform-style:preserve-3d; }
+/* Mobile result unclip (max-width:640px only, desktop pixel-unchanged):
+   HARD RULE — nothing spills over the pad border. The finished pad used to
+   keep its fixed 320px height with overflow:hidden, so a tall result (score
+   + rank + roast + buttons) was cut by the border. Instead of letting the
+   result expand below the pad, the finished pad is made slightly taller
+   (440px vs 320px) and the result is scaled down to fit neatly INSIDE it:
+   smaller score, tighter spacing, smaller roast and buttons. The result
+   stays absolutely positioned inside the pad, with its blur background,
+   exactly like desktop — just compacted to fit. */
+@media (max-width:640px){
+  .pv-scope .pad.finished{ height:440px; }
+  .pv-scope .pad.finished .result{ padding:20px 16px; }
+  .pv-scope .pad.finished .result .r-num{ font-size:clamp(48px,12vw,64px); margin-top:4px; }
+  .pv-scope .pad.finished .result .r-unit{ margin-top:6px; }
+  .pv-scope .pad.finished .result .r-rank{ margin-top:10px; font-size:clamp(19px,3vw,24px); }
+  .pv-scope .pad.finished .result .r-roast{ font-size:13.5px; line-height:1.5; margin-top:6px; }
+  .pv-scope .pad.finished .result .btn-row{ margin-top:14px; }
+  .pv-scope .pad.finished .result .btn{ padding:9px 18px; font-size:13px; }
+}
+
+/* --- Toolkit timeline (ALL widths, incl. desktop) ---
+   A vertical line on the RIGHT side of the 12-module list (never the
+   middle of the screen), running from the first row's centre to the
+   last, with one white dot per ROW — dots are grouped by live row in
+   App.tsx, so this is 12 dots at 1 column, 6 at 2 columns, and 3 on the
+   desktop 4x3 grid. The line lights up white with a glow as the user
+   scrolls (fill height is driven by App.tsx scroll progress); when the
+   fill reaches a dot, the dot lights and its outer ring ripples once.
+   The separate "Also in the lab" Aim grid is not wrapped, so it has
+   none. pointer-events:none so dots can never eat a card tap, and
+   TiltCard press/tilt is untouched. The line lives in the wrapper's
+   right-side padding, so grid columns and card layout are unchanged. */
+.pv-scope .pv-toolkit-wrap{ position:relative; padding-right:36px; }
+.pv-scope .pv-toolkit-timeline{ display:block; position:absolute; top:0; bottom:0; right:12px; width:2px; pointer-events:none; z-index:2; }
+.pv-scope .pv-tl-track{ position:absolute; left:0; width:2px; background:rgba(255,255,255,.14); border-radius:2px; }
+/* Perf (2026-11-01): the fill used to animate `height` and was re-rendered
+   via React state on every scroll frame — layout + a full App re-render per
+   frame, which lagged phones when the toolkit scrolled in. It is now full
+   height with a compositor-only scaleY (transform-origin top, will-change),
+   driven straight through a ref in App.tsx; the glow shadow is unchanged
+   in look, it just rides the transform layer instead of repainting a
+   resizing box every frame. */
+.pv-scope .pv-tl-fill{ width:100%; height:100%; background:#fff; border-radius:2px; box-shadow:0 0 8px rgba(255,255,255,.9), 0 0 18px rgba(110,168,255,.7); transform:scaleY(0); transform-origin:top; will-change:transform; }
+.pv-scope .pv-tl-dot{ position:absolute; left:50%; transform:translate(-50%,-50%); width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.25); border:2px solid rgba(255,255,255,.35); transition:background .3s, border-color .3s, box-shadow .3s; }
+.pv-scope .pv-tl-dot.lit{ background:#fff; border-color:#fff; box-shadow:0 0 10px rgba(255,255,255,.95), 0 0 20px rgba(110,168,255,.6); }
+.pv-scope .pv-tl-dot.lit::after{ content:""; position:absolute; inset:-2px; border-radius:50%; border:2px solid rgba(255,255,255,.8); animation:pvTlRipple .8s ease-out forwards; }
+@keyframes pvTlRipple{ from{ transform:scale(1); opacity:.9; } to{ transform:scale(2.8); opacity:0; } }
+@media (prefers-reduced-motion: reduce){
+  .pv-scope .pv-tl-fill{ transition:none; }
+  .pv-scope .pv-tl-dot.lit::after{ animation:none; display:none; }
+  .pv-scope .faq-a, .pv-scope .faq-a p, .pv-scope .faq-q svg{ transition:none; }
+  .pv-scope .faq-item.open .faq-a p{ transform:none; opacity:1; }
+}

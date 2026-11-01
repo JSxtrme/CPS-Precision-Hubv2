@@ -24,6 +24,8 @@ const durLabel = (d: number) => (d === -1 ? 'Manual' : d === 60 ? '1 Min' : `${d
 
 export interface PreviewSettings {
   sound: boolean; particles: boolean; shake: boolean; motion: boolean;
+  // Settings "scroll lock while testing" toggle; absent (older callers) = on.
+  scrolllock?: boolean;
 }
 
 function MagneticButton({ children, onClick, className = '' }: { children: React.ReactNode; onClick: () => void; className?: string }) {
@@ -81,7 +83,7 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
   const audioRef = useRef<AudioContext | null>(null);
   const motionOK = () => !settings.motion && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  useDisableScrollZoomOnTouch(status === 'running', isTouchDevice);
+  useDisableScrollZoomOnTouch(status === 'running', isTouchDevice, settings.scrolllock !== false);
 
   const cancelTimer = useCallback(() => {
     if (animFrameIdRef.current !== null) { cancelAnimationFrame(animFrameIdRef.current); animFrameIdRef.current = null; }
@@ -300,9 +302,16 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
               below). As a block <div> — exactly like the preview's
               <div class="pad"> — it fills the rig and is the click target.
               Nested result buttons are also only valid inside a div. */}
-          <div ref={padRef} className={`pad${status === 'running' ? ' running' : ''}`} role="button" tabIndex={0}
+          <div ref={padRef} className={`pad${status === 'running' ? ' running' : ''}${status === 'finished' ? ' finished' : ''}`} role="button" tabIndex={0}
             onContextMenu={(e) => e.preventDefault()} onClick={handlePadClick} onMouseDown={handleMouseDown}
             onPointerDown={handlePadPointerDown} onPointerMove={handlePadPointerMove} onKeyDown={handlePadKeyDown}
+            // Pad touch-action is always pan-y (reverted from the PR #4
+            // touch-action:none-while-running switch): the layout-neutral
+            // document touchmove lock in useDisableScrollZoomOnTouch
+            // already blocks page scroll during a run, so the pad does
+            // not need to opt out of panning — and keeping pan-y avoids
+            // any chance the running pad stops delivering taps. The
+            // ~12px threshold below still keeps a swipe from counting.
             style={{ touchAction: 'pan-y' }}
             onTouchStart={(e) => { const t = e.touches[0]; touchStartRef.current = { x: t.clientX, y: t.clientY }; touchMovedRef.current = false; }}
             onTouchMove={(e) => { const s = touchStartRef.current; if (!s) return; const t = e.touches[0]; if (Math.abs(t.clientX - s.x) > 12 || Math.abs(t.clientY - s.y) > 12) touchMovedRef.current = true; }}
@@ -313,7 +322,7 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
             <div className="pad-center">
               <div className="big">Click to <span className="acc">start</span></div>
               <div className="small">{duration === -1 ? 'Manual timer mode' : `${durLabel(duration)} challenge`} · timer starts on first click</div>
-              <div className="mono-hint">Left click only · Space / Enter works too</div>
+              <div className="mono-hint">{isTouchDevice ? 'Tap to click · Swiping scrolls' : 'Left click only · Space / Enter works too'}</div>
             </div>
             <div className="live-cps" aria-hidden="true"><div><div className="v">{liveCps.toFixed(2)}</div><div className="u">CLICKS / SEC</div></div></div>
             <div className={`result${status === 'finished' ? ' show' : ''}`}>
