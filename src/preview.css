@@ -397,12 +397,13 @@
 .pv-scope .tool-card .go{ margin-top:16px; font-size:11px; font-weight:700; letter-spacing:.14em; color:var(--accent); text-transform:uppercase; }
 .pv-scope .about{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:38px; text-align:left; }
 @media (max-width:860px){.pv-scope .about{ grid-template-columns:1fr; }}
-.pv-scope .about .panel{ padding:30px; position:relative; }
-.pv-scope .built-for{ position:absolute; left:30px; right:30px; bottom:4px; padding-top:10px; border-top:1px solid var(--line); display:flex; align-items:center; gap:18px; flex-wrap:wrap; }
-.pv-scope .bf-label{ font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); }
-.pv-scope .bf-item{ display:inline-flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--text); }
-.pv-scope .bf-item svg{ width:16px; height:16px; color:var(--accent); flex:none; }
-@media (max-width:480px){ .pv-scope .built-for{ gap:10px; padding-top:8px; } .pv-scope .bf-label{ font-size:10px; letter-spacing:.12em; } .pv-scope .bf-item{ font-size:12.5px; gap:6px; } .pv-scope .bf-item svg{ width:16px; height:16px; } }
+.pv-scope .about .panel{ padding:30px; position:relative; display:flex; flex-direction:column; }
+.pv-scope .built-for{ position:static; margin-top:auto; padding-top:26px; border-top:1px solid var(--line); text-align:center; }
+.pv-scope .bf-label{ display:block; font-size:11px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; color:var(--faint); margin-bottom:22px; }
+.pv-scope .bf-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.pv-scope .bf-item{ display:flex; flex-direction:column; align-items:center; gap:12px; font-size:17px; font-weight:700; color:var(--text); }
+.pv-scope .bf-item svg{ width:32px; height:32px; color:var(--accent); flex:none; }
+@media (max-width:480px){ .pv-scope .built-for{ padding-top:20px; } .pv-scope .bf-label{ font-size:10px; letter-spacing:.12em; margin-bottom:16px; } .pv-scope .bf-grid{ gap:8px; } .pv-scope .bf-item{ font-size:16px; gap:10px; } .pv-scope .bf-item svg{ width:28px; height:28px; } }
 .pv-scope .about h3{ font-weight:800; letter-spacing:-.02em; font-size:20px; margin:0 0 14px; }
 .pv-scope .about p{ color:var(--muted); line-height:1.7; margin:0 0 12px; font-size:15px; font-weight:500; }
 .pv-scope .about p b{ color:var(--text); }
