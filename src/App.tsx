@@ -95,7 +95,12 @@ function ScrubText({ motionOK }: { motionOK: boolean }) {
     const clamp = (v: number, a: number, b: number) => Math.max(a, Math.min(b, v));
     const measure = () => {
       const r = p.getBoundingClientRect(), vh = window.innerHeight;
-      target = clamp((vh * 0.85 - r.top) / (r.height + vh * 0.32), 0, 1);
+      // Scrub range ends when the paragraph's bottom reaches 85% of the
+      // viewport (top = 0.85*vh - height), so highlighting is complete while
+      // the whole paragraph is still fully in view on every width — the
+      // old range (height + 0.32*vh) only finished once the paragraph's top
+      // had already scrolled out of view on PC/mobile.
+      target = clamp((vh * 0.85 - r.top) / r.height, 0, 1);
       if (!rafId && Math.abs(target - cur) > 0.0005) rafId = requestAnimationFrame(step);
     };
     const step = () => {
