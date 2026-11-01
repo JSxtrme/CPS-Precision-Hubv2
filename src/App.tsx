@@ -159,7 +159,17 @@ export default function App() {
   // element and is deliberately NOT measured here.
   const [tlOffsets, setTlOffsets] = useState<number[]>([]);
   const tlOffsetsRef = useRef<number[]>([]);
-  const [tlProgress, setTlProgress] = useState(0);
+  // Timeline scroll progress is deliberately NOT React state (perf, 2026-11-01):
+  // the old code called setTlProgress on every scroll frame, re-rendering the
+  // whole App (CPS rig, TiltCards, everything) per frame — that is what made
+  // phones lag when the toolkit scrolled into view. The fill and dot classes
+  // below are now driven straight through refs, with no re-render at all.
+  const tlFillRef = useRef<HTMLDivElement | null>(null);
+  const tlDotRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const tlLitRef = useRef<boolean[]>([]);
+  const tlGridRef = useRef<HTMLElement | null>(null);
+  const tlRafRef = useRef(0);
+  const tlUpdateRef = useRef<(() => void) | null>(null);
   const scopeRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
   const bgRef = useRef<HTMLDivElement | null>(null);
@@ -319,8 +329,9 @@ export default function App() {
     if (activeView !== 'cps') return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const measure = () => {
-      const grid = document.getElementById('toolkitGrid');
+      const grid = tlGridRef.current || document.getElementById('toolkitGrid');
       if (!grid) return;
+      tlGridRef.current = grid as HTMLElement;
       const cards = Array.from(grid.querySelectorAll<HTMLElement>('.tool-card'));
       if (cards.length < 2) return;
       const gridTop = grid.getBoundingClientRect().top + window.scrollY;
@@ -341,25 +352,54 @@ export default function App() {
       setTlOffsets(centres);
       update();
     };
+    // Hot path: one getBoundingClientRect per rAF frame (the grid's top is
+    // the only per-frame measurement — row centres stay cached from
+    // measure()), fill via transform (compositor-only, no layout), and dot
+    // classes toggled only when a dot's lit state actually changes, so the
+    // ripple re-triggers exactly as before without a re-render.
     const update = () => {
-      const grid = document.getElementById('toolkitGrid');
+      tlRafRef.current = 0;
+      const grid = tlGridRef.current;
       if (!grid || tlOffsetsRef.current.length < 2) return;
-      if (reduced) { setTlProgress(1); return; }
+      const offs = tlOffsetsRef.current;
+      const trackH = offs[offs.length - 1] - offs[0];
+      if (reduced) {
+        if (tlFillRef.current) tlFillRef.current.style.transform = 'scaleY(1)';
+        offs.forEach((_, i) => { if (!tlLitRef.current[i]) { tlLitRef.current[i] = true; tlDotRefs.current[i]?.classList.add('lit'); } });
+        return;
+      }
       const rect = grid.getBoundingClientRect();
-      const trackTop = rect.top + tlOffsetsRef.current[0];
-      const trackH = tlOffsetsRef.current[tlOffsetsRef.current.length - 1] - tlOffsetsRef.current[0];
+      const trackTop = rect.top + offs[0];
       // (trackTop/trackH are viewport-relative; fill progress is the
       // fraction of the track the 70%-viewport point has passed.)
       const point = window.innerHeight * 0.7;
-      setTlProgress(Math.min(1, Math.max(0, (point - trackTop) / Math.max(1, trackH))));
+      const progress = Math.min(1, Math.max(0, (point - trackTop) / Math.max(1, trackH)));
+      if (tlFillRef.current) tlFillRef.current.style.transform = `scaleY(${progress})`;
+      const filled = progress * trackH;
+      offs.forEach((c, i) => {
+        const lit = filled >= c - offs[0];
+        if (lit !== tlLitRef.current[i]) { tlLitRef.current[i] = lit; tlDotRefs.current[i]?.classList.toggle('lit', lit); }
+      });
     };
-    const onScroll = () => { if (!reduced) requestAnimationFrame(update); };
+    tlUpdateRef.current = update;
+    // rAF-throttled like the main scroll choreography: at most one update
+    // per frame, no matter how many scroll events fire.
+    const onScroll = () => { if (!reduced && !tlRafRef.current) tlRafRef.current = requestAnimationFrame(update); };
     measure();
     const t = window.setTimeout(measure, 600); // re-measure after reveal animations settle
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', measure);
-    return () => { window.clearTimeout(t); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', measure); };
+    return () => { window.clearTimeout(t); if (tlRafRef.current) cancelAnimationFrame(tlRafRef.current); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', measure); };
   }, [activeView]);
+
+  // Once the measured dots mount (tlOffsets set by measure above), paint
+  // the initial fill/lit state without waiting for the next scroll event.
+  useEffect(() => {
+    if (tlOffsets.length > 1 && tlUpdateRef.current) {
+      const id = requestAnimationFrame(() => tlUpdateRef.current?.());
+      return () => cancelAnimationFrame(id);
+    }
+  }, [tlOffsets]);
 
   useEffect(() => {
     const onPop = (e: PopStateEvent) => {
@@ -490,9 +530,9 @@ export default function App() {
               {tlOffsets.length > 1 && (
                 <div className="pv-toolkit-timeline" aria-hidden="true">
                   <div className="pv-tl-track" style={{ top: tlOffsets[0], height: tlOffsets[tlOffsets.length - 1] - tlOffsets[0] }}>
-                    <div className="pv-tl-fill" style={{ height: `${tlProgress * 100}%` }} />
+                    <div className="pv-tl-fill" ref={tlFillRef} />
                     {tlOffsets.map((c, i) => (
-                      <span key={i} className={`pv-tl-dot${tlProgress * (tlOffsets[tlOffsets.length - 1] - tlOffsets[0]) >= c - tlOffsets[0] ? ' lit' : ''}`} style={{ top: c - tlOffsets[0] }} />
+                      <span key={i} ref={(el) => { tlDotRefs.current[i] = el; }} className="pv-tl-dot" style={{ top: c - tlOffsets[0] }} />
                     ))}
                   </div>
                 </div>
@@ -522,6 +562,7 @@ export default function App() {
                 </ul>
               </div>
             </div>
+            <div className="section-head reveal"><div><h2>Frequently asked <span className="acc">questions</span></h2><p>Everything you need to know before you start clicking.</p></div></div>
             <FAQs />
             <footer><span>CPS Precision Hub — <span className="acc">Input Lab</span></span><span>Designed for precision</span><span>Timed with performance.now()</span></footer>
           </section>

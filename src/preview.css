@@ -382,10 +382,18 @@
 .pv-scope .faq-item:last-child{ border-bottom:none; }
 .pv-scope .faq-q{ width:100%; display:flex; justify-content:space-between; align-items:center; gap:14px; background:none; border:none;
         color:var(--text); font-size:15.5px; font-weight:600; text-align:left; padding:19px 22px; }
-.pv-scope .faq-q svg{ width:17px; height:17px; color:var(--accent); flex:none; transition:transform .3s cubic-bezier(.16,1,.3,1); }
-.pv-scope .faq-item.open .faq-q svg{ transform:rotate(45deg); }
-.pv-scope .faq-a{ max-height:0; overflow:hidden; transition:max-height .35s cubic-bezier(.16,1,.3,1); }
-.pv-scope .faq-a p{ margin:0; padding:0 22px 19px; color:var(--muted); line-height:1.65; font-size:14.5px; font-weight:500; }
+.pv-scope .faq-q svg{ width:17px; height:17px; color:var(--accent); flex:none; transition:transform .55s cubic-bezier(.34,1.4,.4,1); }
+.pv-scope .faq-item.open .faq-q svg{ transform:rotate(45deg) scale(1.08); }
+/* FAQ expand (2026-11-01): grid-rows 0fr→1fr follows the real content
+   height exactly (the old max-height:0→500px could never bounce, since the
+   content caps below 500px), so the spring easing below gives a subtle
+   overshoot bounce at the end of opening. Closing uses the base (gentle
+   ease-out) timing, so it settles instead of bouncing. Content fades and
+   slides up as it expands; transform/opacity only, no layout jump. */
+.pv-scope .faq-a{ display:grid; grid-template-rows:0fr; overflow:hidden; opacity:0; transition:grid-template-rows .45s cubic-bezier(.16,1,.3,1), opacity .3s ease; }
+.pv-scope .faq-item.open .faq-a{ grid-template-rows:1fr; opacity:1; transition:grid-template-rows .6s cubic-bezier(.34,1.35,.4,1), opacity .45s ease .05s; }
+.pv-scope .faq-a p{ overflow:hidden; min-height:0; margin:0; padding:0 22px 19px; color:var(--muted); line-height:1.65; font-size:14.5px; font-weight:500; opacity:0; transform:translateY(8px); transition:transform .5s cubic-bezier(.34,1.35,.4,1), opacity .4s ease; }
+.pv-scope .faq-item.open .faq-a p{ opacity:1; transform:translateY(0); }
 .pv-scope footer{ margin-top:96px; border-top:1px solid var(--line); padding:28px 0 12px;
         display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
         font-size:11px; font-weight:600; letter-spacing:.12em; color:var(--faint); text-transform:uppercase; }
@@ -483,8 +491,8 @@
 .pv-scope .tool-card{ width:100%; cursor:pointer; font-family:inherit; }
 .pv-scope .tool-card .go{ display:block; }
 .pv-scope .faq{ margin-top:18px; }
-.pv-scope .faq-a{ max-height:0; }
-.pv-scope .faq-item.open .faq-a{ max-height:500px; }
+/* (Duplicate max-height FAQ rules removed 2026-11-01 — the grid-rows rules
+   above govern the expand animation; max-height:0 here would cap it shut.) */
 .pv-scope .pv-engine{ margin-top:28px; }
 .pv-scope .pv-engine > *{ max-width:100% !important; }
 .pv-scope .pv-module-head{ text-align:center; padding:48px 0 4px; }
@@ -571,7 +579,14 @@
 .pv-scope .pv-toolkit-wrap{ position:relative; padding-right:36px; }
 .pv-scope .pv-toolkit-timeline{ display:block; position:absolute; top:0; bottom:0; right:12px; width:2px; pointer-events:none; z-index:2; }
 .pv-scope .pv-tl-track{ position:absolute; left:0; width:2px; background:rgba(255,255,255,.14); border-radius:2px; }
-.pv-scope .pv-tl-fill{ width:100%; background:#fff; border-radius:2px; box-shadow:0 0 8px rgba(255,255,255,.9), 0 0 18px rgba(110,168,255,.7); transition:height .15s linear; }
+/* Perf (2026-11-01): the fill used to animate `height` and was re-rendered
+   via React state on every scroll frame — layout + a full App re-render per
+   frame, which lagged phones when the toolkit scrolled in. It is now full
+   height with a compositor-only scaleY (transform-origin top, will-change),
+   driven straight through a ref in App.tsx; the glow shadow is unchanged
+   in look, it just rides the transform layer instead of repainting a
+   resizing box every frame. */
+.pv-scope .pv-tl-fill{ width:100%; height:100%; background:#fff; border-radius:2px; box-shadow:0 0 8px rgba(255,255,255,.9), 0 0 18px rgba(110,168,255,.7); transform:scaleY(0); transform-origin:top; will-change:transform; }
 .pv-scope .pv-tl-dot{ position:absolute; left:50%; transform:translate(-50%,-50%); width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.25); border:2px solid rgba(255,255,255,.35); transition:background .3s, border-color .3s, box-shadow .3s; }
 .pv-scope .pv-tl-dot.lit{ background:#fff; border-color:#fff; box-shadow:0 0 10px rgba(255,255,255,.95), 0 0 20px rgba(110,168,255,.6); }
 .pv-scope .pv-tl-dot.lit::after{ content:""; position:absolute; inset:-2px; border-radius:50%; border:2px solid rgba(255,255,255,.8); animation:pvTlRipple .8s ease-out forwards; }
@@ -579,4 +594,6 @@
 @media (prefers-reduced-motion: reduce){
   .pv-scope .pv-tl-fill{ transition:none; }
   .pv-scope .pv-tl-dot.lit::after{ animation:none; display:none; }
+  .pv-scope .faq-a, .pv-scope .faq-a p, .pv-scope .faq-q svg{ transition:none; }
+  .pv-scope .faq-item.open .faq-a p{ transform:none; opacity:1; }
 }
