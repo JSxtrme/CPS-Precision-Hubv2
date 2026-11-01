@@ -555,6 +555,12 @@ export default function App() {
                 <h3>What is CPS Precision Hub?</h3>
                 <p>An all-in-one testing suite for gamers, Minecraft PvP players and PC enthusiasts who want to measure — and improve — clicking speed, reaction time and overall input performance.</p>
                 <p>Beyond the core CPS test, the toolkit covers <b>Spacebar Counter, Reaction Time, Key Ghosting, Polling Rate, Double Click, Scroll Speed, Drag Click, Right Click, Jitter, Butterfly and Kohi</b>, so you can benchmark everything from raw finger speed to the responsiveness of your actual hardware. In one place.</p>
+                <div className="built-for">
+                  <span className="bf-label">Built for</span>
+                  <span className="bf-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="2" width="8" height="20" rx="2" /><path d="M11 18.5h2" /></svg>Phones</span>
+                  <span className="bf-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="13" rx="2" /><path d="M8 21h8M12 17v4" /></svg>PCs</span>
+                  <span className="bf-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="3" y="2" width="18" height="20" rx="2" /><path d="M11 18.5h2" /></svg>Tablets</span>
+                </div>
               </div>
               <div className="panel reveal">
                 <h3>Why it's better</h3>
