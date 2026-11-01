@@ -18,39 +18,38 @@ import { Ripple, ViewType, getRating } from '../types';
 import { handleGlowMove } from './glow';
 
 // Custom hook to disable page scrolling and zooming on touch devices when a test is active.
-// REAL scroll lock (new, mobile only): while a test runs, touchmove is prevented
-// (except inside a genuinely scrollable inner element, e.g. a log with
-// overflow-y-auto), so fast tapping cannot scroll the page away. It always
-// releases: the effect cleanup below runs when the test finishes/stops, when the
-// component unmounts (route change), and on deps change.
-// The old behaviour is preserved when lockEnabled is false: only pinch/zoom is
-// blocked, and the CPS pad keeps touch-action: pan-y + its ~12px swipe threshold
-// so a swipe never counts as a click. The CPS rig passes the Settings
-// "scroll lock while testing" toggle as lockEnabled; other modules, which do not
-// receive prefs, lock by default during a run (lockEnabled defaults to true).
 //
-// SCROLL-POSITION FIX (2026-11-01): the previous lock set body/html
-// overflow:hidden, which on mobile browsers clamps the document scroll to the
-// top — the page jerked to the top and, locked, the user could no longer reach
-// the pad. Now the lock pins the body instead: window.scrollY is recorded and
-// the body is position:fixed with top:-scrollY, so the page visually stays
-// exactly where it was (pad fully reachable) and on unlock the saved styles
-// are restored and window.scrollTo returns to the exact same scrollY, with
-// behaviour:'auto' (no smooth-scroll animation, no jump).
-// Module-level lock state is shared by every test using this hook: the first
-// lock records the position, nested locks only count, and only the last unlock
-// restores — so two hooks can never fight over the scroll position.
-let scrollLockCount = 0;
-let scrollLockSavedY = 0;
-let scrollLockSavedBody: { position: string; top: string; width: string; overflow: string; overscrollBehavior: string } | null = null;
-let scrollLockSavedHtmlOverflow = '';
+// LAYOUT-NEUTRAL scroll lock (2026-11-01, replaces the pin-at-position lock
+// from commit 00760381): while a test runs on touch, a non-passive document
+// touchmove listener preventDefaults every move (except inside a genuinely
+// scrollable inner element, e.g. a log with overflow-y-auto), so the page
+// cannot scroll during the run. NOTHING else is touched: body position,
+// top, width, overflow and scroll position are never written, so there is
+// nothing to jump, repaint or restore — the page cannot jerk to the top and
+// no element can vanish and reappear.
+//
+// Why the pin had to go: on the user's phone the pin (body position:fixed
+// with top:-scrollY + html/body overflow:hidden) made every element vanish
+// the moment a CPS test started, leaving only the fixed blue background,
+// and the result came out at 1 CPS — only the starting tap had counted,
+// because the pad was unreachable for the rest of the run. The pin was
+// removed entirely rather than tweaked: a layout-neutral lock has no
+// layout change that could reproduce that failure mode. (The exact mobile
+// repaint mechanism could not be proven in a local desktop build; removing
+// the suspect code entirely is the safe fix.)
+//
+// The ORIGINAL hook (main / /old) never locked body scroll at all: it only
+// prevented multi-touch pinch/zoom (touchstart/touchmove with touches>1,
+// gesturestart/change) and relied on the pad's touch-action: pan-y + ~12px
+// move threshold to tell a swipe from a tap. That pinch/zoom prevention is
+// kept verbatim below. When lockEnabled is false (CPS with the Settings
+// scroll-lock toggle off) the hook is exactly that original behaviour.
+// The CPS rig passes the Settings toggle as lockEnabled; other modules,
+// which do not receive prefs, lock by default during a run.
 export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: boolean, lockEnabled: boolean = true) {
   useEffect(() => {
     if (!isTouchDevice || !isRunning) return;
 
-    // Save previous styles (used only by the non-lock pinch/zoom path's cleanup
-    // for touchAction, which this hook never changes; the lock path restores
-    // from scrollLockSavedBody instead, so nested locks cannot corrupt it).
     const originalTouchAction = document.body.style.touchAction;
 
     // Extra touch listener to prevent default zoom/pinch behaviors on iOS and some Android devices
@@ -66,9 +65,11 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
       e.preventDefault();
     };
 
-    // Real scroll lock: block page scroll for the whole gesture, not just pinch.
-    // Touches inside a scrollable inner element are left alone so logs/lists
-    // inside a test can still scroll.
+    // Layout-neutral scroll lock: block page scroll for the whole gesture,
+    // not just pinch. Touches inside a scrollable inner element are left
+    // alone so logs/lists inside a test can still scroll. This does NOT
+    // cancel taps: touchstart/touchend (and the pad's click path) still
+    // fire, so every tap on the pad counts normally.
     const lockTouchMove = (e: TouchEvent) => {
       const t = e.target as HTMLElement | null;
       if (t && t.closest && (t.closest('[data-allow-scroll]') || t.closest('.overflow-y-auto'))) return;
@@ -76,25 +77,6 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
     };
 
     if (lockEnabled) {
-      // First lock only: pin the body at the current scroll position.
-      if (scrollLockCount === 0) {
-        scrollLockSavedY = window.scrollY || document.documentElement.scrollTop || 0;
-        scrollLockSavedBody = {
-          position: document.body.style.position,
-          top: document.body.style.top,
-          width: document.body.style.width,
-          overflow: document.body.style.overflow,
-          overscrollBehavior: document.body.style.overscrollBehavior,
-        };
-        scrollLockSavedHtmlOverflow = document.documentElement.style.overflow;
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${scrollLockSavedY}px`;
-        document.body.style.width = '100%';
-        document.body.style.overflow = 'hidden';
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overscrollBehavior = 'none';
-      }
-      scrollLockCount += 1;
       document.addEventListener('touchmove', lockTouchMove, { passive: false });
     }
 
@@ -105,21 +87,6 @@ export function useDisableScrollZoomOnTouch(isRunning: boolean, isTouchDevice: b
 
     return () => {
       if (lockEnabled) {
-        scrollLockCount = Math.max(0, scrollLockCount - 1);
-        // Last unlock only: restore the pre-lock styles, then return to the
-        // exact saved scroll position (styles first, or the browser clamps it).
-        if (scrollLockCount === 0 && scrollLockSavedBody) {
-          const savedY = scrollLockSavedY;
-          const savedBody = scrollLockSavedBody;
-          document.body.style.position = savedBody.position;
-          document.body.style.top = savedBody.top;
-          document.body.style.width = savedBody.width;
-          document.body.style.overflow = savedBody.overflow;
-          document.body.style.overscrollBehavior = savedBody.overscrollBehavior;
-          document.documentElement.style.overflow = scrollLockSavedHtmlOverflow;
-          scrollLockSavedBody = null;
-          window.scrollTo({ top: savedY, left: 0, behavior: 'auto' });
-        }
         document.removeEventListener("touchmove", lockTouchMove);
       }
       document.body.style.touchAction = originalTouchAction;

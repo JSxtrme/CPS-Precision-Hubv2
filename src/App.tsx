@@ -149,6 +149,15 @@ export default function App() {
   const aimLeaderboardDuration = aimFinishedDuration ?? aimDuration;
   const [isTouchDevice, setIsTouchDevice] = useState(false);
   const [scrollToToolkit, setScrollToToolkit] = useState(() => { try { return window.location.pathname.replace(/\/$/, '') === '/more-tests'; } catch { return false; } });
+  // Mobile toolkit timeline (single-column only, see preview.css): vertical
+  // centres of the 12 toolkit cards, relative to the first card's centre,
+  // plus scroll progress (0..1) through the track. Measured from the live
+  // DOM (not assumed from card heights) so dots sit on each card's centre
+  // whatever its content height is. The "Also in the lab" Aim grid is a
+  // separate .toolkit element and is deliberately NOT measured here.
+  const [tlOffsets, setTlOffsets] = useState<number[]>([]);
+  const tlOffsetsRef = useRef<number[]>([]);
+  const [tlProgress, setTlProgress] = useState(0);
   const scopeRef = useRef<HTMLDivElement | null>(null);
   const progressRef = useRef<HTMLDivElement | null>(null);
   const bgRef = useRef<HTMLDivElement | null>(null);
@@ -297,6 +306,47 @@ export default function App() {
     }
   }, [scrollToToolkit, activeView, motionOK]);
 
+  // Mobile toolkit timeline measurements + scroll progress. Only the
+  // 12-module grid (#toolkitGrid) is measured; CSS hides the timeline
+  // entirely above the 1-column breakpoint, so desktop is untouched.
+  // Fill point: 70% down the viewport — when that point passes a card's
+  // centre, the line has lit up to it and its dot ripples (CSS .lit).
+  useEffect(() => {
+    if (activeView !== 'cps') return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const measure = () => {
+      const grid = document.getElementById('toolkitGrid');
+      if (!grid) return;
+      const cards = Array.from(grid.querySelectorAll<HTMLElement>('.tool-card'));
+      if (cards.length < 2) return;
+      const gridTop = grid.getBoundingClientRect().top + window.scrollY;
+      // Centres relative to the grid top (= wrapper top: the grid is the
+      // wrapper's first child). The track spans first→last centre.
+      const centres = cards.map((c) => c.getBoundingClientRect().top + window.scrollY + c.offsetHeight / 2 - gridTop);
+      tlOffsetsRef.current = centres;
+      setTlOffsets(centres);
+      update();
+    };
+    const update = () => {
+      const grid = document.getElementById('toolkitGrid');
+      if (!grid || tlOffsetsRef.current.length < 2) return;
+      if (reduced) { setTlProgress(1); return; }
+      const rect = grid.getBoundingClientRect();
+      const trackTop = rect.top + tlOffsetsRef.current[0];
+      const trackH = tlOffsetsRef.current[tlOffsetsRef.current.length - 1] - tlOffsetsRef.current[0];
+      // (trackTop/trackH are viewport-relative; fill progress is the
+      // fraction of the track the 70%-viewport point has passed.)
+      const point = window.innerHeight * 0.7;
+      setTlProgress(Math.min(1, Math.max(0, (point - trackTop) / Math.max(1, trackH))));
+    };
+    const onScroll = () => { if (!reduced) requestAnimationFrame(update); };
+    measure();
+    const t = window.setTimeout(measure, 600); // re-measure after reveal animations settle
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    return () => { window.clearTimeout(t); window.removeEventListener('scroll', onScroll); window.removeEventListener('resize', measure); };
+  }, [activeView]);
+
   useEffect(() => {
     const onPop = (e: PopStateEvent) => {
       if (e.state && e.state.view) setActiveView(e.state.view as PvView);
@@ -413,14 +463,26 @@ export default function App() {
               <div><h2>The <span className="acc">toolkit</span></h2><p>Twelve calibrated modules — one for raw speed, the rest for everything your peripherals have been hiding.</p></div>
               <span className="tag mono" style={{ fontFamily: "'JetBrains Mono',monospace", fontSize: 11, letterSpacing: '.2em' }}>12 MODULES · ALL LIVE</span>
             </div>
-            <div className="toolkit" id="toolkitGrid">
-              {TOOLS.map((t, i) => (
-                <TiltCard key={t.id} className="tool-card reveal" style={{ ['--rd' as string]: `${(i % 4) * 70}ms` }} onClick={() => (t.id === 'cps' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate(t.id))}>
-                  <span className="idx">{t.tag} / 12</span>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{t.icon}</svg>
-                  <h4>{t.name}</h4><p>{t.desc}</p><span className="go">Open module →</span>
-                </TiltCard>
-              ))}
+            <div className="pv-toolkit-wrap">
+              <div className="toolkit" id="toolkitGrid">
+                {TOOLS.map((t, i) => (
+                  <TiltCard key={t.id} className="tool-card reveal" style={{ ['--rd' as string]: `${(i % 4) * 70}ms` }} onClick={() => (t.id === 'cps' ? window.scrollTo({ top: 0, behavior: 'smooth' }) : navigate(t.id))}>
+                    <span className="idx">{t.tag} / 12</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">{t.icon}</svg>
+                    <h4>{t.name}</h4><p>{t.desc}</p><span className="go">Open module →</span>
+                  </TiltCard>
+                ))}
+              </div>
+              {tlOffsets.length > 1 && (
+                <div className="pv-toolkit-timeline" aria-hidden="true">
+                  <div className="pv-tl-track" style={{ top: tlOffsets[0], height: tlOffsets[tlOffsets.length - 1] - tlOffsets[0] }}>
+                    <div className="pv-tl-fill" style={{ height: `${tlProgress * 100}%` }} />
+                    {tlOffsets.map((c, i) => (
+                      <span key={i} className={`pv-tl-dot${tlProgress * (tlOffsets[tlOffsets.length - 1] - tlOffsets[0]) >= c - tlOffsets[0] ? ' lit' : ''}`} style={{ top: c - tlOffsets[0] }} />
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
             <div className="section-head reveal"><div><h2>Also in the <span className="acc">lab</span></h2><p>One extra repo module beyond the preview's twelve — kept functional, not counted in the twelve.</p></div></div>
             <div className="toolkit">

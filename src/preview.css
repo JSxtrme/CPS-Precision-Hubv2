@@ -66,6 +66,26 @@
           radial-gradient(560px 380px at 88% 4%, rgba(43,92,230,.08), transparent 80%),
           radial-gradient(560px 420px at 6% 22%, rgba(43,92,230,.06), transparent 80%);
         transform:translate3d(0, var(--py, 0px), 0); will-change:transform;
+        /* TOP-EDGE FADE (2026-11-01): this layer's top edge IS the "black
+           band" edge users reported. Its radial glows are centred just
+           above this element's top edge, so the element box slices them
+           at near-full strength: above the line there is no glow (pure
+           --bg black), below it the glow lightens the page to navy — a
+           straight horizontal cut. It moves with scroll because the
+           layer parallaxes (translate --py = scrollY x 0.16 desktop /
+           0.05 touch), which is why it showed up over the toolkit in
+           one screenshot and over "Built to a higher standard" in
+           another. Softening the radial stops (commit 00760381) could
+           not fix a box-edge cut. This mask fades the whole layer in
+           over its top 160px, so the glow now blends in gradually
+           instead of starting at full strength. The mask travels with
+           the layer (it is on the element itself), so scrolling cannot
+           create a new seam. The dot grid lives on .bg-fx, not here,
+           so it is untouched; colours and glow strengths are unchanged.
+           The bottom edge needs no fade: by 82vh down, every radial
+           here is already past its transparent stop. */
+        -webkit-mask-image:linear-gradient(to bottom, transparent 0, black 160px);
+                mask-image:linear-gradient(to bottom, transparent 0, black 160px);
       }
 .pv-scope .bg-fx::after{
         content:""; position:absolute; inset:0;
@@ -513,4 +533,33 @@
   .pv-scope .pad.finished .result .r-roast{ font-size:13.5px; line-height:1.5; margin-top:6px; }
   .pv-scope .pad.finished .result .btn-row{ margin-top:14px; }
   .pv-scope .pad.finished .result .btn{ padding:9px 18px; font-size:13px; }
+}
+
+/* --- Mobile toolkit timeline (single-column only, max-width:520px) ---
+   The 12-module grid becomes 1 column at this breakpoint (see .toolkit
+   rule above); only there does a vertical line appear, on the RIGHT side
+   of the list (never the middle of the screen), running from the first
+   card's centre to the last, with a white dot on each card's centre.
+   The line lights up white with a glow as the user scrolls (fill height
+   is driven by App.tsx scroll progress); when the fill reaches a dot,
+   the dot lights and its outer ring ripples once. Desktop / grid layouts
+   show NO timeline at all (display:none outside this media query), and
+   the separate "Also in the lab" Aim grid is not wrapped, so it has none.
+   pointer-events:none so dots can never eat a card tap, and TiltCard
+   press/tilt is untouched. */
+.pv-scope .pv-toolkit-wrap{ position:relative; }
+.pv-scope .pv-toolkit-timeline{ display:none; }
+@media (max-width:520px){
+  .pv-scope .pv-toolkit-wrap{ padding-right:36px; }
+  .pv-scope .pv-toolkit-timeline{ display:block; position:absolute; top:0; bottom:0; right:12px; width:2px; pointer-events:none; z-index:2; }
+  .pv-scope .pv-tl-track{ position:absolute; left:0; width:2px; background:rgba(255,255,255,.14); border-radius:2px; }
+  .pv-scope .pv-tl-fill{ width:100%; background:#fff; border-radius:2px; box-shadow:0 0 8px rgba(255,255,255,.9), 0 0 18px rgba(110,168,255,.7); transition:height .15s linear; }
+  .pv-scope .pv-tl-dot{ position:absolute; left:50%; transform:translate(-50%,-50%); width:10px; height:10px; border-radius:50%; background:rgba(255,255,255,.25); border:2px solid rgba(255,255,255,.35); transition:background .3s, border-color .3s, box-shadow .3s; }
+  .pv-scope .pv-tl-dot.lit{ background:#fff; border-color:#fff; box-shadow:0 0 10px rgba(255,255,255,.95), 0 0 20px rgba(110,168,255,.6); }
+  .pv-scope .pv-tl-dot.lit::after{ content:""; position:absolute; inset:-2px; border-radius:50%; border:2px solid rgba(255,255,255,.8); animation:pvTlRipple .8s ease-out forwards; }
+  @keyframes pvTlRipple{ from{ transform:scale(1); opacity:.9; } to{ transform:scale(2.8); opacity:0; } }
+}
+@media (prefers-reduced-motion: reduce){
+  .pv-scope .pv-tl-fill{ transition:none; }
+  .pv-scope .pv-tl-dot.lit::after{ animation:none; display:none; }
 }

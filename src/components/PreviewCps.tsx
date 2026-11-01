@@ -305,12 +305,14 @@ export default function PreviewCps({ onAddHistory, isTouchDevice, history, setti
           <div ref={padRef} className={`pad${status === 'running' ? ' running' : ''}${status === 'finished' ? ' finished' : ''}`} role="button" tabIndex={0}
             onContextMenu={(e) => e.preventDefault()} onClick={handlePadClick} onMouseDown={handleMouseDown}
             onPointerDown={handlePadPointerDown} onPointerMove={handlePadPointerMove} onKeyDown={handlePadKeyDown}
-            // While a test runs on touch with scroll lock on, the pad itself
-            // must not pan either (pan-y would let fast taps drag the page).
-            // Outside a run — and with scroll lock off — pan-y is kept, so
-            // swiping the pad still scrolls the page and the ~12px threshold
-            // below keeps a swipe from counting as a click.
-            style={{ touchAction: (status === 'running' && isTouchDevice && settings.scrolllock !== false) ? 'none' : 'pan-y' }}
+            // Pad touch-action is always pan-y (reverted from the PR #4
+            // touch-action:none-while-running switch): the layout-neutral
+            // document touchmove lock in useDisableScrollZoomOnTouch
+            // already blocks page scroll during a run, so the pad does
+            // not need to opt out of panning — and keeping pan-y avoids
+            // any chance the running pad stops delivering taps. The
+            // ~12px threshold below still keeps a swipe from counting.
+            style={{ touchAction: 'pan-y' }}
             onTouchStart={(e) => { const t = e.touches[0]; touchStartRef.current = { x: t.clientX, y: t.clientY }; touchMovedRef.current = false; }}
             onTouchMove={(e) => { const s = touchStartRef.current; if (!s) return; const t = e.touches[0]; if (Math.abs(t.clientX - s.x) > 12 || Math.abs(t.clientY - s.y) > 12) touchMovedRef.current = true; }}
             onTouchEnd={() => { if (touchMovedRef.current) suppressClickRef.current = true; touchStartRef.current = null; touchMovedRef.current = false; }}
